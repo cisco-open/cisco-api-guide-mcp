@@ -1,0 +1,33 @@
+version: 2
+
+before:
+  hooks:
+    - rm -rf dist
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - id: cisco-api-guide
+    binary: cisco-api-guide
+    main: ./cmd/cisco-api-guide
+    targets:
+      - windows_amd64_v1
+      - linux_amd64_v1
+      - darwin_arm64
+    env:
+      - CGO_ENABLED=0
+    tags:
+      - netgo
+      - static_build
+
+release:
+  github:
+    owner: brightpuddle
+    name: cisco-api-guide-mcp
+
+archives:
+  - id: cisco-api-guide
+    formats: ["zip"]
+    files:
+      - README.md
+      - LICENSE
