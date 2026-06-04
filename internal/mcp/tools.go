@@ -41,6 +41,10 @@ func Tools() []ToolDef {
 						"description": "Filter to a specific product. One of: aci, ndfc, intersight (aliases: ucs, dcnm). Omit to search all products.",
 						"enum":        []string{"aci", "ndfc", "intersight", "ucs", "dcnm"},
 					},
+					"release": map[string]interface{}{
+						"type":        "string",
+						"description": "Filter by release using prefix matching. Example: '3' matches '3.2.2m'. Omit to search all releases.",
+					},
 					"limit": map[string]interface{}{
 						"type":        "integer",
 						"description": "Max results to return. Default: 10. Max: 50.",
@@ -60,6 +64,10 @@ func Tools() []ToolDef {
 						"type":        "string",
 						"description": "Product slug. One of: aci, ndfc, intersight (aliases: ucs, dcnm).",
 						"enum":        []string{"aci", "ndfc", "intersight", "ucs", "dcnm"},
+					},
+					"release": map[string]interface{}{
+						"type":        "string",
+						"description": "Release prefix to select a specific version (e.g. '3' or '3.2.2m'). Required when multiple releases exist for the same path.",
 					},
 					"method": map[string]interface{}{
 						"type":        "string",

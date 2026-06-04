@@ -56,33 +56,33 @@ func GetProduct(db *sql.DB, id string) (*Product, error) {
 }
 
 // SearchEndpoints runs FTS5 query and returns ranked results.
-func SearchEndpoints(db *sql.DB, ftsQuery, productID string, limit int) ([]SearchResult, int, error) {
+// releasePrefix filters by release using prefix matching (e.g. "3" matches "3.2.2m").
+// Empty productID or releasePrefix disables that filter.
+func SearchEndpoints(db *sql.DB, ftsQuery, productID, releasePrefix string, limit int) ([]SearchResult, int, error) {
 	if limit <= 0 || limit > 50 {
 		limit = 10
 	}
 
-	var (
-		rows *sql.Rows
-		err  error
-	)
+	where := "endpoints_fts MATCH ?"
+	args := []interface{}{ftsQuery}
 
 	if productID != "" {
-		rows, err = db.Query(`
-			SELECT e.product_id, e.method, e.path, e.summary
-			FROM endpoints e
-			JOIN endpoints_fts f ON e.id = f.rowid
-			WHERE endpoints_fts MATCH ? AND e.product_id = ?
-			ORDER BY rank
-			LIMIT ?`, ftsQuery, productID, limit+1)
-	} else {
-		rows, err = db.Query(`
-			SELECT e.product_id, e.method, e.path, e.summary
-			FROM endpoints e
-			JOIN endpoints_fts f ON e.id = f.rowid
-			WHERE endpoints_fts MATCH ?
-			ORDER BY rank
-			LIMIT ?`, ftsQuery, limit+1)
+		where += " AND e.product_id = ?"
+		args = append(args, productID)
 	}
+	if releasePrefix != "" {
+		where += " AND e.release LIKE ?"
+		args = append(args, releasePrefix+"%")
+	}
+	args = append(args, limit+1)
+
+	rows, err := db.Query(`
+		SELECT e.product_id, e.release, e.method, e.path, e.summary
+		FROM endpoints e
+		JOIN endpoints_fts f ON e.id = f.rowid
+		WHERE `+where+`
+		ORDER BY rank
+		LIMIT ?`, args...)
 	if err != nil {
 		return nil, 0, fmt.Errorf("fts query: %w", err)
 	}
@@ -91,7 +91,7 @@ func SearchEndpoints(db *sql.DB, ftsQuery, productID string, limit int) ([]Searc
 	var results []SearchResult
 	for rows.Next() {
 		var r SearchResult
-		if err := rows.Scan(&r.ProductID, &r.Method, &r.Path, &r.Summary); err != nil {
+		if err := rows.Scan(&r.ProductID, &r.Release, &r.Method, &r.Path, &r.Summary); err != nil {
 			return nil, 0, err
 		}
 		results = append(results, r)
@@ -105,20 +105,56 @@ func SearchEndpoints(db *sql.DB, ftsQuery, productID string, limit int) ([]Searc
 }
 
 // GetEndpoint fetches full endpoint detail.
-func GetEndpoint(db *sql.DB, productID, method, path string) (*Endpoint, error) {
-	e := &Endpoint{}
-	err := db.QueryRow(`
-		SELECT id, product_id, method, path, summary, description,
+// releasePrefix filters by release using prefix matching; empty matches any release.
+// If multiple releases match with no prefix, returns an error listing available releases.
+func GetEndpoint(db *sql.DB, productID, releasePrefix, method, path string) (*Endpoint, error) {
+	query := `
+		SELECT id, product_id, release, method, path, summary, description,
 		       tags, parameters, request_body, responses, source_format
 		FROM endpoints
-		WHERE product_id = ? AND method = ? AND path = ?`,
-		productID, strings.ToUpper(method), path).
-		Scan(&e.ID, &e.ProductID, &e.Method, &e.Path, &e.Summary, &e.Description,
-			&e.Tags, &e.Parameters, &e.RequestBody, &e.Responses, &e.SourceFormat)
-	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("endpoint not found: %s %s %s", productID, method, path)
+		WHERE product_id = ? AND method = ? AND path = ?`
+	args := []interface{}{productID, strings.ToUpper(method), path}
+
+	if releasePrefix != "" {
+		query += " AND release LIKE ?"
+		args = append(args, releasePrefix+"%")
 	}
-	return e, err
+	query += " ORDER BY release"
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("get endpoint: %w", err)
+	}
+	defer rows.Close()
+
+	var results []*Endpoint
+	for rows.Next() {
+		e := &Endpoint{}
+		if err := rows.Scan(&e.ID, &e.ProductID, &e.Release, &e.Method, &e.Path,
+			&e.Summary, &e.Description, &e.Tags, &e.Parameters,
+			&e.RequestBody, &e.Responses, &e.SourceFormat); err != nil {
+			return nil, err
+		}
+		results = append(results, e)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	switch len(results) {
+	case 0:
+		return nil, fmt.Errorf("endpoint not found: %s %s %s", productID, method, path)
+	case 1:
+		return results[0], nil
+	default:
+		releases := make([]string, len(results))
+		for i, r := range results {
+			releases[i] = fmt.Sprintf("%q", r.Release)
+		}
+		return nil, fmt.Errorf(
+			"multiple releases match for %s %s %s: [%s] — specify a release parameter",
+			productID, method, path, strings.Join(releases, ", "))
+	}
 }
 
 // GetSynonyms returns all synonym rows.

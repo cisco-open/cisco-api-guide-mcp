@@ -31,6 +31,7 @@ type Product struct {
 type Endpoint struct {
 	ID           int64
 	ProductID    string
+	Release      string
 	Method       string
 	Path         string
 	Summary      string
@@ -45,6 +46,7 @@ type Endpoint struct {
 // SearchResult is a lightweight endpoint for search output.
 type SearchResult struct {
 	ProductID string
+	Release   string
 	Method    string
 	Path      string
 	Summary   string

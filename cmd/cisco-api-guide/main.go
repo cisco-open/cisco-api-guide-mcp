@@ -135,6 +135,7 @@ func handleSearch(args json.RawMessage) interface{} {
 	var a struct {
 		Query   string `json:"query"`
 		Product string `json:"product"`
+		Release string `json:"release"`
 		Limit   int    `json:"limit"`
 	}
 	if err := json.Unmarshal(args, &a); err != nil {
@@ -157,7 +158,7 @@ func handleSearch(args json.RawMessage) interface{} {
 	}
 
 	ftsQuery := search.BuildFTSQuery(a.Query, synonyms)
-	results, total, err := idb.SearchEndpoints(db, ftsQuery, productID, a.Limit)
+	results, total, err := idb.SearchEndpoints(db, ftsQuery, productID, a.Release, a.Limit)
 	if err != nil {
 		return mcp.ToolErrorResult(fmt.Sprintf("search failed: %v", err))
 	}
@@ -172,7 +173,11 @@ func handleSearch(args json.RawMessage) interface{} {
 		if summary == "" {
 			summary = "(no summary)"
 		}
-		fmt.Fprintf(&sb, "[%s] %s %s — %s\n", r.ProductID, r.Method, r.Path, summary)
+		tag := r.ProductID
+		if r.Release != "" {
+			tag = r.ProductID + "/" + r.Release
+		}
+		fmt.Fprintf(&sb, "[%s] %s %s — %s\n", tag, r.Method, r.Path, summary)
 	}
 	if total > a.Limit {
 		fmt.Fprintf(&sb, "\nShowing %d of %d+ results. Use limit parameter for more.", len(results), total-1)
@@ -186,6 +191,7 @@ func handleSearch(args json.RawMessage) interface{} {
 func handleGetEndpoint(args json.RawMessage) interface{} {
 	var a struct {
 		Product string `json:"product"`
+		Release string `json:"release"`
 		Method  string `json:"method"`
 		Path    string `json:"path"`
 	}
@@ -198,13 +204,17 @@ func handleGetEndpoint(args json.RawMessage) interface{} {
 		return mcp.ToolErrorResult(err.Error())
 	}
 
-	e, err := idb.GetEndpoint(db, productID, a.Method, a.Path)
+	e, err := idb.GetEndpoint(db, productID, a.Release, a.Method, a.Path)
 	if err != nil {
 		return mcp.ToolErrorResult(err.Error())
 	}
 
 	var sb strings.Builder
-	fmt.Fprintf(&sb, "%s: %s %s\n", strings.ToUpper(productID), e.Method, e.Path)
+	header := strings.ToUpper(productID)
+	if e.Release != "" {
+		header += "/" + e.Release
+	}
+	fmt.Fprintf(&sb, "%s: %s %s\n", header, e.Method, e.Path)
 	if e.Summary != "" {
 		fmt.Fprintf(&sb, "Summary: %s\n", e.Summary)
 	}

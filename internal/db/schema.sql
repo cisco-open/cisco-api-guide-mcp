@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS product_aliases (
 CREATE TABLE IF NOT EXISTS endpoints (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id    TEXT NOT NULL REFERENCES products(id),
+    release       TEXT NOT NULL DEFAULT '',
     method        TEXT NOT NULL,
     path          TEXT NOT NULL,
     summary       TEXT NOT NULL DEFAULT '',
@@ -25,7 +26,7 @@ CREATE TABLE IF NOT EXISTS endpoints (
     request_body  TEXT NOT NULL DEFAULT '{}',
     responses     TEXT NOT NULL DEFAULT '{}',
     source_format TEXT NOT NULL DEFAULT '',
-    UNIQUE(product_id, method, path)
+    UNIQUE(product_id, release, method, path)
 );
 
 CREATE VIRTUAL TABLE IF NOT EXISTS endpoints_fts USING fts5(

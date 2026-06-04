@@ -37,6 +37,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{Name: "db", Value: "./data/api.db", Usage: "Path to SQLite DB file"},
 			&cli.StringFlag{Name: "product", Usage: "Product slug (aci, ndfc, intersight)"},
+			&cli.StringFlag{Name: "release", Usage: "Release/version tag for this endpoint set (e.g. 3.2.2m, 4.0.0)"},
 			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, swagger2, manual"},
 			&cli.StringFlag{Name: "input", Usage: "Input file path (or - for stdin)"},
 			&cli.StringFlag{Name: "synonyms", Usage: "CSV file of term,expansion pairs"},
@@ -105,6 +106,11 @@ func run(ctx *cli.Context) error {
 	endpoints, err := handler.Parse(product, data)
 	if err != nil {
 		return fmt.Errorf("parse: %w", err)
+	}
+
+	release := ctx.String("release")
+	for i := range endpoints {
+		endpoints[i].Release = release
 	}
 
 	return insertEndpoints(db, endpoints)
@@ -205,9 +211,9 @@ func insertEndpoints(db *sql.DB, endpoints []idb.Endpoint) error {
 	defer tx.Rollback()
 
 	stmt, err := tx.Prepare(`
-		INSERT INTO endpoints(product_id, method, path, summary, description, tags, parameters, request_body, responses, source_format)
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(product_id, method, path) DO UPDATE SET
+		INSERT INTO endpoints(product_id, release, method, path, summary, description, tags, parameters, request_body, responses, source_format)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(product_id, release, method, path) DO UPDATE SET
 			summary=excluded.summary,
 			description=excluded.description,
 			tags=excluded.tags,
@@ -221,7 +227,7 @@ func insertEndpoints(db *sql.DB, endpoints []idb.Endpoint) error {
 	defer stmt.Close()
 
 	for _, e := range endpoints {
-		_, err := stmt.Exec(e.ProductID, e.Method, e.Path, e.Summary, e.Description,
+		_, err := stmt.Exec(e.ProductID, e.Release, e.Method, e.Path, e.Summary, e.Description,
 			e.Tags, e.Parameters, e.RequestBody, e.Responses, e.SourceFormat)
 		if err != nil {
 			return fmt.Errorf("insert endpoint %s %s: %w", e.Method, e.Path, err)
