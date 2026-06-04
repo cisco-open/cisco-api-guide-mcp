@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: go test ./...
+
+  # Fires when an explicit tag (e.g. v2.0.1) is pushed.
+  # Builds and publishes the release on that exact tag; no auto-increment.
+  release-tag:
+    name: Release (explicit tag)
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Fires on every push to main that does NOT already carry a semver tag.
+  # Increments the patch component of the latest tag and publishes a release.
+  release-auto:
+    name: Release (auto patch bump)
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Skip if the pushed commit is already tagged (e.g. user did git push --tags).
+      - name: Check whether HEAD is already tagged
+        id: tag_check
+        run: |
+          EXISTING=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "existing=$EXISTING" >> "$GITHUB_OUTPUT"
+          if [ -n "$EXISTING" ]; then
+            echo "HEAD already tagged as $EXISTING — skipping auto-increment"
+          fi
+
+      - name: Compute next patch version
+        if: steps.tag_check.outputs.existing == ''
+        id: next_ver
+        run: |
+          LATEST=$(git tag -l 'v[0-9]*' | sort -V | tail -1)
+          if [ -z "$LATEST" ]; then
+            NEXT="v0.1.0"
+          else
+            MAJOR=$(echo "$LATEST" | cut -d. -f1 | tr -d 'v')
+            MINOR=$(echo "$LATEST" | cut -d. -f2)
+            PATCH=$(echo "$LATEST" | cut -d. -f3)
+            NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+          fi
+          echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Next version: $NEXT"
+
+      - name: Create and push tag
+        if: steps.tag_check.outputs.existing == ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.next_ver.outputs.tag }}"
+          git push origin "${{ steps.next_ver.outputs.tag }}"
+
+      - uses: actions/setup-go@v5
+        if: steps.tag_check.outputs.existing == ''
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Release
+        if: steps.tag_check.outputs.existing == ''
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_CURRENT_TAG: ${{ steps.next_ver.outputs.tag }}
