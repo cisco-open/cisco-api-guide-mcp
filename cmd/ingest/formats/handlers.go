@@ -27,17 +27,12 @@ type FormatHandler interface {
 	Parse(productID string, data []byte) ([]idb.Endpoint, error)
 }
 
+// Handlers is the registry of all supported format handlers.
 var Handlers = map[string]FormatHandler{
 	"openapi3": &OpenAPI3Handler{},
+	"aci-meta": &ACIMetaHandler{},
 	"swagger2": &Swagger2Handler{},
 	"manual":   &ManualHandler{},
-}
-
-// OpenAPI3Handler parses OpenAPI 3.x documents.
-type OpenAPI3Handler struct{}
-
-func (h *OpenAPI3Handler) Parse(productID string, data []byte) ([]idb.Endpoint, error) {
-	return nil, fmt.Errorf("format %q: not implemented", "openapi3")
 }
 
 // Swagger2Handler parses Swagger 2.0 documents.

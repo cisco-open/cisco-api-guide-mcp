@@ -38,8 +38,10 @@ func main() {
 			&cli.StringFlag{Name: "db", Value: "./data/api.db", Usage: "Path to SQLite DB file"},
 			&cli.StringFlag{Name: "product", Usage: "Product slug (aci, ndfc, intersight)"},
 			&cli.StringFlag{Name: "release", Usage: "Release/version tag for this endpoint set (e.g. 3.2.2m, 4.0.0)"},
-			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, swagger2, manual"},
+			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, aci-meta, swagger2, manual"},
 			&cli.StringFlag{Name: "input", Usage: "Input file path (or - for stdin)"},
+			&cli.StringFlag{Name: "aux-dir", Usage: "Auxiliary directory (e.g. APIC per-class JSON docs for aci-meta format)"},
+			&cli.BoolFlag{Name: "prune-major", Usage: "Delete existing endpoints for same product+major-version before inserting"},
 			&cli.StringFlag{Name: "synonyms", Usage: "CSV file of term,expansion pairs"},
 			&cli.BoolFlag{Name: "init", Usage: "Seed product metadata row only"},
 			&cli.StringFlag{Name: "name", Usage: "Product display name (used with --init)"},
@@ -92,6 +94,11 @@ func run(ctx *cli.Context) error {
 		return fmt.Errorf("unsupported format %q", format)
 	}
 
+	// Allow format handlers to receive extra options via type assertion.
+	if h, ok := handler.(*formats.ACIMetaHandler); ok {
+		h.AuxDir = ctx.String("aux-dir")
+	}
+
 	inputPath := ctx.String("input")
 	var data []byte
 	if inputPath == "-" || inputPath == "" {
@@ -113,10 +120,20 @@ func run(ctx *cli.Context) error {
 		endpoints[i].Release = release
 	}
 
+	if ctx.Bool("prune-major") && release != "" {
+		if err := pruneReleaseMajor(db, product, release); err != nil {
+			return fmt.Errorf("prune major release: %w", err)
+		}
+	}
+
 	return insertEndpoints(db, endpoints)
 }
 
 func applySchema(db *sql.DB) error {
+	if err := migrateSchema(db); err != nil {
+		return fmt.Errorf("schema migration: %w", err)
+	}
+
 	schema, err := os.ReadFile("internal/db/schema.sql")
 	if err != nil {
 		// Try relative to binary location
@@ -127,6 +144,115 @@ func applySchema(db *sql.DB) error {
 	}
 	_, err = db.Exec(string(schema))
 	return err
+}
+
+// migrateSchema detects and applies incremental schema changes that cannot be
+// handled by idempotent CREATE TABLE IF NOT EXISTS statements (e.g. adding
+// columns or changing UNIQUE constraints on existing tables).
+func migrateSchema(db *sql.DB) error {
+	// Nothing to do if the endpoints table doesn't exist yet.
+	var count int
+	if err := db.QueryRow(
+		`SELECT count(*) FROM sqlite_master WHERE type='table' AND name='endpoints'`,
+	).Scan(&count); err != nil || count == 0 {
+		return nil
+	}
+
+	// v0 -> v1: add 'release' column + fix UNIQUE constraint + rebuild FTS.
+	if err := migrateV0toV1(db); err != nil {
+		return fmt.Errorf("v0->v1: %w", err)
+	}
+	return nil
+}
+
+// migrateV0toV1 adds the 'release' column to the endpoints table and updates
+// the UNIQUE constraint from (product_id, method, path) to
+// (product_id, release, method, path). It is a no-op if the column already exists.
+func migrateV0toV1(db *sql.DB) error {
+	// Check whether the column already exists.
+	rows, err := db.Query(`PRAGMA table_info(endpoints)`)
+	if err != nil {
+		return fmt.Errorf("pragma table_info: %w", err)
+	}
+	hasRelease := false
+	for rows.Next() {
+		var cid, notNull, pk int
+		var name, colType string
+		var dflt interface{}
+		if err := rows.Scan(&cid, &name, &colType, &notNull, &dflt, &pk); err == nil {
+			if name == "release" {
+				hasRelease = true
+			}
+		}
+	}
+	rows.Close()
+
+	if hasRelease {
+		return nil // already migrated
+	}
+
+	fmt.Println("Migrating endpoints schema (v0->v1: adding release column)…")
+
+	// Each step is a separate Exec so errors are attributable.
+	steps := []string{
+		// New table with the correct schema.
+		`CREATE TABLE endpoints_new (
+			id            INTEGER PRIMARY KEY AUTOINCREMENT,
+			product_id    TEXT NOT NULL REFERENCES products(id),
+			release       TEXT NOT NULL DEFAULT '',
+			method        TEXT NOT NULL,
+			path          TEXT NOT NULL,
+			summary       TEXT NOT NULL DEFAULT '',
+			description   TEXT NOT NULL DEFAULT '',
+			tags          TEXT NOT NULL DEFAULT '[]',
+			parameters    TEXT NOT NULL DEFAULT '[]',
+			request_body  TEXT NOT NULL DEFAULT '{}',
+			responses     TEXT NOT NULL DEFAULT '{}',
+			source_format TEXT NOT NULL DEFAULT '',
+			UNIQUE(product_id, release, method, path)
+		)`,
+
+		// Copy existing rows; release defaults to empty string.
+		`INSERT INTO endpoints_new
+			(id, product_id, release, method, path, summary, description,
+			 tags, parameters, request_body, responses, source_format)
+		 SELECT
+			id, product_id, '', method, path, summary, description,
+			tags, parameters, request_body, responses, source_format
+		 FROM endpoints`,
+
+		// Drop FTS triggers before dropping the source table.
+		`DROP TRIGGER IF EXISTS endpoints_fts_insert`,
+		`DROP TRIGGER IF EXISTS endpoints_fts_delete`,
+		`DROP TRIGGER IF EXISTS endpoints_fts_update`,
+		`DROP TABLE IF EXISTS endpoints_fts`,
+
+		// Swap tables.
+		`DROP TABLE endpoints`,
+		`ALTER TABLE endpoints_new RENAME TO endpoints`,
+
+		// Rebuild FTS content table (triggers recreated by schema.sql).
+		`CREATE VIRTUAL TABLE endpoints_fts USING fts5(
+			summary, description, path, tags,
+			content='endpoints', content_rowid='id',
+			tokenize='porter unicode61'
+		)`,
+		`INSERT INTO endpoints_fts(rowid, summary, description, path, tags)
+		 SELECT id, summary, description, path, tags FROM endpoints`,
+	}
+
+	for _, stmt := range steps {
+		if _, err := db.Exec(stmt); err != nil {
+			preview := stmt
+			if len(preview) > 60 {
+				preview = preview[:60] + "…"
+			}
+			return fmt.Errorf("step %q: %w", preview, err)
+		}
+	}
+
+	fmt.Println("Schema migration complete.")
+	return nil
 }
 
 func seedProduct(db *sql.DB, ctx *cli.Context) error {
@@ -200,6 +326,27 @@ func loadSynonyms(db *sql.DB, path string) error {
 		count++
 	}
 	fmt.Printf("Loaded %d synonyms\n", count)
+	return nil
+}
+
+// pruneReleaseMajor deletes all endpoints for the given product whose release
+// shares the same major-version prefix as newRelease.
+//
+// Examples: newRelease="4.1.1" -> deletes releases "4", "4.0.0", "4.1.0", etc.
+//           newRelease="3.2.2m" -> deletes releases "3", "3.0.0", "3.2.2m", etc.
+func pruneReleaseMajor(db *sql.DB, productID, newRelease string) error {
+	major := strings.SplitN(newRelease, ".", 2)[0]
+	res, err := db.Exec(
+		`DELETE FROM endpoints WHERE product_id = ? AND (release = ? OR release LIKE ?)`,
+		productID, major, major+".%",
+	)
+	if err != nil {
+		return err
+	}
+	n, _ := res.RowsAffected()
+	if n > 0 {
+		fmt.Printf("Pruned %d endpoints for %s major version %s\n", n, productID, major)
+	}
 	return nil
 }
 
