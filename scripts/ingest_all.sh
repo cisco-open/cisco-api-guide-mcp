@@ -18,7 +18,7 @@
 set -euo pipefail
 
 ASSETS_DIR="${ASSETS_DIR:-../assets}"
-DB="${DB:-./data/api.db}"
+DB="${DB:-./internal/embeddb/api.db}"
 INGEST="${INGEST:-go run ./cmd/ingest}"
 ACI_AUX_DIR="${ACI_AUX_DIR:-}"  # optional: path to downloaded APIC per-class JSON dir
 

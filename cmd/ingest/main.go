@@ -35,7 +35,7 @@ func main() {
 		Name:  "cisco-api-guide-ingest",
 		Usage: "Ingest Cisco API documentation into the SQLite database",
 		Flags: []cli.Flag{
-			&cli.StringFlag{Name: "db", Value: "./data/api.db", Usage: "Path to SQLite DB file"},
+			&cli.StringFlag{Name: "db", Value: "./internal/embeddb/api.db", Usage: "Path to SQLite DB file"},
 			&cli.StringFlag{Name: "product", Usage: "Product slug (aci, ndfc, intersight)"},
 			&cli.StringFlag{Name: "release", Usage: "Release/version tag for this endpoint set (e.g. 3.2.2m, 4.0.0)"},
 			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, aci-meta, swagger2, manual"},
