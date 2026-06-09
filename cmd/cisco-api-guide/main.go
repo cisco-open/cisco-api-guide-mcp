@@ -63,8 +63,10 @@ func main() {
 			continue
 		}
 
-		resp := dispatch(req)
-		writeResponse(writer, resp)
+		resp, ok := dispatch(req)
+		if ok {
+			writeResponse(writer, resp)
+		}
 	}
 }
 
@@ -77,11 +79,11 @@ func writeResponse(w *bufio.Writer, r mcp.Response) {
 	w.Flush()
 }
 
-func dispatch(req mcp.Request) mcp.Response {
+func dispatch(req mcp.Request) (mcp.Response, bool) {
 	switch req.Method {
 	case "initialize":
 		return mcp.OKResponse(req.ID, map[string]interface{}{
-			"protocolVersion": "2024-11-05",
+			"protocolVersion": "2025-11-05",
 			"serverInfo": map[string]interface{}{
 				"name":    "cisco-api-guide",
 				"version": "0.1.0",
@@ -89,22 +91,22 @@ func dispatch(req mcp.Request) mcp.Response {
 			"capabilities": map[string]interface{}{
 				"tools": map[string]interface{}{},
 			},
-		})
+		}), true
 
 	case "notifications/initialized":
-		// No response needed
-		return mcp.Response{}
+		// Notifications must not produce a response.
+		return mcp.Response{}, false
 
 	case "tools/list":
 		return mcp.OKResponse(req.ID, map[string]interface{}{
 			"tools": mcp.Tools(),
-		})
+		}), true
 
 	case "tools/call":
-		return handleToolCall(req)
+		return handleToolCall(req), true
 
 	default:
-		return mcp.ErrorResponse(req.ID, -32601, fmt.Sprintf("method not found: %s", req.Method))
+		return mcp.ErrorResponse(req.ID, -32601, fmt.Sprintf("method not found: %s", req.Method)), true
 	}
 }
 
