@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+
+# SPDX-License-Identifier: Apache-2.0
+
+# Copyright 2026 Cisco Systems, Inc. and their affiliates
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+# http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 fetch_aci_jsonmeta.py - Download per-class JSON documentation from an APIC.
 
@@ -15,7 +32,7 @@ No authentication is required for the /doc/jsonmeta/ endpoint.
 
 Usage:
     python3 scripts/fetch_aci_jsonmeta.py \\
-        --apic 10.122.208.110 \\
+        --apic 1.2.3.4 \\
         --meta ~/src/cisco-api-guide-mcp/assets/aci-meta.json \\
         --out  ~/src/cisco-api-guide-mcp/assets/aci-jsonmeta \\
         [--all]          # include abstract/non-configurable classes too
@@ -25,7 +42,6 @@ Usage:
 
 import argparse
 import json
-import os
 import re
 import ssl
 import sys
@@ -34,7 +50,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-CLASS_RE = re.compile(r'^([a-z][a-z0-9]*)([A-Z].*)$')
+CLASS_RE = re.compile(r"^([a-z][a-z0-9]*)([A-Z].*)$")
 
 
 def split_class_name(name: str):
@@ -65,22 +81,41 @@ def fetch_one(url: str, dest: Path, ctx: ssl.SSLContext) -> tuple[str, str | Non
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('--apic', required=True,
-                        help='APIC hostname or IP (e.g. 10.122.208.110)')
-    parser.add_argument('--meta', required=True,
-                        help='Path to aci-meta.json (pyaci format)')
-    parser.add_argument('--out', required=True,
-                        help='Output directory for per-class JSON files')
-    parser.add_argument('--all', action='store_true',
-                        help='Download all classes, not just configurable+non-abstract')
-    parser.add_argument('--workers', type=int, default=10,
-                        help='Number of parallel download workers (default: 10)')
-    parser.add_argument('--no-verify', action='store_true', default=True,
-                        help='Skip TLS certificate verification (default: True)')
-    parser.add_argument('--skip-existing', action='store_true', default=True,
-                        help='Skip classes whose output file already exists (default: True)')
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--apic", required=True, help="APIC hostname or IP (e.g. 10.122.208.110)"
+    )
+    parser.add_argument(
+        "--meta", required=True, help="Path to aci-meta.json (pyaci format)"
+    )
+    parser.add_argument(
+        "--out", required=True, help="Output directory for per-class JSON files"
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Download all classes, not just configurable+non-abstract",
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=10,
+        help="Number of parallel download workers (default: 10)",
+    )
+    parser.add_argument(
+        "--no-verify",
+        action="store_true",
+        default=True,
+        help="Skip TLS certificate verification (default: True)",
+    )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        default=True,
+        help="Skip classes whose output file already exists (default: True)",
+    )
     args = parser.parse_args()
 
     meta_path = Path(args.meta).expanduser()
@@ -90,7 +125,7 @@ def main():
     with open(meta_path) as f:
         meta = json.load(f)
 
-    classes = meta.get('classes', {})
+    classes = meta.get("classes", {})
     print(f"Total classes in meta: {len(classes)}", file=sys.stderr)
 
     # Build work list
@@ -100,7 +135,7 @@ def main():
 
     for class_name, cls_data in classes.items():
         if not args.all:
-            if cls_data.get('isAbstract') or not cls_data.get('isConfigurable'):
+            if cls_data.get("isAbstract") or not cls_data.get("isConfigurable"):
                 skipped_filter += 1
                 continue
 
@@ -116,9 +151,11 @@ def main():
         url = f"https://{args.apic}/doc/jsonmeta/{pkg}/{cls}.json"
         tasks.append((url, dest))
 
-    print(f"Classes to download: {len(tasks)} "
-          f"(filtered: {skipped_filter}, unparseable names: {skipped_parse})",
-          file=sys.stderr)
+    print(
+        f"Classes to download: {len(tasks)} "
+        f"(filtered: {skipped_filter}, unparseable names: {skipped_parse})",
+        file=sys.stderr,
+    )
 
     if not tasks:
         print("Nothing to download.", file=sys.stderr)
@@ -136,8 +173,7 @@ def main():
     total = len(tasks)
 
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        futures = {pool.submit(fetch_one, url, dest, ctx): url
-                   for url, dest in tasks}
+        futures = {pool.submit(fetch_one, url, dest, ctx): url for url, dest in tasks}
         for fut in as_completed(futures):
             url, err = fut.result()
             done += 1
@@ -155,9 +191,11 @@ def main():
         if len(errors) > 20:
             print(f"  ... and {len(errors) - 20} more", file=sys.stderr)
 
-    print(f"\nDone. Downloaded {total - len(errors)}/{total} class docs to {out_dir}",
-          file=sys.stderr)
+    print(
+        f"\nDone. Downloaded {total - len(errors)}/{total} class docs to {out_dir}",
+        file=sys.stderr,
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
