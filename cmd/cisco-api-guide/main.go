@@ -28,25 +28,55 @@ import (
 	"github.com/brightpuddle/cisco-api-guide-mcp/internal/embeddb"
 	"github.com/brightpuddle/cisco-api-guide-mcp/internal/mcp"
 	"github.com/brightpuddle/cisco-api-guide-mcp/internal/search"
+
+	"github.com/urfave/cli/v2"
 )
 
 var db *sql.DB
 var synonyms map[string]string
 
 func main() {
+	app := &cli.App{
+		Name:  "cisco-api-guide",
+		Usage: "Cisco API Guide MCP server",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "http",
+				Usage: "Run as a streamable HTTP server instead of stdio",
+			},
+			&cli.StringFlag{
+				Name:  "addr",
+				Value: ":8080",
+				Usage: "Listen address for HTTP mode (e.g. :8080)",
+			},
+		},
+		Action: run,
+	}
+	if err := app.Run(os.Args); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func run(c *cli.Context) error {
 	var err error
 	db, err = idb.Open(embeddb.DB)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "open db: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("open db: %w", err)
 	}
 
 	synonyms, err = idb.GetSynonyms(db)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "load synonyms: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("load synonyms: %w", err)
 	}
 
+	if c.Bool("http") {
+		return serveHTTP(c.String("addr"))
+	}
+	return runStdio()
+}
+
+func runStdio() error {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Buffer(make([]byte, 4*1024*1024), 4*1024*1024)
 	writer := bufio.NewWriter(os.Stdout)
@@ -68,6 +98,7 @@ func main() {
 			writeResponse(writer, resp)
 		}
 	}
+	return scanner.Err()
 }
 
 func writeResponse(w *bufio.Writer, r mcp.Response) {
