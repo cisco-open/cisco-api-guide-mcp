@@ -121,13 +121,12 @@ Get authentication instructions and general usage notes for a Cisco product API.
 
 ## Contributing
 
-Contributions are welcome. Please see
-[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines on reporting issues,
-submitting pull requests, and updating the API database using the ingestion
-tool.
+Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for
+guidelines on reporting issues, submitting pull requests, and updating the API
+database using the ingestion tool.
 
 For security vulnerabilities, follow the responsible disclosure process
-described in [docs/SECURITY.md](docs/SECURITY.md).
+described in [SECURITY.md](SECURITY.md).
 
 ## License
 
