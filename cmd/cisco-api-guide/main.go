@@ -110,11 +110,31 @@ func writeResponse(w *bufio.Writer, r mcp.Response) {
 	w.Flush()
 }
 
+// supportedProtocolVersions lists the MCP protocol versions this server
+// understands, newest first. The latest entry is used as the fallback
+// when a client doesn't request a version we recognize.
+var supportedProtocolVersions = []string{"2025-06-18", "2025-03-26", "2024-11-05"}
+
+func negotiateProtocolVersion(params json.RawMessage) string {
+	var req struct {
+		ProtocolVersion string `json:"protocolVersion"`
+	}
+	if len(params) > 0 {
+		_ = json.Unmarshal(params, &req)
+	}
+	for _, v := range supportedProtocolVersions {
+		if v == req.ProtocolVersion {
+			return v
+		}
+	}
+	return supportedProtocolVersions[0]
+}
+
 func dispatch(req mcp.Request) (mcp.Response, bool) {
 	switch req.Method {
 	case "initialize":
 		return mcp.OKResponse(req.ID, map[string]interface{}{
-			"protocolVersion": "2025-11-05",
+			"protocolVersion": negotiateProtocolVersion(req.Params),
 			"serverInfo": map[string]interface{}{
 				"name":    "cisco-api-guide",
 				"version": "0.1.0",
