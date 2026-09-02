@@ -157,6 +157,39 @@ func GetEndpoint(db *sql.DB, productID, releasePrefix, method, path string) (*En
 	}
 }
 
+// ProductRelease describes one product/release pairing available in a module
+// database, along with how many endpoints are indexed under it.
+type ProductRelease struct {
+	ProductID     string
+	Release       string
+	EndpointCount int
+}
+
+// ListProductReleases returns the distinct (product_id, release) pairs present
+// in the endpoints table, along with endpoint counts, ordered by product_id
+// then release.
+func ListProductReleases(db *sql.DB) ([]ProductRelease, error) {
+	rows, err := db.Query(`
+		SELECT product_id, release, COUNT(*)
+		FROM endpoints
+		GROUP BY product_id, release
+		ORDER BY product_id, release`)
+	if err != nil {
+		return nil, fmt.Errorf("list product releases: %w", err)
+	}
+	defer rows.Close()
+
+	var out []ProductRelease
+	for rows.Next() {
+		var pr ProductRelease
+		if err := rows.Scan(&pr.ProductID, &pr.Release, &pr.EndpointCount); err != nil {
+			return nil, err
+		}
+		out = append(out, pr)
+	}
+	return out, rows.Err()
+}
+
 // GetSynonyms returns all synonym rows.
 func GetSynonyms(db *sql.DB) (map[string]string, error) {
 	rows, err := db.Query(`SELECT term, expansion FROM synonyms`)

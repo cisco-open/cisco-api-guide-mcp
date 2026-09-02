@@ -67,6 +67,10 @@ func main() {
 				Name:  "auto-update",
 				Usage: "Check and update cached module DBs if manifest hash changes",
 			},
+			&cli.BoolFlag{
+				Name:  "list-modules",
+				Usage: "List locally installed (cached) module databases and exit",
+			},
 		},
 		Action: run,
 	}
@@ -85,6 +89,10 @@ func run(c *cli.Context) error {
 	})
 	if err != nil {
 		return fmt.Errorf("init module fetcher: %w", err)
+	}
+
+	if c.Bool("list-modules") {
+		return listModules(fetcher)
 	}
 
 	rawModules := c.String("modules")
@@ -111,6 +119,53 @@ func run(c *cli.Context) error {
 		return serveHTTP(c.String("addr"))
 	}
 	return runStdio()
+}
+
+func listModules(fetcher *modules.ModuleFetcher) error {
+	infos, err := fetcher.ListLocalModuleInfo()
+	if err != nil {
+		return fmt.Errorf("list local modules: %w", err)
+	}
+
+	if len(infos) == 0 {
+		fmt.Printf("No cached modules found in %s\n", fetcher.DataDir())
+		return nil
+	}
+
+	fmt.Printf("Cached modules in %s:\n\n", fetcher.DataDir())
+	for _, info := range infos {
+		fmt.Printf("  %-12s %8.1f MB   %s\n", info.Key, float64(info.SizeBytes)/(1024*1024), info.ModTime.Format("2006-01-02 15:04:05"))
+
+		releases, err := loadProductReleases(info.Path)
+		if err != nil {
+			fmt.Printf("                  (could not read versions: %v)\n", err)
+			continue
+		}
+		if len(releases) == 0 {
+			fmt.Printf("                  (no endpoints indexed)\n")
+			continue
+		}
+		for _, r := range releases {
+			release := r.Release
+			if release == "" {
+				release = "(unversioned)"
+			}
+			fmt.Printf("                  %-10s %-14s %d endpoints\n", r.ProductID, release, r.EndpointCount)
+		}
+	}
+	return nil
+}
+
+// loadProductReleases opens a cached module database read-only and returns
+// the distinct product/release combinations it contains.
+func loadProductReleases(dbPath string) ([]idb.ProductRelease, error) {
+	sqlDB, err := idb.OpenFileRO(dbPath)
+	if err != nil {
+		return nil, err
+	}
+	defer sqlDB.Close()
+
+	return idb.ListProductReleases(sqlDB)
 }
 
 func runStdio() error {

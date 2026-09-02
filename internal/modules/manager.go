@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -200,6 +201,41 @@ func (f *ModuleFetcher) ListLocalModules() ([]string, error) {
 		}
 	}
 	return paths, nil
+}
+
+// LocalModuleInfo describes a locally cached module database file.
+type LocalModuleInfo struct {
+	Key       string // module key, derived from filename (e.g. "aci")
+	Path      string
+	SizeBytes int64
+	ModTime   time.Time
+}
+
+// ListLocalModuleInfo returns metadata for all *.db files cached in dataDir,
+// sorted by module key.
+func (f *ModuleFetcher) ListLocalModuleInfo() ([]LocalModuleInfo, error) {
+	entries, err := os.ReadDir(f.dataDir)
+	if err != nil {
+		return nil, err
+	}
+	var infos []LocalModuleInfo
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".db") {
+			continue
+		}
+		fi, err := e.Info()
+		if err != nil {
+			continue
+		}
+		infos = append(infos, LocalModuleInfo{
+			Key:       strings.TrimSuffix(e.Name(), ".db"),
+			Path:      filepath.Join(f.dataDir, e.Name()),
+			SizeBytes: fi.Size(),
+			ModTime:   fi.ModTime(),
+		})
+	}
+	sort.Slice(infos, func(i, j int) bool { return infos[i].Key < infos[j].Key })
+	return infos, nil
 }
 
 // LoadIntoManager loads all specified paths or local modules into the DB Manager.
