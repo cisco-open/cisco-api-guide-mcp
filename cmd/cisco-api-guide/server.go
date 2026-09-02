@@ -38,6 +38,8 @@ func serveHTTP(addr string) error {
 	s.AddTool(searchEndpointsTool(), searchEndpointsHandler)
 	s.AddTool(getEndpointTool(), getEndpointHandler)
 	s.AddTool(getProductGuideTool(), getProductGuideHandler)
+	s.AddTool(searchNACConfigTool(), searchNACConfigHandler)
+	s.AddTool(getNACConfigPathTool(), getNACConfigPathHandler)
 
 	hs := server.NewStreamableHTTPServer(s,
 		server.WithEndpointPath("/mcp"),
@@ -98,8 +100,47 @@ func getProductGuideTool() mcp.Tool {
 		mcp.WithDescription("Get authentication instructions and general usage notes for a Cisco product API."),
 		mcp.WithString("product",
 			mcp.Required(),
-			mcp.Description("Product slug. One of: aci, ndfc, intersight (aliases: ucs, dcnm)."),
-			mcp.Enum("aci", "ndfc", "intersight", "ucs", "dcnm"),
+			mcp.Description("Product slug. One of: aci, ndfc, intersight (aliases: ucs, dcnm), nac-aci, nac-vxlan."),
+			mcp.Enum("aci", "ndfc", "intersight", "ucs", "dcnm", "nac-aci", "nac-vxlan"),
+		),
+	)
+}
+
+func searchNACConfigTool() mcp.Tool {
+	return mcp.NewTool("search_nac_config",
+		mcp.WithDescription("Search Cisco Network-as-Code (NaC) YAML configuration paths by natural language or keywords. Returns ranked list of matching config paths."),
+		mcp.WithString("query",
+			mcp.Required(),
+			mcp.Description("Natural language or keyword search. Example: 'static VLAN pool' or 'bootstrap admin user'"),
+		),
+		mcp.WithString("product",
+			mcp.Description("Filter to a specific NaC product. One of: nac-aci, nac-vxlan. Omit to search all NaC products."),
+			mcp.Enum("nac-aci", "nac-vxlan"),
+		),
+		mcp.WithString("release",
+			mcp.Description("Filter by release using prefix matching. Example: '2' matches '2.0.0'. Omit to search all releases."),
+		),
+		mcp.WithInteger("limit",
+			mcp.Description("Max results to return. Default: 10. Max: 50."),
+			mcp.DefaultNumber(10),
+		),
+	)
+}
+
+func getNACConfigPathTool() mcp.Tool {
+	return mcp.NewTool("get_nac_config_path",
+		mcp.WithDescription("Get full detail for a specific Cisco Network-as-Code (NaC) YAML configuration path, including schema, GUI location, and worked examples."),
+		mcp.WithString("product",
+			mcp.Required(),
+			mcp.Description("NaC product slug. One of: nac-aci, nac-vxlan."),
+			mcp.Enum("nac-aci", "nac-vxlan"),
+		),
+		mcp.WithString("path",
+			mcp.Required(),
+			mcp.Description("NaC config path as returned by search_nac_config. Example: apic.access_policies.vlan_pools"),
+		),
+		mcp.WithString("release",
+			mcp.Description("Release prefix to select a specific version (e.g. '2' or '2.0.0'). Required when multiple releases exist for the same path."),
 		),
 	)
 }
@@ -119,6 +160,16 @@ func getEndpointHandler(_ context.Context, req mcp.CallToolRequest) (*mcp.CallTo
 func getProductGuideHandler(_ context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	raw := marshalArgs(req.GetRawArguments())
 	return toolResultFromLegacy(handleGetProductGuide(raw)), nil
+}
+
+func searchNACConfigHandler(_ context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	raw := marshalArgs(req.GetRawArguments())
+	return toolResultFromLegacy(handleSearchNACConfig(raw)), nil
+}
+
+func getNACConfigPathHandler(_ context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	raw := marshalArgs(req.GetRawArguments())
+	return toolResultFromLegacy(handleGetNACConfigPath(raw)), nil
 }
 
 // marshalArgs converts the mcp-go arguments (map[string]any) back to json.RawMessage

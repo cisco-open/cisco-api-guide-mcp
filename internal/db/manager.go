@@ -307,3 +307,75 @@ func (m *Manager) GetEndpoint(productID, releasePrefix, method, path string) (*E
 
 	return GetEndpoint(mod.DB, mod.ProductID, releasePrefix, method, path)
 }
+
+// SearchNACPaths searches NAC config paths across all loaded modules or a
+// specific product.
+func (m *Manager) SearchNACPaths(ftsQuery, productID, releasePrefix string, limit int) ([]NACSearchResult, int, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	if limit <= 0 || limit > 50 {
+		limit = 10
+	}
+
+	var targetModules []*ModuleDB
+	seenDBs := make(map[*sql.DB]bool)
+
+	if productID != "" {
+		canonID := productID
+		if a, ok := m.aliases[productID]; ok {
+			canonID = a
+		}
+		if mod, ok := m.modules[canonID]; ok {
+			targetModules = append(targetModules, mod)
+		} else {
+			return nil, 0, fmt.Errorf("product %q not loaded", productID)
+		}
+	} else {
+		for _, mod := range m.modules {
+			if !seenDBs[mod.DB] {
+				seenDBs[mod.DB] = true
+				targetModules = append(targetModules, mod)
+			}
+		}
+	}
+
+	var allResults []NACSearchResult
+	totalMatches := 0
+
+	for _, mod := range targetModules {
+		filterPID := ""
+		if productID != "" {
+			filterPID = mod.ProductID
+		}
+		res, count, err := SearchNACPaths(mod.DB, ftsQuery, filterPID, releasePrefix, limit)
+		if err != nil {
+			return nil, 0, err
+		}
+		allResults = append(allResults, res...)
+		totalMatches += count
+	}
+
+	if len(allResults) > limit {
+		allResults = allResults[:limit]
+	}
+
+	return allResults, totalMatches, nil
+}
+
+// GetNACPath retrieves full NAC path detail from the relevant module.
+func (m *Manager) GetNACPath(productID, releasePrefix, path string) (*NACPath, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	canonID := productID
+	if a, ok := m.aliases[productID]; ok {
+		canonID = a
+	}
+	mod, ok := m.modules[canonID]
+	if !ok {
+		return nil, fmt.Errorf("product %q not loaded", productID)
+	}
+
+	return GetNACPath(mod.DB, mod.ProductID, releasePrefix, path)
+}

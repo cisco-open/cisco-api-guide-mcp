@@ -24,6 +24,8 @@ ASSETS_DIR="${ASSETS_DIR:-./assets}"
 OUTPUT_DIR="${OUTPUT_DIR:-./data}"
 INGEST="${INGEST:-go run ./cmd/ingest}"
 ACI_AUX_DIR="${ACI_AUX_DIR:-}" # optional: path to downloaded APIC per-class JSON dir
+NAC_ACI_AUX_DIR="${NAC_ACI_AUX_DIR:-}"    # optional: path to nac-aci docs/templates-derived aux dir
+NAC_VXLAN_AUX_DIR="${NAC_VXLAN_AUX_DIR:-}" # optional: path to nac-vxlan docs/templates-derived aux dir
 
 echo "=== Cisco API Guide — Ingest Modular Products ==="
 echo "Assets Dir: $ASSETS_DIR"
@@ -159,7 +161,81 @@ echo "ACI DB size: $(du -sh "$ACI_DB" | cut -f1) (compressed: $(du -sh "$ACI_DB.
 echo
 
 # ---------------------------------------------------------------------------
-# 4. Generate modules.json manifest
+# 4. NaC for ACI
+# ---------------------------------------------------------------------------
+NAC_ACI_DB="$OUTPUT_DIR/nac-aci.db"
+rm -f "$NAC_ACI_DB" "$NAC_ACI_DB.gz"
+echo "--- NaC ACI: initialising product ---"
+run_ingest "$NAC_ACI_DB" \
+  --product nac-aci \
+  --init \
+  --name "Cisco NaC for ACI" \
+  --description "Network-as-Code (NaC) YAML configuration model for Cisco ACI. Declarative alternative to the APIC REST API, managed via the nac-aci Ansible/Terraform tooling." \
+  --alias "nac-apic,network as code aci"
+
+NAC_ACI_EXTRA_FLAGS=()
+if [ -n "$NAC_ACI_AUX_DIR" ] && [ -d "$NAC_ACI_AUX_DIR" ]; then
+  echo "--- NaC ACI: using aux-dir $NAC_ACI_AUX_DIR for per-path docs ---"
+  NAC_ACI_EXTRA_FLAGS=(--aux-dir "$NAC_ACI_AUX_DIR")
+elif [ -d "$ASSETS_DIR/nac-aci/docs" ]; then
+  echo "--- NaC ACI: found $ASSETS_DIR/nac-aci/docs for per-path docs ---"
+  NAC_ACI_EXTRA_FLAGS=(--aux-dir "$ASSETS_DIR/nac-aci/docs")
+fi
+
+if [ -f "$ASSETS_DIR/nac-aci/schema.json" ]; then
+  echo "--- NaC ACI: ingesting release 2.0.0 ---"
+  run_ingest "$NAC_ACI_DB" \
+    --product nac-aci \
+    --release "2.0.0" \
+    --format nac-schema \
+    --input "$ASSETS_DIR/nac-aci/schema.json" \
+    --prune-major \
+    "${NAC_ACI_EXTRA_FLAGS[@]}"
+fi
+
+gzip -c "$NAC_ACI_DB" > "$NAC_ACI_DB.gz"
+echo "NaC ACI DB size: $(du -sh "$NAC_ACI_DB" | cut -f1) (compressed: $(du -sh "$NAC_ACI_DB.gz" | cut -f1))"
+echo
+
+# ---------------------------------------------------------------------------
+# 5. NaC for VXLAN (NDFC)
+# ---------------------------------------------------------------------------
+NAC_VXLAN_DB="$OUTPUT_DIR/nac-vxlan.db"
+rm -f "$NAC_VXLAN_DB" "$NAC_VXLAN_DB.gz"
+echo "--- NaC VXLAN: initialising product ---"
+run_ingest "$NAC_VXLAN_DB" \
+  --product nac-vxlan \
+  --init \
+  --name "Cisco NaC for VXLAN (NDFC)" \
+  --description "Network-as-Code (NaC) YAML configuration model for Cisco NDFC VXLAN/EVPN fabrics. Declarative alternative to the NDFC REST API, managed via the nac-vxlan Ansible/Terraform tooling." \
+  --alias "nac-ndfc,network as code vxlan"
+
+NAC_VXLAN_EXTRA_FLAGS=()
+if [ -n "$NAC_VXLAN_AUX_DIR" ] && [ -d "$NAC_VXLAN_AUX_DIR" ]; then
+  echo "--- NaC VXLAN: using aux-dir $NAC_VXLAN_AUX_DIR for per-path docs ---"
+  NAC_VXLAN_EXTRA_FLAGS=(--aux-dir "$NAC_VXLAN_AUX_DIR")
+elif [ -d "$ASSETS_DIR/nac-vxlan/docs" ]; then
+  echo "--- NaC VXLAN: found $ASSETS_DIR/nac-vxlan/docs for per-path docs ---"
+  NAC_VXLAN_EXTRA_FLAGS=(--aux-dir "$ASSETS_DIR/nac-vxlan/docs")
+fi
+
+if [ -f "$ASSETS_DIR/nac-vxlan/schema.json" ]; then
+  echo "--- NaC VXLAN: ingesting release 2.0.0 ---"
+  run_ingest "$NAC_VXLAN_DB" \
+    --product nac-vxlan \
+    --release "2.0.0" \
+    --format nac-schema \
+    --input "$ASSETS_DIR/nac-vxlan/schema.json" \
+    --prune-major \
+    "${NAC_VXLAN_EXTRA_FLAGS[@]}"
+fi
+
+gzip -c "$NAC_VXLAN_DB" > "$NAC_VXLAN_DB.gz"
+echo "NaC VXLAN DB size: $(du -sh "$NAC_VXLAN_DB" | cut -f1) (compressed: $(du -sh "$NAC_VXLAN_DB.gz" | cut -f1))"
+echo
+
+# ---------------------------------------------------------------------------
+# 6. Generate modules.json manifest
 # ---------------------------------------------------------------------------
 echo "--- Generating modules.json ---"
 
@@ -170,6 +246,8 @@ calc_sha256() {
 ACI_HASH=$(calc_sha256 "$ACI_DB")
 NDFC_HASH=$(calc_sha256 "$NDFC_DB")
 INTERSIGHT_HASH=$(calc_sha256 "$INTERSIGHT_DB")
+NAC_ACI_HASH=$(calc_sha256 "$NAC_ACI_DB")
+NAC_VXLAN_HASH=$(calc_sha256 "$NAC_VXLAN_DB")
 
 cat << MANIFEST_EOF > "$OUTPUT_DIR/modules.json"
 {
@@ -204,6 +282,26 @@ cat << MANIFEST_EOF > "$OUTPUT_DIR/modules.json"
       "sha256": "$INTERSIGHT_HASH",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/intersight.db.gz",
       "aliases": ["ucs"]
+    },
+    "nac-aci": {
+      "name": "Cisco NaC for ACI",
+      "product_id": "nac-aci",
+      "version": "2.0.0",
+      "description": "Network-as-Code (NaC) YAML configuration model for Cisco ACI.",
+      "size_bytes": $(wc -c < "$NAC_ACI_DB" | tr -d ' '),
+      "sha256": "$NAC_ACI_HASH",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/nac-aci.db.gz",
+      "aliases": ["nac-apic"]
+    },
+    "nac-vxlan": {
+      "name": "Cisco NaC for VXLAN (NDFC)",
+      "product_id": "nac-vxlan",
+      "version": "2.0.0",
+      "description": "Network-as-Code (NaC) YAML configuration model for Cisco NDFC VXLAN/EVPN fabrics.",
+      "size_bytes": $(wc -c < "$NAC_VXLAN_DB" | tr -d ' '),
+      "sha256": "$NAC_VXLAN_HASH",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/nac-vxlan.db.gz",
+      "aliases": ["nac-ndfc"]
     }
   }
 }

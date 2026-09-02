@@ -51,3 +51,26 @@ type SearchResult struct {
 	Path      string
 	Summary   string
 }
+
+// NACPath represents one Network-as-Code YAML configuration path.
+type NACPath struct {
+	ID           int64
+	ProductID    string
+	Release      string
+	Path         string
+	ObjectName   string
+	GUILocation  string
+	Description  string
+	Schema       string // raw JSON
+	Examples     string // raw JSON array
+	SourceFormat string
+}
+
+// NACSearchResult is a lightweight NACPath for search output.
+type NACSearchResult struct {
+	ProductID   string
+	Release     string
+	Path        string
+	ObjectName  string
+	Description string
+}

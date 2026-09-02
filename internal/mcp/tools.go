@@ -23,7 +23,7 @@ type ToolDef struct {
 	InputSchema interface{} `json:"inputSchema"`
 }
 
-// Tools returns all three tool definitions.
+// Tools returns all tool definitions.
 func Tools() []ToolDef {
 	return []ToolDef{
 		{
@@ -90,11 +90,62 @@ func Tools() []ToolDef {
 				"properties": map[string]interface{}{
 					"product": map[string]interface{}{
 						"type":        "string",
-						"description": "Product slug. One of: aci, ndfc, intersight (aliases: ucs, dcnm).",
-						"enum":        []string{"aci", "ndfc", "intersight", "ucs", "dcnm"},
+						"description": "Product slug. One of: aci, ndfc, intersight (aliases: ucs, dcnm), nac-aci, nac-vxlan.",
+						"enum":        []string{"aci", "ndfc", "intersight", "ucs", "dcnm", "nac-aci", "nac-vxlan"},
 					},
 				},
 				"required": []string{"product"},
+			},
+		},
+		{
+			Name:        "search_nac_config",
+			Description: "Search Cisco Network-as-Code (NaC) YAML configuration paths by natural language or keywords. Returns ranked list of matching config paths.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"query": map[string]interface{}{
+						"type":        "string",
+						"description": "Natural language or keyword search. Example: 'static VLAN pool' or 'bootstrap admin user'",
+					},
+					"product": map[string]interface{}{
+						"type":        "string",
+						"description": "Filter to a specific NaC product. One of: nac-aci, nac-vxlan. Omit to search all NaC products.",
+						"enum":        []string{"nac-aci", "nac-vxlan"},
+					},
+					"release": map[string]interface{}{
+						"type":        "string",
+						"description": "Filter by release using prefix matching. Example: '2' matches '2.0.0'. Omit to search all releases.",
+					},
+					"limit": map[string]interface{}{
+						"type":        "integer",
+						"description": "Max results to return. Default: 10. Max: 50.",
+						"default":     10,
+					},
+				},
+				"required": []string{"query"},
+			},
+		},
+		{
+			Name:        "get_nac_config_path",
+			Description: "Get full detail for a specific Cisco Network-as-Code (NaC) YAML configuration path, including schema, GUI location, and worked examples.",
+			InputSchema: map[string]interface{}{
+				"type": "object",
+				"properties": map[string]interface{}{
+					"product": map[string]interface{}{
+						"type":        "string",
+						"description": "NaC product slug. One of: nac-aci, nac-vxlan.",
+						"enum":        []string{"nac-aci", "nac-vxlan"},
+					},
+					"release": map[string]interface{}{
+						"type":        "string",
+						"description": "Release prefix to select a specific version (e.g. '2' or '2.0.0'). Required when multiple releases exist for the same path.",
+					},
+					"path": map[string]interface{}{
+						"type":        "string",
+						"description": "NaC config path as returned by search_nac_config. Example: apic.access_policies.vlan_pools",
+					},
+				},
+				"required": []string{"product", "path"},
 			},
 		},
 	}

@@ -35,6 +35,16 @@ var Handlers = map[string]FormatHandler{
 	"manual":   &ManualHandler{},
 }
 
+// NACFormatHandler parses raw NAC schema/doc bytes into NAC config paths.
+type NACFormatHandler interface {
+	Parse(productID string, data []byte) ([]idb.NACPath, error)
+}
+
+// NACHandlers is the registry of all supported NAC format handlers.
+var NACHandlers = map[string]NACFormatHandler{
+	"nac-schema": &NACSchemaHandler{},
+}
+
 // Swagger2Handler parses Swagger 2.0 documents.
 type Swagger2Handler struct{}
 

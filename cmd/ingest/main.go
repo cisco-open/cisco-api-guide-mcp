@@ -38,7 +38,7 @@ func main() {
 			&cli.StringFlag{Name: "db", Value: "./internal/embeddb/api.db", Usage: "Path to SQLite DB file"},
 			&cli.StringFlag{Name: "product", Usage: "Product slug (aci, ndfc, intersight)"},
 			&cli.StringFlag{Name: "release", Usage: "Release/version tag for this endpoint set (e.g. 3.2.2m, 4.0.0)"},
-			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, aci-meta, swagger2, manual"},
+			&cli.StringFlag{Name: "format", Usage: "Input format: openapi3, aci-meta, swagger2, manual, nac-schema"},
 			&cli.StringFlag{Name: "input", Usage: "Input file path (or - for stdin)"},
 			&cli.StringFlag{Name: "aux-dir", Usage: "Auxiliary directory (e.g. APIC per-class JSON docs for aci-meta format)"},
 			&cli.BoolFlag{Name: "prune-major", Usage: "Delete existing endpoints for same product+major-version before inserting"},
@@ -89,15 +89,6 @@ func run(ctx *cli.Context) error {
 	if format == "" {
 		return fmt.Errorf("--format is required")
 	}
-	handler, ok := formats.Handlers[format]
-	if !ok {
-		return fmt.Errorf("unsupported format %q", format)
-	}
-
-	// Allow format handlers to receive extra options via type assertion.
-	if h, ok := handler.(*formats.ACIMetaHandler); ok {
-		h.AuxDir = ctx.String("aux-dir")
-	}
 
 	inputPath := ctx.String("input")
 	var data []byte
@@ -110,18 +101,51 @@ func run(ctx *cli.Context) error {
 		return fmt.Errorf("read input: %w", err)
 	}
 
+	release := ctx.String("release")
+
+	if nacHandler, ok := formats.NACHandlers[format]; ok {
+		if h, ok := nacHandler.(*formats.NACSchemaHandler); ok {
+			h.AuxDir = ctx.String("aux-dir")
+		}
+
+		paths, err := nacHandler.Parse(product, data)
+		if err != nil {
+			return fmt.Errorf("parse: %w", err)
+		}
+		for i := range paths {
+			paths[i].Release = release
+		}
+
+		if ctx.Bool("prune-major") && release != "" {
+			if err := pruneReleaseMajorTable(db, "nac_paths", product, release); err != nil {
+				return fmt.Errorf("prune major release: %w", err)
+			}
+		}
+
+		return insertNACPaths(db, paths)
+	}
+
+	handler, ok := formats.Handlers[format]
+	if !ok {
+		return fmt.Errorf("unsupported format %q", format)
+	}
+
+	// Allow format handlers to receive extra options via type assertion.
+	if h, ok := handler.(*formats.ACIMetaHandler); ok {
+		h.AuxDir = ctx.String("aux-dir")
+	}
+
 	endpoints, err := handler.Parse(product, data)
 	if err != nil {
 		return fmt.Errorf("parse: %w", err)
 	}
 
-	release := ctx.String("release")
 	for i := range endpoints {
 		endpoints[i].Release = release
 	}
 
 	if ctx.Bool("prune-major") && release != "" {
-		if err := pruneReleaseMajor(db, product, release); err != nil {
+		if err := pruneReleaseMajorTable(db, "endpoints", product, release); err != nil {
 			return fmt.Errorf("prune major release: %w", err)
 		}
 	}
@@ -329,15 +353,18 @@ func loadSynonyms(db *sql.DB, path string) error {
 	return nil
 }
 
-// pruneReleaseMajor deletes all endpoints for the given product whose release
-// shares the same major-version prefix as newRelease.
+// pruneReleaseMajorTable deletes all rows in the given table for the given
+// product whose release shares the same major-version prefix as newRelease.
 //
 // Examples: newRelease="4.1.1" -> deletes releases "4", "4.0.0", "4.1.0", etc.
 //           newRelease="3.2.2m" -> deletes releases "3", "3.0.0", "3.2.2m", etc.
-func pruneReleaseMajor(db *sql.DB, productID, newRelease string) error {
+//
+// table must be a trusted, hardcoded caller-supplied identifier (never derived
+// from user input) since it cannot be parameterized in the DELETE statement.
+func pruneReleaseMajorTable(db *sql.DB, table, productID, newRelease string) error {
 	major := strings.SplitN(newRelease, ".", 2)[0]
 	res, err := db.Exec(
-		`DELETE FROM endpoints WHERE product_id = ? AND (release = ? OR release LIKE ?)`,
+		`DELETE FROM `+table+` WHERE product_id = ? AND (release = ? OR release LIKE ?)`,
 		productID, major, major+".%",
 	)
 	if err != nil {
@@ -345,7 +372,7 @@ func pruneReleaseMajor(db *sql.DB, productID, newRelease string) error {
 	}
 	n, _ := res.RowsAffected()
 	if n > 0 {
-		fmt.Printf("Pruned %d endpoints for %s major version %s\n", n, productID, major)
+		fmt.Printf("Pruned %d rows from %s for %s major version %s\n", n, table, productID, major)
 	}
 	return nil
 }
@@ -385,5 +412,42 @@ func insertEndpoints(db *sql.DB, endpoints []idb.Endpoint) error {
 		return fmt.Errorf("commit: %w", err)
 	}
 	fmt.Printf("Inserted %d endpoints\n", len(endpoints))
+	return nil
+}
+
+func insertNACPaths(db *sql.DB, paths []idb.NACPath) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(`
+		INSERT INTO nac_paths(product_id, release, path, object_name, gui_location, description, schema, examples, source_format)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(product_id, release, path) DO UPDATE SET
+			object_name=excluded.object_name,
+			gui_location=excluded.gui_location,
+			description=excluded.description,
+			schema=excluded.schema,
+			examples=excluded.examples,
+			source_format=excluded.source_format`)
+	if err != nil {
+		return fmt.Errorf("prepare: %w", err)
+	}
+	defer stmt.Close()
+
+	for _, p := range paths {
+		_, err := stmt.Exec(p.ProductID, p.Release, p.Path, p.ObjectName, p.GUILocation,
+			p.Description, p.Schema, p.Examples, p.SourceFormat)
+		if err != nil {
+			return fmt.Errorf("insert nac path %s: %w", p.Path, err)
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit: %w", err)
+	}
+	fmt.Printf("Inserted %d nac paths\n", len(paths))
 	return nil
 }

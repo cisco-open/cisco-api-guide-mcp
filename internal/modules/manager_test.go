@@ -81,6 +81,55 @@ func createTestDB(t *testing.T, productID, name string, aliases []string) (strin
 	return dbPath, hashStr
 }
 
+func createTestNACDB(t *testing.T, productID, name string, aliases []string) (string, string) {
+	t.Helper()
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, productID+".db")
+
+	db, err := idb.OpenRW(dbPath)
+	if err != nil {
+		t.Fatalf("OpenRW: %v", err)
+	}
+	defer db.Close()
+
+	schemaSQL, err := os.ReadFile("../db/schema.sql")
+	if err != nil {
+		t.Fatalf("read schema.sql: %v", err)
+	}
+	if _, err := db.Exec(string(schemaSQL)); err != nil {
+		t.Fatalf("exec schema: %v", err)
+	}
+
+	if _, err := db.Exec(`
+		INSERT INTO products(id, name, description, base_url, auth_type, auth_notes, auth_schema)
+		VALUES(?, ?, 'Test NaC Description', '', '', '', '{}')`,
+		productID, name); err != nil {
+		t.Fatalf("insert product: %v", err)
+	}
+
+	for _, alias := range aliases {
+		if _, err := db.Exec(`INSERT INTO product_aliases(alias, product_id) VALUES(?, ?)`, alias, productID); err != nil {
+			t.Fatalf("insert alias: %v", err)
+		}
+	}
+
+	if _, err := db.Exec(`
+		INSERT INTO nac_paths(product_id, release, path, object_name, gui_location, description, schema, examples, source_format)
+		VALUES(?, '2.0.0', 'apic.access_policies.vlan_pools', 'VLAN Pool', 'Fabric > Access Policies > Pools > VLAN', 'Defines a static VLAN pool.', '{"type":"array"}', '[]', 'nac-schema')`,
+		productID); err != nil {
+		t.Fatalf("insert nac_path: %v", err)
+	}
+
+	dbBytes, err := os.ReadFile(dbPath)
+	if err != nil {
+		t.Fatalf("read created db: %v", err)
+	}
+	h := sha256.Sum256(dbBytes)
+	hashStr := hex.EncodeToString(h[:])
+
+	return dbPath, hashStr
+}
+
 func gzipBytes(t *testing.T, data []byte) []byte {
 	t.Helper()
 	var buf bytes.Buffer
@@ -200,5 +249,104 @@ func TestModuleFetcher_DownloadAndLoad(t *testing.T) {
 	}
 	if resolved != "aci" {
 		t.Errorf("expected aci, got %s", resolved)
+	}
+}
+
+func TestModuleFetcher_DownloadAndLoad_NACProduct(t *testing.T) {
+	nacPath, nacHash := createTestNACDB(t, "nac-aci", "Cisco NaC for ACI", []string{"nac-apic"})
+
+	nacRaw, _ := os.ReadFile(nacPath)
+	nacGz := gzipBytes(t, nacRaw)
+
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	mux.HandleFunc("/nac-aci.db.gz", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/gzip")
+		w.Write(nacGz)
+	})
+
+	manifest := modules.Manifest{
+		Version: 1,
+		Modules: map[string]modules.ModuleInfo{
+			"nac-aci": {
+				Name:      "Cisco NaC for ACI",
+				ProductID: "nac-aci",
+				Version:   "2.0.0",
+				SHA256:    nacHash,
+				URL:       server.URL + "/nac-aci.db.gz",
+				Aliases:   []string{"nac-apic"},
+			},
+		},
+	}
+
+	manifestBytes, _ := json.Marshal(manifest)
+	mux.HandleFunc("/manifest.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(manifestBytes)
+	})
+
+	dataDir := t.TempDir()
+	fetcher, err := modules.NewModuleFetcher(modules.FetcherOptions{
+		DataDir:     dataDir,
+		RegistryURL: server.URL + "/manifest.json",
+	})
+	if err != nil {
+		t.Fatalf("NewModuleFetcher: %v", err)
+	}
+
+	paths, err := fetcher.EnsureModules([]string{"nac-aci"}, false)
+	if err != nil {
+		t.Fatalf("EnsureModules nac-aci: %v", err)
+	}
+	if len(paths) != 1 {
+		t.Fatalf("expected 1 path, got %d", len(paths))
+	}
+
+	mgr := idb.NewManager()
+	defer mgr.Close()
+
+	if err := fetcher.LoadIntoManager(mgr, paths); err != nil {
+		t.Fatalf("LoadIntoManager: %v", err)
+	}
+
+	if mgr.ModuleCount() != 1 {
+		t.Errorf("expected 1 loaded module, got %d", mgr.ModuleCount())
+	}
+
+	prod, err := mgr.GetProduct("nac-aci")
+	if err != nil {
+		t.Fatalf("GetProduct nac-aci: %v", err)
+	}
+	if prod.Name != "Cisco NaC for ACI" {
+		t.Errorf("expected Cisco NaC for ACI, got %s", prod.Name)
+	}
+
+	results, count, err := mgr.SearchNACPaths("vlan", "nac-aci", "", 10)
+	if err != nil {
+		t.Fatalf("SearchNACPaths: %v", err)
+	}
+	if count != 1 || len(results) != 1 {
+		t.Fatalf("expected 1 search result, got count=%d len=%d", count, len(results))
+	}
+	if results[0].Path != "apic.access_policies.vlan_pools" {
+		t.Errorf("expected apic.access_policies.vlan_pools, got %s", results[0].Path)
+	}
+
+	p, err := mgr.GetNACPath("nac-aci", "", "apic.access_policies.vlan_pools")
+	if err != nil {
+		t.Fatalf("GetNACPath: %v", err)
+	}
+	if p.ObjectName != "VLAN Pool" {
+		t.Errorf("expected VLAN Pool, got %s", p.ObjectName)
+	}
+
+	resolved, err := mgr.ResolveProduct("nac-apic")
+	if err != nil {
+		t.Fatalf("ResolveProduct(nac-apic): %v", err)
+	}
+	if resolved != "nac-aci" {
+		t.Errorf("expected nac-aci, got %s", resolved)
 	}
 }

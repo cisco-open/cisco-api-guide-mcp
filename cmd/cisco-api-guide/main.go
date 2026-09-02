@@ -271,6 +271,10 @@ func handleToolCall(req mcp.Request) mcp.Response {
 		return mcp.OKResponse(req.ID, handleGetEndpoint(p.Arguments))
 	case "get_product_guide":
 		return mcp.OKResponse(req.ID, handleGetProductGuide(p.Arguments))
+	case "search_nac_config":
+		return mcp.OKResponse(req.ID, handleSearchNACConfig(p.Arguments))
+	case "get_nac_config_path":
+		return mcp.OKResponse(req.ID, handleGetNACConfigPath(p.Arguments))
 	default:
 		return mcp.ErrorResponse(req.ID, -32602, fmt.Sprintf("unknown tool: %s", p.Name))
 	}
@@ -421,6 +425,127 @@ func handleGetEndpoint(args json.RawMessage) interface{} {
 	var tags []string
 	if err := json.Unmarshal([]byte(e.Tags), &tags); err == nil && len(tags) > 0 {
 		fmt.Fprintf(&sb, "\nTags: %s\n", strings.Join(tags, ", "))
+	}
+
+	return mcp.ToolResult(sb.String())
+}
+
+func handleSearchNACConfig(args json.RawMessage) interface{} {
+	var a struct {
+		Query   string `json:"query"`
+		Product string `json:"product"`
+		Release string `json:"release"`
+		Limit   int    `json:"limit"`
+	}
+	if err := json.Unmarshal(args, &a); err != nil {
+		return mcp.ToolErrorResult("invalid arguments")
+	}
+	if a.Query == "" {
+		return mcp.ToolErrorResult("query is required")
+	}
+	if a.Limit == 0 {
+		a.Limit = 10
+	}
+
+	var productID string
+	if a.Product != "" {
+		var err error
+		productID, err = dbManager.ResolveProduct(a.Product)
+		if err != nil {
+			return mcp.ToolErrorResult(err.Error())
+		}
+	}
+
+	ftsQuery := search.BuildFTSQuery(a.Query, dbManager.Synonyms())
+	results, total, err := dbManager.SearchNACPaths(ftsQuery, productID, a.Release, a.Limit)
+	if err != nil {
+		return mcp.ToolErrorResult(fmt.Sprintf("search failed: %v", err))
+	}
+
+	if len(results) == 0 {
+		return mcp.ToolResult("No results found. Try different keywords or broaden the query.")
+	}
+
+	var sb strings.Builder
+	for _, r := range results {
+		desc := r.Description
+		if desc == "" {
+			desc = "(no description)"
+		}
+		tag := r.ProductID
+		if r.Release != "" {
+			tag = r.ProductID + "/" + r.Release
+		}
+		fmt.Fprintf(&sb, "[%s] %s (%s) — %s\n", tag, r.Path, r.ObjectName, desc)
+	}
+	if total > a.Limit {
+		fmt.Fprintf(&sb, "\nShowing %d of %d+ results. Use limit parameter for more.", len(results), total-1)
+	} else {
+		fmt.Fprintf(&sb, "\nShowing %d result(s).", len(results))
+	}
+
+	return mcp.ToolResult(sb.String())
+}
+
+func handleGetNACConfigPath(args json.RawMessage) interface{} {
+	var a struct {
+		Product string `json:"product"`
+		Release string `json:"release"`
+		Path    string `json:"path"`
+	}
+	if err := json.Unmarshal(args, &a); err != nil {
+		return mcp.ToolErrorResult("invalid arguments")
+	}
+
+	productID, err := dbManager.ResolveProduct(a.Product)
+	if err != nil {
+		return mcp.ToolErrorResult(err.Error())
+	}
+
+	p, err := dbManager.GetNACPath(productID, a.Release, a.Path)
+	if err != nil {
+		return mcp.ToolErrorResult(err.Error())
+	}
+
+	var sb strings.Builder
+	header := strings.ToUpper(productID)
+	if p.Release != "" {
+		header += "/" + p.Release
+	}
+	fmt.Fprintf(&sb, "%s: %s\n", header, p.Path)
+	if p.ObjectName != "" {
+		fmt.Fprintf(&sb, "Object: %s\n", p.ObjectName)
+	}
+	if p.GUILocation != "" {
+		fmt.Fprintf(&sb, "GUI location: %s\n", p.GUILocation)
+	}
+	if p.Description != "" {
+		fmt.Fprintf(&sb, "\n%s\n", p.Description)
+	}
+
+	var schema map[string]interface{}
+	if err := json.Unmarshal([]byte(p.Schema), &schema); err == nil && len(schema) > 0 {
+		schemaB, _ := json.MarshalIndent(schema, "  ", "  ")
+		fmt.Fprintf(&sb, "\nSchema:\n  %s\n", string(schemaB))
+	}
+
+	var examples []map[string]interface{}
+	if err := json.Unmarshal([]byte(p.Examples), &examples); err == nil && len(examples) > 0 {
+		fmt.Fprintf(&sb, "\nExamples:\n")
+		for _, ex := range examples {
+			title, _ := ex["title"].(string)
+			yaml, _ := ex["yaml"].(string)
+			explanation, _ := ex["explanation"].(string)
+			if title != "" {
+				fmt.Fprintf(&sb, "  %s:\n", title)
+			}
+			if yaml != "" {
+				fmt.Fprintf(&sb, "%s\n", yaml)
+			}
+			if explanation != "" {
+				fmt.Fprintf(&sb, "  %s\n", explanation)
+			}
+		}
 	}
 
 	return mcp.ToolResult(sb.String())

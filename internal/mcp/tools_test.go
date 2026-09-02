@@ -20,18 +20,20 @@ import (
 	"testing"
 )
 
-func TestTools_ReturnsThreeTools(t *testing.T) {
+func TestTools_ReturnsFiveTools(t *testing.T) {
 	tools := Tools()
-	if len(tools) != 3 {
-		t.Errorf("expected 3 tools, got %d", len(tools))
+	if len(tools) != 5 {
+		t.Errorf("expected 5 tools, got %d", len(tools))
 	}
 }
 
 func TestTools_Names(t *testing.T) {
 	want := map[string]bool{
-		"search_endpoints":  false,
-		"get_endpoint":      false,
-		"get_product_guide": false,
+		"search_endpoints":    false,
+		"get_endpoint":        false,
+		"get_product_guide":   false,
+		"search_nac_config":   false,
+		"get_nac_config_path": false,
 	}
 	for _, tool := range Tools() {
 		if _, ok := want[tool.Name]; ok {
@@ -178,8 +180,12 @@ func TestTools_GetProductGuide_Schema(t *testing.T) {
 
 func TestTools_ProductEnum_ContainsAllPlatforms(t *testing.T) {
 	wantPlatforms := []string{"aci", "ndfc", "intersight", "ucs", "dcnm"}
+	restTools := map[string]bool{"search_endpoints": true, "get_endpoint": true}
 
 	for _, tool := range Tools() {
+		if !restTools[tool.Name] {
+			continue
+		}
 		schema, ok := tool.InputSchema.(map[string]interface{})
 		if !ok {
 			continue
@@ -204,6 +210,143 @@ func TestTools_ProductEnum_ContainsAllPlatforms(t *testing.T) {
 			if !enumSet[platform] {
 				t.Errorf("tool %q: product enum missing %q", tool.Name, platform)
 			}
+		}
+	}
+}
+
+func TestTools_GetProductGuide_ProductEnum_ContainsAllPlatforms(t *testing.T) {
+	wantPlatforms := []string{"aci", "ndfc", "intersight", "ucs", "dcnm", "nac-aci", "nac-vxlan"}
+
+	var found *ToolDef
+	for _, tool := range Tools() {
+		if tool.Name == "get_product_guide" {
+			copy := tool
+			found = &copy
+			break
+		}
+	}
+	if found == nil {
+		t.Fatal("get_product_guide tool not found")
+	}
+
+	schema := found.InputSchema.(map[string]interface{})
+	props := schema["properties"].(map[string]interface{})
+	productProp := props["product"].(map[string]interface{})
+	enum, ok := productProp["enum"].([]string)
+	if !ok {
+		t.Fatal("enum is not []string")
+	}
+	enumSet := make(map[string]bool, len(enum))
+	for _, e := range enum {
+		enumSet[e] = true
+	}
+	for _, platform := range wantPlatforms {
+		if !enumSet[platform] {
+			t.Errorf("get_product_guide: product enum missing %q", platform)
+		}
+	}
+}
+
+func TestTools_SearchNACConfig_Schema(t *testing.T) {
+	var found *ToolDef
+	for _, tool := range Tools() {
+		if tool.Name == "search_nac_config" {
+			copy := tool
+			found = &copy
+			break
+		}
+	}
+	if found == nil {
+		t.Fatal("search_nac_config tool not found")
+	}
+
+	schema, ok := found.InputSchema.(map[string]interface{})
+	if !ok {
+		t.Fatal("InputSchema is not a map[string]interface{}")
+	}
+	props, ok := schema["properties"].(map[string]interface{})
+	if !ok {
+		t.Fatal("properties is not a map")
+	}
+	for _, field := range []string{"query", "product", "release", "limit"} {
+		if _, ok := props[field]; !ok {
+			t.Errorf("search_nac_config missing property %q", field)
+		}
+	}
+
+	productProp, ok := props["product"].(map[string]interface{})
+	if !ok {
+		t.Fatal("product property is not a map")
+	}
+	enum, ok := productProp["enum"].([]string)
+	if !ok {
+		t.Fatal("enum is not []string")
+	}
+	enumSet := make(map[string]bool, len(enum))
+	for _, e := range enum {
+		enumSet[e] = true
+	}
+	for _, platform := range []string{"nac-aci", "nac-vxlan"} {
+		if !enumSet[platform] {
+			t.Errorf("search_nac_config: product enum missing %q", platform)
+		}
+	}
+
+	required, ok := schema["required"].([]string)
+	if !ok {
+		t.Fatal("required is not []string")
+	}
+	hasQuery := false
+	for _, r := range required {
+		if r == "query" {
+			hasQuery = true
+		}
+	}
+	if !hasQuery {
+		t.Error("query is not listed as required for search_nac_config")
+	}
+}
+
+func TestTools_GetNACConfigPath_Schema(t *testing.T) {
+	var found *ToolDef
+	for _, tool := range Tools() {
+		if tool.Name == "get_nac_config_path" {
+			copy := tool
+			found = &copy
+			break
+		}
+	}
+	if found == nil {
+		t.Fatal("get_nac_config_path tool not found")
+	}
+
+	schema, ok := found.InputSchema.(map[string]interface{})
+	if !ok {
+		t.Fatal("InputSchema is not a map")
+	}
+	props, ok := schema["properties"].(map[string]interface{})
+	if !ok {
+		t.Fatal("properties is not a map")
+	}
+	for _, field := range []string{"product", "release", "path"} {
+		if _, ok := props[field]; !ok {
+			t.Errorf("get_nac_config_path missing property %q", field)
+		}
+	}
+
+	required, ok := schema["required"].([]string)
+	if !ok {
+		t.Fatal("required is not []string")
+	}
+	for _, r := range []string{"product", "path"} {
+		found := false
+		for _, req := range required {
+			if req == r {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("%q should be required for get_nac_config_path", r)
 		}
 	}
 }

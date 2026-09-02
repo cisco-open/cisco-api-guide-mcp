@@ -223,6 +223,56 @@ func seedTestData(t *testing.T, db *sql.DB) {
 	}
 }
 
+func seedNACTestData(t *testing.T, db *sql.DB) {
+	t.Helper()
+
+	if _, err := db.Exec(
+		`INSERT INTO products(id,name,description,base_url,auth_type,auth_notes,auth_schema)
+		 VALUES('nac-aci','Cisco Network-as-Code for ACI','YAML IaC for Cisco ACI.','','','','{}')`,
+	); err != nil {
+		t.Fatalf("seed nac-aci product: %v", err)
+	}
+
+	type nacPath struct {
+		productID, release, path, objectName, guiLocation, description, schema, examples, format string
+	}
+
+	vlanPoolExamples := `[{"title":"Static VLAN pool","yaml":"apic:\n  access_policies:\n    vlan_pools:\n      - name: POOL1\n","explanation":"Creates a static VLAN pool named POOL1."}]`
+
+	paths := []nacPath{
+		{"nac-aci", "2.0.0", "apic.access_policies.vlan_pools", "VLAN Pool",
+			"Fabric > Access Policies > Pools > VLAN",
+			"Defines a static or dynamic VLAN range.",
+			`{"type":"array","items":{"type":"object"}}`, vlanPoolExamples, "nac-schema"},
+
+		{"nac-aci", "2.0.0", "apic.tenants", "Tenant",
+			"Tenants > Add Tenant",
+			"A policy owner in the virtual fabric.",
+			`{"type":"array","items":{"type":"object"}}`, "[]", "nac-schema"},
+
+		{"nac-aci", "1.9.0", "apic.tenants", "Tenant",
+			"Tenants > Add Tenant",
+			"A policy owner in the virtual fabric (older release).",
+			`{"type":"array","items":{"type":"object"}}`, "[]", "nac-schema"},
+	}
+
+	stmt, err := db.Prepare(
+		`INSERT INTO nac_paths(product_id,release,path,object_name,gui_location,description,schema,examples,source_format)
+		 VALUES(?,?,?,?,?,?,?,?,?)`)
+	if err != nil {
+		t.Fatalf("prepare nac_paths insert: %v", err)
+	}
+	defer stmt.Close()
+
+	for _, p := range paths {
+		if _, err := stmt.Exec(p.productID, p.release, p.path, p.objectName,
+			p.guiLocation, p.description, p.schema, p.examples, p.format,
+		); err != nil {
+			t.Fatalf("seed nac_path %s: %v", p.path, err)
+		}
+	}
+}
+
 // ---- ResolveProduct --------------------------------------------------------
 
 func TestResolveProduct_DirectMatch(t *testing.T) {
@@ -853,5 +903,172 @@ func TestOpen_EmbeddedDB(t *testing.T) {
 	var count int
 	if err := db.QueryRow(`SELECT COUNT(*) FROM products`).Scan(&count); err != nil {
 		t.Fatalf("query after Open: %v", err)
+	}
+}
+
+// ---- SearchNACPaths ---------------------------------------------------------
+
+func TestSearchNACPaths_FindsVLANPool(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	results, _, err := idb.SearchNACPaths(db, "vlan", "nac-aci", "", 10)
+	if err != nil {
+		t.Fatalf("SearchNACPaths vlan: %v", err)
+	}
+	if len(results) == 0 {
+		t.Fatal("expected at least one result for 'vlan', got none")
+	}
+	var found bool
+	for _, r := range results {
+		if r.Path == "apic.access_policies.vlan_pools" {
+			found = true
+			if r.ProductID != "nac-aci" {
+				t.Errorf("expected ProductID nac-aci, got %q", r.ProductID)
+			}
+		}
+	}
+	if !found {
+		t.Error("expected apic.access_policies.vlan_pools in vlan search results")
+	}
+}
+
+func TestSearchNACPaths_ProductFilter_IsolatesResults(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	results, _, err := idb.SearchNACPaths(db, "tenant", "nac-aci", "", 50)
+	if err != nil {
+		t.Fatalf("SearchNACPaths tenant filtered to nac-aci: %v", err)
+	}
+	for _, r := range results {
+		if r.ProductID != "nac-aci" {
+			t.Errorf("product filter 'nac-aci' leaked %q result: %s", r.ProductID, r.Path)
+		}
+	}
+}
+
+func TestSearchNACPaths_ReleaseFilter(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	results, _, err := idb.SearchNACPaths(db, "tenant", "nac-aci", "1.9", 10)
+	if err != nil {
+		t.Fatalf("SearchNACPaths tenant release 1.9: %v", err)
+	}
+	for _, r := range results {
+		if r.Release != "1.9.0" {
+			t.Errorf("release filter '1.9' leaked release %q", r.Release)
+		}
+	}
+	if len(results) == 0 {
+		t.Error("expected at least one result for tenant/1.9")
+	}
+}
+
+func TestSearchNACPaths_NoResults(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	results, _, err := idb.SearchNACPaths(db, "zzznomatchxxx", "", "", 10)
+	if err != nil {
+		t.Fatalf("SearchNACPaths (no match): %v", err)
+	}
+	if len(results) != 0 {
+		t.Errorf("expected 0 results for unmatchable query, got %d", len(results))
+	}
+}
+
+// ---- GetNACPath ---------------------------------------------------------------
+
+func TestGetNACPath_VLANPool(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	p, err := idb.GetNACPath(db, "nac-aci", "2", "apic.access_policies.vlan_pools")
+	if err != nil {
+		t.Fatalf("GetNACPath vlan_pools: %v", err)
+	}
+	if p.ObjectName != "VLAN Pool" {
+		t.Errorf("ObjectName: got %q, want %q", p.ObjectName, "VLAN Pool")
+	}
+	if p.GUILocation != "Fabric > Access Policies > Pools > VLAN" {
+		t.Errorf("GUILocation: got %q", p.GUILocation)
+	}
+	if p.SourceFormat != "nac-schema" {
+		t.Errorf("SourceFormat: got %q, want %q", p.SourceFormat, "nac-schema")
+	}
+
+	var examples []map[string]interface{}
+	if err := json.Unmarshal([]byte(p.Examples), &examples); err != nil {
+		t.Fatalf("Examples is not valid JSON: %v", err)
+	}
+	if len(examples) != 1 {
+		t.Fatalf("expected 1 example, got %d", len(examples))
+	}
+}
+
+func TestGetNACPath_MultipleReleases_WithoutPrefix_ReturnsError(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	_, err := idb.GetNACPath(db, "nac-aci", "", "apic.tenants")
+	if err == nil {
+		t.Error("expected error when multiple releases match and no prefix is provided")
+	}
+}
+
+func TestGetNACPath_ReleasePrefix_PicksCorrectVersion(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	p, err := idb.GetNACPath(db, "nac-aci", "1.9", "apic.tenants")
+	if err != nil {
+		t.Fatalf("GetNACPath with prefix 1.9: %v", err)
+	}
+	if p.Release != "1.9.0" {
+		t.Errorf("expected release %q, got %q", "1.9.0", p.Release)
+	}
+	if !strings.Contains(p.Description, "older release") {
+		t.Errorf("expected older-release description, got %q", p.Description)
+	}
+}
+
+func TestGetNACPath_NotFound_ReturnsError(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	_, err := idb.GetNACPath(db, "nac-aci", "", "apic.does.not.exist")
+	if err == nil {
+		t.Error("expected error for nonexistent nac path, got nil")
+	}
+}
+
+// ---- ListNACPathReleases -----------------------------------------------------
+
+func TestListNACPathReleases_ReturnsSeedData(t *testing.T) {
+	db := newTestDB(t)
+	seedNACTestData(t, db)
+
+	releases, err := idb.ListNACPathReleases(db)
+	if err != nil {
+		t.Fatalf("ListNACPathReleases: %v", err)
+	}
+	if len(releases) == 0 {
+		t.Fatal("expected at least one release entry")
+	}
+
+	found := map[string]int{}
+	for _, r := range releases {
+		if r.ProductID != "nac-aci" {
+			t.Errorf("unexpected product_id %q", r.ProductID)
+		}
+		found[r.Release] = r.PathCount
+	}
+	if found["2.0.0"] != 2 {
+		t.Errorf("expected 2 paths for release 2.0.0, got %d", found["2.0.0"])
+	}
+	if found["1.9.0"] != 1 {
+		t.Errorf("expected 1 path for release 1.9.0, got %d", found["1.9.0"])
 	}
 }

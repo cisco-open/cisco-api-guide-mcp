@@ -59,6 +59,50 @@ CREATE TRIGGER IF NOT EXISTS endpoints_fts_update
     VALUES (new.id, new.summary, new.description, new.path, new.tags);
 END;
 
+CREATE TABLE IF NOT EXISTS nac_paths (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id    TEXT NOT NULL REFERENCES products(id),
+    release       TEXT NOT NULL DEFAULT '',
+    path          TEXT NOT NULL,
+    object_name   TEXT NOT NULL DEFAULT '',
+    gui_location  TEXT NOT NULL DEFAULT '',
+    description   TEXT NOT NULL DEFAULT '',
+    schema        TEXT NOT NULL DEFAULT '{}',
+    examples      TEXT NOT NULL DEFAULT '[]',
+    source_format TEXT NOT NULL DEFAULT '',
+    UNIQUE(product_id, release, path)
+);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS nac_paths_fts USING fts5(
+    object_name,
+    description,
+    path,
+    examples,
+    content='nac_paths',
+    content_rowid='id',
+    tokenize='porter unicode61'
+);
+
+CREATE TRIGGER IF NOT EXISTS nac_paths_fts_insert
+    AFTER INSERT ON nac_paths BEGIN
+    INSERT INTO nac_paths_fts(rowid, object_name, description, path, examples)
+    VALUES (new.id, new.object_name, new.description, new.path, new.examples);
+END;
+
+CREATE TRIGGER IF NOT EXISTS nac_paths_fts_delete
+    BEFORE DELETE ON nac_paths BEGIN
+    INSERT INTO nac_paths_fts(nac_paths_fts, rowid, object_name, description, path, examples)
+    VALUES ('delete', old.id, old.object_name, old.description, old.path, old.examples);
+END;
+
+CREATE TRIGGER IF NOT EXISTS nac_paths_fts_update
+    AFTER UPDATE ON nac_paths BEGIN
+    INSERT INTO nac_paths_fts(nac_paths_fts, rowid, object_name, description, path, examples)
+    VALUES ('delete', old.id, old.object_name, old.description, old.path, old.examples);
+    INSERT INTO nac_paths_fts(rowid, object_name, description, path, examples)
+    VALUES (new.id, new.object_name, new.description, new.path, new.examples);
+END;
+
 CREATE TABLE IF NOT EXISTS synonyms (
     term       TEXT NOT NULL,
     expansion  TEXT NOT NULL

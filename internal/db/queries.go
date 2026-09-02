@@ -190,6 +190,140 @@ func ListProductReleases(db *sql.DB) ([]ProductRelease, error) {
 	return out, rows.Err()
 }
 
+// SearchNACPaths runs FTS5 query against nac_paths and returns ranked results.
+// releasePrefix filters by release using prefix matching (e.g. "3" matches "3.2.2m").
+// Empty productID or releasePrefix disables that filter.
+func SearchNACPaths(db *sql.DB, ftsQuery, productID, releasePrefix string, limit int) ([]NACSearchResult, int, error) {
+	if limit <= 0 || limit > 50 {
+		limit = 10
+	}
+
+	where := "nac_paths_fts MATCH ?"
+	args := []interface{}{ftsQuery}
+
+	if productID != "" {
+		where += " AND n.product_id = ?"
+		args = append(args, productID)
+	}
+	if releasePrefix != "" {
+		where += " AND n.release LIKE ?"
+		args = append(args, releasePrefix+"%")
+	}
+	args = append(args, limit+1)
+
+	rows, err := db.Query(`
+		SELECT n.product_id, n.release, n.path, n.object_name, n.description
+		FROM nac_paths n
+		JOIN nac_paths_fts f ON n.id = f.rowid
+		WHERE `+where+`
+		ORDER BY rank
+		LIMIT ?`, args...)
+	if err != nil {
+		return nil, 0, fmt.Errorf("fts query: %w", err)
+	}
+	defer rows.Close()
+
+	var results []NACSearchResult
+	for rows.Next() {
+		var r NACSearchResult
+		if err := rows.Scan(&r.ProductID, &r.Release, &r.Path, &r.ObjectName, &r.Description); err != nil {
+			return nil, 0, err
+		}
+		results = append(results, r)
+	}
+
+	total := len(results)
+	if len(results) > limit {
+		results = results[:limit]
+	}
+	return results, total, rows.Err()
+}
+
+// GetNACPath fetches full NAC path detail.
+// releasePrefix filters by release using prefix matching; empty matches any release.
+// If multiple releases match with no prefix, returns an error listing available releases.
+func GetNACPath(db *sql.DB, productID, releasePrefix, path string) (*NACPath, error) {
+	query := `
+		SELECT id, product_id, release, path, object_name, gui_location,
+		       description, schema, examples, source_format
+		FROM nac_paths
+		WHERE product_id = ? AND path = ?`
+	args := []interface{}{productID, path}
+
+	if releasePrefix != "" {
+		query += " AND release LIKE ?"
+		args = append(args, releasePrefix+"%")
+	}
+	query += " ORDER BY release"
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("get nac path: %w", err)
+	}
+	defer rows.Close()
+
+	var results []*NACPath
+	for rows.Next() {
+		n := &NACPath{}
+		if err := rows.Scan(&n.ID, &n.ProductID, &n.Release, &n.Path, &n.ObjectName,
+			&n.GUILocation, &n.Description, &n.Schema, &n.Examples, &n.SourceFormat); err != nil {
+			return nil, err
+		}
+		results = append(results, n)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	switch len(results) {
+	case 0:
+		return nil, fmt.Errorf("nac path not found: %s %s", productID, path)
+	case 1:
+		return results[0], nil
+	default:
+		releases := make([]string, len(results))
+		for i, r := range results {
+			releases[i] = fmt.Sprintf("%q", r.Release)
+		}
+		return nil, fmt.Errorf(
+			"multiple releases match for %s %s: [%s] — specify a release parameter",
+			productID, path, strings.Join(releases, ", "))
+	}
+}
+
+// NACPathRelease describes one product/release pairing available in a module
+// database, along with how many NAC paths are indexed under it.
+type NACPathRelease struct {
+	ProductID string
+	Release   string
+	PathCount int
+}
+
+// ListNACPathReleases returns the distinct (product_id, release) pairs present
+// in the nac_paths table, along with path counts, ordered by product_id then
+// release.
+func ListNACPathReleases(db *sql.DB) ([]NACPathRelease, error) {
+	rows, err := db.Query(`
+		SELECT product_id, release, COUNT(*)
+		FROM nac_paths
+		GROUP BY product_id, release
+		ORDER BY product_id, release`)
+	if err != nil {
+		return nil, fmt.Errorf("list nac path releases: %w", err)
+	}
+	defer rows.Close()
+
+	var out []NACPathRelease
+	for rows.Next() {
+		var pr NACPathRelease
+		if err := rows.Scan(&pr.ProductID, &pr.Release, &pr.PathCount); err != nil {
+			return nil, err
+		}
+		out = append(out, pr)
+	}
+	return out, rows.Err()
+}
+
 // GetSynonyms returns all synonym rows.
 func GetSynonyms(db *sql.DB) (map[string]string, error) {
 	rows, err := db.Query(`SELECT term, expansion FROM synonyms`)
