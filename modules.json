@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "modules": {
+    "aci": {
+      "name": "Cisco ACI (APIC REST API)",
+      "product_id": "aci",
+      "version": "5.2",
+      "description": "REST API for Cisco Application Centric Infrastructure (ACI).",
+      "size_bytes": 782336,
+      "sha256": "422130c5fcb425f6c741698b105dfad9f2d88e679c18b3e61533f3c7a21d710b",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/aci.db.gz",
+      "aliases": ["apic", "application centric infrastructure"]
+    },
+    "ndfc": {
+      "name": "Nexus Dashboard Fabric Controller (NDFC)",
+      "product_id": "ndfc",
+      "version": "4.1.1",
+      "description": "REST API for Cisco NDFC (formerly DCNM).",
+      "size_bytes": 1880064,
+      "sha256": "85eec973c51c0f7a368aa87603448c7ff410b491a1e51e67fba31c21161e3c13",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/ndfc.db.gz",
+      "aliases": ["dcnm", "nexus dashboard fabric controller"]
+    },
+    "intersight": {
+      "name": "Cisco Intersight",
+      "product_id": "intersight",
+      "version": "1.0.11",
+      "description": "REST API for Cisco Intersight SaaS platform.",
+      "size_bytes": 8732672,
+      "sha256": "395e3fbad742b9ed2fcaa7892e104d4ac2abc37c7a7e070a8adb826aeb242324",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/intersight.db.gz",
+      "aliases": ["ucs"]
+    }
+  }
+}

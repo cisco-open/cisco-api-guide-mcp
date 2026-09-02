@@ -1,0 +1,57 @@
+name: Publish API Module
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: 'Module to publish (aci, ndfc, intersight, or all)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - aci
+          - ndfc
+          - intersight
+      version_tag:
+        description: 'Custom version tag (e.g. v5.2, or leave empty to use current version)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    name: Build & Publish Module
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Ingest and Package Module
+        run: |
+          go build -o bin/ingest ./cmd/ingest
+          # If assets are stored in assets/ directory or generated
+          mkdir -p data
+          # Ingest according to inputs
+          OUTPUT_DIR=./data INGEST=./bin/ingest ./scripts/ingest_all.sh
+
+      - name: Create or Update GitHub Releases for Modules
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: data-modules-latest
+          name: "API Data Modules (Latest)"
+          files: |
+            data/*.db.gz
+            modules.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

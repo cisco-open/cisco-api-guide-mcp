@@ -16,52 +16,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# scripts/ingest_all.sh - Ingest all three MVP products into the SQLite DB.
-#
-# Prerequisites:
-#   - Run `go build -o bin/ingest ./cmd/ingest` first, or use `go run ./cmd/ingest`
-#   - ACI: optionally run scripts/fetch_aci_jsonmeta.py first (see notes below)
-#
-# ACI note: the aci-meta.json alone provides minimal data (no descriptions,
-# no DN formats). For full API guide data, first download per-class APIC JSON:
-#
-#   python3 scripts/fetch_aci_jsonmeta.py \
-#       --apic 10.122.208.110 \
-#       --meta ../assets/aci-meta.json \
-#       --out  ../assets/aci-jsonmeta
-#
-# Then re-run this script (or set ACI_AUX_DIR below).
+# scripts/ingest_all.sh - Ingest products into modular SQLite DBs and generate modules.json.
 
 set -euo pipefail
 
-ASSETS_DIR="${ASSETS_DIR:-../assets}"
-DB="${DB:-./internal/embeddb/api.db}"
+ASSETS_DIR="${ASSETS_DIR:-./assets}"
+OUTPUT_DIR="${OUTPUT_DIR:-./data}"
 INGEST="${INGEST:-go run ./cmd/ingest}"
 ACI_AUX_DIR="${ACI_AUX_DIR:-}" # optional: path to downloaded APIC per-class JSON dir
 
-echo "=== Cisco API Guide — ingest all products ==="
-echo "DB: $DB"
-echo "Assets: $ASSETS_DIR"
+echo "=== Cisco API Guide — Ingest Modular Products ==="
+echo "Assets Dir: $ASSETS_DIR"
+echo "Output Dir: $OUTPUT_DIR"
 echo
 
-mkdir -p "$(dirname "$DB")"
+mkdir -p "$OUTPUT_DIR"
 
-# ---------------------------------------------------------------------------
-# Helper: seed a product row, then run ingest for one or more input files.
-# Usage: ingest_product <product> <name> <description> <base-url> <auth-type>
-#                       <auth-notes> <aliases> <format> <release> [extra-flags...]
-#                       -- <file> [file...]
-# ---------------------------------------------------------------------------
 run_ingest() {
-  local flags=("$@")
-  $INGEST --db "$DB" "${flags[@]}"
+  local target_db="$1"
+  shift
+  $INGEST --db "$target_db" "$@"
 }
 
 # ---------------------------------------------------------------------------
 # 1. NDFC
 # ---------------------------------------------------------------------------
+NDFC_DB="$OUTPUT_DIR/ndfc.db"
+rm -f "$NDFC_DB" "$NDFC_DB.gz"
 echo "--- NDFC: initialising product ---"
-run_ingest \
+run_ingest "$NDFC_DB" \
   --product ndfc \
   --init \
   --name "Nexus Dashboard Fabric Controller (NDFC)" \
@@ -71,37 +54,44 @@ run_ingest \
   --auth-notes "Obtain a token via POST /login with {userName, userPasswd, domain}. Pass as Authorization: Bearer <token>." \
   --alias "dcnm,ndfc,nexus dashboard fabric controller"
 
-echo "--- NDFC: ingesting release 3.2.2m ---"
-run_ingest \
-  --product ndfc \
-  --release "3.2.2m" \
-  --format openapi3 \
-  --input "$ASSETS_DIR/ndfc/3.2.2m/ndfc-apischema.json" \
-  --prune-major
-
-echo "--- NDFC: ingesting release 4.1.1 (3 files) ---"
-NDFC_411_FILES=(infra manage oneManage)
-for i in "${!NDFC_411_FILES[@]}"; do
-  f="${NDFC_411_FILES[$i]}"
-  echo "  -> $f.json"
-  # Only prune on the first file to avoid deleting sibling files mid-run.
-  PRUNE_FLAG=()
-  if [ "$i" -eq 0 ]; then PRUNE_FLAG=(--prune-major); fi
-  run_ingest \
+if [ -f "$ASSETS_DIR/ndfc/3.2.2m/ndfc-apischema.json" ]; then
+  echo "--- NDFC: ingesting release 3.2.2m ---"
+  run_ingest "$NDFC_DB" \
     --product ndfc \
-    --release "4.1.1" \
+    --release "3.2.2m" \
     --format openapi3 \
-    --input "$ASSETS_DIR/ndfc/4.1.1/${f}.json" \
-    "${PRUNE_FLAG[@]}"
-done
+    --input "$ASSETS_DIR/ndfc/3.2.2m/ndfc-apischema.json" \
+    --prune-major
+fi
 
+if [ -d "$ASSETS_DIR/ndfc/4.1.1" ]; then
+  echo "--- NDFC: ingesting release 4.1.1 (3 files) ---"
+  NDFC_411_FILES=(infra manage oneManage)
+  for i in "${!NDFC_411_FILES[@]}"; do
+    f="${NDFC_411_FILES[$i]}"
+    echo "  -> $f.json"
+    PRUNE_FLAG=()
+    if [ "$i" -eq 0 ]; then PRUNE_FLAG=(--prune-major); fi
+    run_ingest "$NDFC_DB" \
+      --product ndfc \
+      --release "4.1.1" \
+      --format openapi3 \
+      --input "$ASSETS_DIR/ndfc/4.1.1/${f}.json" \
+      "${PRUNE_FLAG[@]}"
+  done
+fi
+
+gzip -c "$NDFC_DB" > "$NDFC_DB.gz"
+echo "NDFC DB size: $(du -sh "$NDFC_DB" | cut -f1) (compressed: $(du -sh "$NDFC_DB.gz" | cut -f1))"
 echo
 
 # ---------------------------------------------------------------------------
 # 2. Intersight
 # ---------------------------------------------------------------------------
+INTERSIGHT_DB="$OUTPUT_DIR/intersight.db"
+rm -f "$INTERSIGHT_DB" "$INTERSIGHT_DB.gz"
 echo "--- Intersight: initialising product ---"
-run_ingest \
+run_ingest "$INTERSIGHT_DB" \
   --product intersight \
   --init \
   --name "Cisco Intersight" \
@@ -109,31 +99,32 @@ run_ingest \
   --base-url "https://intersight.com" \
   --auth-type "oauth2" \
   --auth-notes "Intersight uses OAuth 2.0 client credentials or API key authentication. Generate an API key in the Intersight portal." \
-  --alias "intersight"
+  --alias "intersight,ucs"
 
-INTERSIGHT_YAML=$(ls "$ASSETS_DIR"/intersight-openapi-v3-*.yaml 2>/dev/null | head -1)
-if [ -z "$INTERSIGHT_YAML" ]; then
-  echo "ERROR: No Intersight YAML found in $ASSETS_DIR" >&2
-  exit 1
+INTERSIGHT_YAML=$(ls "$ASSETS_DIR"/intersight/*.yaml "$ASSETS_DIR"/intersight/*.json 2>/dev/null | head -1 || true)
+if [ -n "$INTERSIGHT_YAML" ]; then
+  INTERSIGHT_VERSION=$(basename "$INTERSIGHT_YAML" | sed -E 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+  if [ -z "$INTERSIGHT_VERSION" ]; then INTERSIGHT_VERSION="1.0.11"; fi
+  echo "--- Intersight: ingesting release $INTERSIGHT_VERSION ---"
+  run_ingest "$INTERSIGHT_DB" \
+    --product intersight \
+    --release "$INTERSIGHT_VERSION" \
+    --format openapi3 \
+    --input "$INTERSIGHT_YAML" \
+    --prune-major
 fi
-# Extract version from filename: intersight-openapi-v3-1.0.11-*.yaml -> 1.0.11
-INTERSIGHT_VERSION=$(basename "$INTERSIGHT_YAML" | sed 's/intersight-openapi-v3-\([0-9][0-9.]*\).*/\1/')
 
-echo "--- Intersight: ingesting release $INTERSIGHT_VERSION ---"
-run_ingest \
-  --product intersight \
-  --release "$INTERSIGHT_VERSION" \
-  --format openapi3 \
-  --input "$INTERSIGHT_YAML" \
-  --prune-major
-
+gzip -c "$INTERSIGHT_DB" > "$INTERSIGHT_DB.gz"
+echo "Intersight DB size: $(du -sh "$INTERSIGHT_DB" | cut -f1) (compressed: $(du -sh "$INTERSIGHT_DB.gz" | cut -f1))"
 echo
 
 # ---------------------------------------------------------------------------
 # 3. ACI
 # ---------------------------------------------------------------------------
+ACI_DB="$OUTPUT_DIR/aci.db"
+rm -f "$ACI_DB" "$ACI_DB.gz"
 echo "--- ACI: initialising product ---"
-run_ingest \
+run_ingest "$ACI_DB" \
   --product aci \
   --init \
   --name "Cisco ACI (APIC REST API)" \
@@ -147,19 +138,77 @@ ACI_EXTRA_FLAGS=()
 if [ -n "$ACI_AUX_DIR" ] && [ -d "$ACI_AUX_DIR" ]; then
   echo "--- ACI: using aux-dir $ACI_AUX_DIR for per-class APIC JSON docs ---"
   ACI_EXTRA_FLAGS=(--aux-dir "$ACI_AUX_DIR")
-else
-  echo "--- ACI: no ACI_AUX_DIR set; ingesting minimal data from aci-meta.json only ---"
-  echo "         (run scripts/fetch_aci_jsonmeta.py for full descriptions and DN paths)"
+elif [ -d "$ASSETS_DIR/aci/jsonmeta" ]; then
+  echo "--- ACI: found $ASSETS_DIR/aci/jsonmeta for per-class APIC JSON docs ---"
+  ACI_EXTRA_FLAGS=(--aux-dir "$ASSETS_DIR/aci/jsonmeta")
 fi
 
-echo "--- ACI: ingesting release 5.2 ---"
-run_ingest \
-  --product aci \
-  --release "5.2" \
-  --format aci-meta \
-  --input "$ASSETS_DIR/aci-meta.json" \
-  --prune-major \
-  "${ACI_EXTRA_FLAGS[@]}"
+if [ -f "$ASSETS_DIR/aci/aci-meta.json" ]; then
+  echo "--- ACI: ingesting release 5.2 ---"
+  run_ingest "$ACI_DB" \
+    --product aci \
+    --release "5.2" \
+    --format aci-meta \
+    --input "$ASSETS_DIR/aci/aci-meta.json" \
+    --prune-major \
+    "${ACI_EXTRA_FLAGS[@]}"
+fi
 
+gzip -c "$ACI_DB" > "$ACI_DB.gz"
+echo "ACI DB size: $(du -sh "$ACI_DB" | cut -f1) (compressed: $(du -sh "$ACI_DB.gz" | cut -f1))"
 echo
-echo "=== Ingest complete ==="
+
+# ---------------------------------------------------------------------------
+# 4. Generate modules.json manifest
+# ---------------------------------------------------------------------------
+echo "--- Generating modules.json ---"
+
+calc_sha256() {
+  shasum -a 256 "$1" | cut -d' ' -f1
+}
+
+ACI_HASH=$(calc_sha256 "$ACI_DB")
+NDFC_HASH=$(calc_sha256 "$NDFC_DB")
+INTERSIGHT_HASH=$(calc_sha256 "$INTERSIGHT_DB")
+
+cat << MANIFEST_EOF > "$OUTPUT_DIR/modules.json"
+{
+  "version": 1,
+  "modules": {
+    "aci": {
+      "name": "Cisco ACI (APIC REST API)",
+      "product_id": "aci",
+      "version": "5.2",
+      "description": "REST API for Cisco Application Centric Infrastructure (ACI).",
+      "size_bytes": $(wc -c < "$ACI_DB" | tr -d ' '),
+      "sha256": "$ACI_HASH",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/aci.db.gz",
+      "aliases": ["apic", "application centric infrastructure"]
+    },
+    "ndfc": {
+      "name": "Nexus Dashboard Fabric Controller (NDFC)",
+      "product_id": "ndfc",
+      "version": "4.1.1",
+      "description": "REST API for Cisco NDFC (formerly DCNM).",
+      "size_bytes": $(wc -c < "$NDFC_DB" | tr -d ' '),
+      "sha256": "$NDFC_HASH",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/ndfc.db.gz",
+      "aliases": ["dcnm", "nexus dashboard fabric controller"]
+    },
+    "intersight": {
+      "name": "Cisco Intersight",
+      "product_id": "intersight",
+      "version": "1.0.11",
+      "description": "REST API for Cisco Intersight SaaS platform.",
+      "size_bytes": $(wc -c < "$INTERSIGHT_DB" | tr -d ' '),
+      "sha256": "$INTERSIGHT_HASH",
+      "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/intersight.db.gz",
+      "aliases": ["ucs"]
+    }
+  }
+}
+MANIFEST_EOF
+
+cp "$OUTPUT_DIR/modules.json" ./modules.json
+
+echo "=== Ingest & Modular Packaging complete ==="

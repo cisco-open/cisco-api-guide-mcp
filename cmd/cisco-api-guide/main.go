@@ -18,22 +18,20 @@ package main
 
 import (
 	"bufio"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 
 	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/embeddb"
 	"github.com/brightpuddle/cisco-api-guide-mcp/internal/mcp"
+	"github.com/brightpuddle/cisco-api-guide-mcp/internal/modules"
 	"github.com/brightpuddle/cisco-api-guide-mcp/internal/search"
 
 	"github.com/urfave/cli/v2"
 )
 
-var db *sql.DB
-var synonyms map[string]string
+var dbManager *idb.Manager
 
 func main() {
 	app := &cli.App{
@@ -49,6 +47,26 @@ func main() {
 				Value: ":8080",
 				Usage: "Listen address for HTTP mode (e.g. :8080)",
 			},
+			&cli.StringFlag{
+				Name:    "modules",
+				Value:   "all",
+				EnvVars: []string{"CISCO_API_MODULES"},
+				Usage:   "Comma-separated list of modules to load (e.g. aci,ndfc or all)",
+			},
+			&cli.StringFlag{
+				Name:    "data-dir",
+				EnvVars: []string{"CISCO_API_GUIDE_DATA_DIR"},
+				Usage:   "Directory to store/cache downloaded module SQLite databases",
+			},
+			&cli.StringFlag{
+				Name:    "registry-url",
+				EnvVars: []string{"CISCO_API_REGISTRY_URL"},
+				Usage:   "URL to the modules.json registry manifest",
+			},
+			&cli.BoolFlag{
+				Name:  "auto-update",
+				Usage: "Check and update cached module DBs if manifest hash changes",
+			},
 		},
 		Action: run,
 	}
@@ -59,15 +77,34 @@ func main() {
 }
 
 func run(c *cli.Context) error {
-	var err error
-	db, err = idb.Open(embeddb.DB)
+	dbManager = idb.NewManager()
+
+	fetcher, err := modules.NewModuleFetcher(modules.FetcherOptions{
+		DataDir:     c.String("data-dir"),
+		RegistryURL: c.String("registry-url"),
+	})
 	if err != nil {
-		return fmt.Errorf("open db: %w", err)
+		return fmt.Errorf("init module fetcher: %w", err)
 	}
 
-	synonyms, err = idb.GetSynonyms(db)
+	rawModules := c.String("modules")
+	var requested []string
+	if rawModules != "" {
+		for _, m := range strings.Split(rawModules, ",") {
+			m = strings.TrimSpace(m)
+			if m != "" {
+				requested = append(requested, m)
+			}
+		}
+	}
+
+	paths, err := fetcher.EnsureModules(requested, c.Bool("auto-update"))
 	if err != nil {
-		return fmt.Errorf("load synonyms: %w", err)
+		return fmt.Errorf("ensure modules: %w", err)
+	}
+
+	if err := fetcher.LoadIntoManager(dbManager, paths); err != nil {
+		return fmt.Errorf("load modules: %w", err)
 	}
 
 	if c.Bool("http") {
@@ -204,14 +241,14 @@ func handleSearch(args json.RawMessage) interface{} {
 	var productID string
 	if a.Product != "" {
 		var err error
-		productID, err = idb.ResolveProduct(db, a.Product)
+		productID, err = dbManager.ResolveProduct(a.Product)
 		if err != nil {
 			return mcp.ToolErrorResult(err.Error())
 		}
 	}
 
-	ftsQuery := search.BuildFTSQuery(a.Query, synonyms)
-	results, total, err := idb.SearchEndpoints(db, ftsQuery, productID, a.Release, a.Limit)
+	ftsQuery := search.BuildFTSQuery(a.Query, dbManager.Synonyms())
+	results, total, err := dbManager.SearchEndpoints(ftsQuery, productID, a.Release, a.Limit)
 	if err != nil {
 		return mcp.ToolErrorResult(fmt.Sprintf("search failed: %v", err))
 	}
@@ -252,12 +289,12 @@ func handleGetEndpoint(args json.RawMessage) interface{} {
 		return mcp.ToolErrorResult("invalid arguments")
 	}
 
-	productID, err := idb.ResolveProduct(db, a.Product)
+	productID, err := dbManager.ResolveProduct(a.Product)
 	if err != nil {
 		return mcp.ToolErrorResult(err.Error())
 	}
 
-	e, err := idb.GetEndpoint(db, productID, a.Release, a.Method, a.Path)
+	e, err := dbManager.GetEndpoint(productID, a.Release, a.Method, a.Path)
 	if err != nil {
 		return mcp.ToolErrorResult(err.Error())
 	}
@@ -342,12 +379,12 @@ func handleGetProductGuide(args json.RawMessage) interface{} {
 		return mcp.ToolErrorResult("invalid arguments")
 	}
 
-	productID, err := idb.ResolveProduct(db, a.Product)
+	productID, err := dbManager.ResolveProduct(a.Product)
 	if err != nil {
 		return mcp.ToolErrorResult(err.Error())
 	}
 
-	p, err := idb.GetProduct(db, productID)
+	p, err := dbManager.GetProduct(productID)
 	if err != nil {
 		return mcp.ToolErrorResult(err.Error())
 	}

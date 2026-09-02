@@ -44,6 +44,15 @@ func Open(embeddedDB []byte) (*sql.DB, error) {
 	return db, nil
 }
 
+// OpenFileRO opens an existing SQLite DB file in read-only mode.
+func OpenFileRO(path string) (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", "file:"+path+"?mode=ro")
+	if err != nil {
+		return nil, fmt.Errorf("open sqlite ro: %w", err)
+	}
+	return db, nil
+}
+
 // OpenRW opens (or creates) a read-write SQLite DB at path. Used by ingest tool.
 func OpenRW(path string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "file:"+path+"?_journal=WAL")
