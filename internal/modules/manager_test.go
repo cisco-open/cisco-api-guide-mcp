@@ -28,8 +28,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/modules"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
+	"github.com/cisco-open/cisco-api-guide-mcp/internal/modules"
 )
 
 func createTestDB(t *testing.T, productID, name string, aliases []string) (string, string) {

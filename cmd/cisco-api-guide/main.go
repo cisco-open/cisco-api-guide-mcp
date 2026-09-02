@@ -23,10 +23,10 @@ import (
 	"os"
 	"strings"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/mcp"
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/modules"
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/search"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
+	"github.com/cisco-open/cisco-api-guide-mcp/internal/mcp"
+	"github.com/cisco-open/cisco-api-guide-mcp/internal/modules"
+	"github.com/cisco-open/cisco-api-guide-mcp/internal/search"
 
 	"github.com/urfave/cli/v2"
 )

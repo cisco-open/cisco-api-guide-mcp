@@ -6,26 +6,34 @@ documentation.
 
 ## Overview
 
-`cisco-api-guide-mcp` ships as a single self-contained binary with an embedded
-SQLite database of API endpoints, authentication guides, and reference content
-for:
+`cisco-api-guide-mcp` ships as a lightweight, modular binary that downloads and caches
+SQLite databases on demand for:
 
-- **Cisco ACI** — Application Centric Infrastructure
+- **Cisco ACI** — Application Centric Infrastructure (APIC REST API)
 - **Cisco NDFC** — Nexus Dashboard Fabric Controller (formerly DCNM)
-- **Cisco Intersight / UCS** — Unified Compute System
+- **Cisco Intersight / UCS** — Unified Compute System & Intersight SaaS REST API
 
 The server speaks the [MCP protocol](https://modelcontextprotocol.io) over stdio
-(JSON-RPC 2.0) and exposes three tools that an AI assistant can call to search
-endpoints, retrieve full endpoint details, and look up product authentication
-guides. It is intended for AI developers building automation, integrations, and
-tooling against Cisco infrastructure APIs.
+(JSON-RPC 2.0) or streamable HTTP and exposes three tools that an AI assistant can
+call to search endpoints, retrieve full endpoint details, and look up product
+authentication guides.
 
 ## Quick Start
 
-### 1. Download the binary
+### 1. Direct Binary Installation (using `go install`)
+
+If you have Go installed (1.21+):
+
+```sh
+go install github.com/cisco-open/cisco-api-guide-mcp/cmd/cisco-api-guide@latest
+```
+
+The `cisco-api-guide` binary will be installed to your `$GOPATH/bin` (or `~/go/bin`). Ensure that directory is in your `PATH`.
+
+### 2. Download Pre-built Binary
 
 Download the latest release for your platform from the
-[GitHub Releases page](https://github.com/brightpuddle/cisco-api-guide-mcp/releases):
+[GitHub Releases page](https://github.com/cisco-open/cisco-api-guide-mcp/releases):
 
 | Platform              | Archive                             |
 | --------------------- | ----------------------------------- |
@@ -33,24 +41,17 @@ Download the latest release for your platform from the
 | Linux (x86-64)        | `cisco-api-guide_linux_amd64.zip`   |
 | Windows (x86-64)      | `cisco-api-guide_windows_amd64.zip` |
 
-Extract the archive and place the `cisco-api-guide` binary somewhere on your
-`PATH`.
+Extract the archive and place the `cisco-api-guide` binary somewhere on your `PATH`.
 
-### 2. Build from source
-
-Requires Go 1.21+:
+### 3. Build from Source
 
 ```sh
-git clone https://github.com/brightpuddle/cisco-api-guide-mcp.git
+git clone https://github.com/cisco-open/cisco-api-guide-mcp.git
 cd cisco-api-guide-mcp
-go build -o cisco-api-guide ./cmd/cisco-api-guide
+go build -o bin/cisco-api-guide ./cmd/cisco-api-guide
 ```
 
-> **Note:** The build embeds the bundled API database at
-> `internal/embeddb/api.db`. No external database or network access is required
-> at runtime.
-
-### 3. Configure your MCP client
+### 4. Configure Your MCP Client
 
 The server runs as a stdio process. Add it to your MCP client configuration:
 
@@ -62,30 +63,54 @@ The server runs as a stdio process. Add it to your MCP client configuration:
 {
   "mcpServers": {
     "cisco-api-guide": {
-      "command": "/usr/local/bin/cisco-api-guide"
+      "command": "cisco-api-guide",
+      "args": ["--modules", "all"]
     }
   }
 }
 ```
 
-**OpenCode** (`opencode.json` in your project or
-`~/.config/opencode/config.json`):
+**OpenCode / Cursor / VS Code**:
 
 ```json
 {
   "mcp": {
     "cisco-api-guide": {
       "type": "stdio",
-      "command": "/usr/local/bin/cisco-api-guide"
+      "command": "cisco-api-guide",
+      "args": ["--modules", "aci,ndfc"]
     }
   }
 }
 ```
 
-Any MCP-compatible client can be configured the same way: point `command` at the
-binary and use stdio transport.
+## CLI Configuration & Modular APIs
 
-## Tools
+The server downloads only the modules you configure, caching them in `~/.cache/cisco-api-guide/` (or OS standard cache path):
+
+```sh
+# Load specific products
+cisco-api-guide --modules aci,ndfc
+
+# Load all available products (default)
+cisco-api-guide --modules all
+
+# Custom cache storage directory
+cisco-api-guide --data-dir /custom/cache/path
+
+# Check remote manifest and auto-update cached DBs on launch
+cisco-api-guide --auto-update
+
+# Run as a streamable HTTP server instead of stdio
+cisco-api-guide --http --addr :8080
+```
+
+Environment variables are also supported:
+- `CISCO_API_MODULES`: Comma-separated product list (e.g. `aci,ndfc`)
+- `CISCO_API_GUIDE_DATA_DIR`: Custom cache directory path
+- `CISCO_API_REGISTRY_URL`: URL to custom `modules.json` registry manifest
+
+## Exposed MCP Tools
 
 ### `search_endpoints`
 
@@ -119,11 +144,26 @@ Get authentication instructions and general usage notes for a Cisco product API.
 | --------- | ------ | -------- | ----------------------------------------------------------------- |
 | `product` | string | Yes      | Product slug. One of: `aci`, `ndfc`, `intersight`, `ucs`, `dcnm`. |
 
+## Adding or Updating API Modules
+
+To add a new Cisco API or update an existing release:
+
+1. **Add the raw spec to `assets/`**:
+   - Place OpenAPI (JSON/YAML) or class metadata under `assets/<product>/<release>/...` (e.g. `assets/ndfc/4.1.1/infra.json`).
+2. **Build and test the database locally**:
+   ```sh
+   ./scripts/ingest_all.sh
+   go test ./...
+   ```
+3. **Submit a Pull Request**:
+   - Commit only the text files in `assets/` (no binary SQLite databases are stored in Git).
+   - Once merged, the GitHub Actions CI pipeline automatically compiles the SQLite databases, computes SHA-256 hashes, and publishes the release artifacts.
+
 ## Contributing
 
 Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for
-guidelines on reporting issues, submitting pull requests, and updating the API
-database using the ingestion tool.
+guidelines on reporting issues, submitting pull requests, and adding new API
+modules.
 
 For security vulnerabilities, follow the responsible disclosure process
 described in [SECURITY.md](SECURITY.md).

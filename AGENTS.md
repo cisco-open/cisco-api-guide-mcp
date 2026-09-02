@@ -13,7 +13,8 @@ internal/db/           # SQLite queries, schema, types, multi-module DB manager
 internal/modules/      # Module fetcher, caching, checksum verification, registry manifest
 internal/mcp/          # MCP tool definitions and server
 internal/search/       # FTS5 query builder + synonym expansion
-scripts/               # Ingestion orchestration (ingest_all.sh)
+assets/                # Raw human-readable API specs (OpenAPI JSON/YAML, metadata)
+scripts/               # Ingestion orchestration (ingest_all.sh, fetch_aci_jsonmeta.py)
 modules.json           # Registry manifest listing modular API download URLs and SHA256
 ```
 
@@ -22,13 +23,14 @@ modules.json           # Registry manifest listing modular API download URLs and
 - **Go** (CGO-free, static binaries via `ncruces/go-sqlite3` WASM)
 - **SQLite** with FTS5 virtual tables and BM25 ranking
 - **No web framework** — raw `bufio`/`encoding/json` over stdio or lightweight HTTP
-- **Modular DBs** — Downloaded and cached per module in `~/.cache/cisco-api-guide/`
+- **Modular DBs** — Downloaded and cached per module in `~/.cache/cisco-api-guide/` (or OS standard cache path)
 
 ## Build & Test
 
 ```sh
-go test ./...                          # run tests
-go build -o bin/cisco-api-guide ./cmd/cisco-api-guide
+go test ./...                                                  # run tests
+go build -o bin/cisco-api-guide ./cmd/cisco-api-guide          # local build
+go install github.com/cisco-open/cisco-api-guide-mcp/cmd/cisco-api-guide@latest  # install binary
 ```
 
 ## Exposed MCP Tools
@@ -46,15 +48,19 @@ cisco-api-guide --modules aci,ndfc      # load only specific modules
 cisco-api-guide --modules all           # load all available modules (default)
 cisco-api-guide --data-dir /custom/path # custom SQLite cache directory
 cisco-api-guide --auto-update           # check manifest and update cached DBs
+cisco-api-guide --http --addr :8080     # HTTP streamable mode
 ```
 
-## DB Generation (dev only)
+## Managing & Adding API Modules
 
-```sh
-ASSETS_DIR=../assets OUTPUT_DIR=./data ./scripts/ingest_all.sh
-```
-
-Generates per-product compressed SQLite DBs (`aci.db.gz`, `ndfc.db.gz`, `intersight.db.gz`) and updates `modules.json`.
+1. **Source Specs**: Keep all raw OpenAPI JSON/YAML or class metadata in `assets/<product>/...`. No binary SQLite databases are checked into Git.
+2. **Local Generation**:
+   ```sh
+   ./scripts/ingest_all.sh
+   ```
+   Generates per-product compressed SQLite DBs (`data/aci.db.gz`, `data/ndfc.db.gz`, `data/intersight.db.gz`) and updates `modules.json` with computed sizes and SHA-256 hashes.
+3. **Publishing Releases**:
+   Triggered via `.github/workflows/publish-module.yml` in GitHub Actions to attach `.db.gz` files to the `data-modules-latest` release tag.
 
 ## Key Patterns
 

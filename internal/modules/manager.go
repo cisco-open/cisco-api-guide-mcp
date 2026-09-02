@@ -28,7 +28,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
+	"github.com/cisco-open/cisco-api-guide-mcp/internal/db"
 )
 
 const (

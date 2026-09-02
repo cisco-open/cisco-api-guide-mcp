@@ -1,4 +1,4 @@
-module github.com/brightpuddle/cisco-api-guide-mcp
+module github.com/cisco-open/cisco-api-guide-mcp
 
 go 1.26.3
 

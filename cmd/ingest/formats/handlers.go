@@ -19,7 +19,7 @@ package formats
 import (
 	"fmt"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
 )
 
 // FormatHandler parses raw API doc bytes into endpoints.

@@ -24,7 +24,7 @@ import (
 	"regexp"
 	"strings"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
 )
 
 // ACIMetaHandler ingests ACI managed-object class metadata.

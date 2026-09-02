@@ -31,7 +31,7 @@ import (
 	"strings"
 	"testing"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
 	_ "github.com/ncruces/go-sqlite3/driver"
 )
 

@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
 )
 
 // ManualHandler accepts JSON matching internal endpoint schema directly.

@@ -26,8 +26,8 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	idb "github.com/brightpuddle/cisco-api-guide-mcp/internal/db"
-	"github.com/brightpuddle/cisco-api-guide-mcp/cmd/ingest/formats"
+	idb "github.com/cisco-open/cisco-api-guide-mcp/internal/db"
+	"github.com/cisco-open/cisco-api-guide-mcp/cmd/ingest/formats"
 )
 
 func main() {
