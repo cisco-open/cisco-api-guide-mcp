@@ -20,11 +20,6 @@ builds:
       - netgo
       - static_build
 
-release:
-  github:
-    owner: brightpuddle
-    name: cisco-api-guide-mcp
-
 archives:
   - id: cisco-api-guide
     formats: ["zip"]
