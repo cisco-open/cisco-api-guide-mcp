@@ -32,8 +32,8 @@ import (
 )
 
 const (
-	// DefaultRegistryURL points to the public raw manifest in the repository.
-	DefaultRegistryURL = "https://raw.githubusercontent.com/cisco-open/cisco-api-guide-mcp/main/modules.json"
+	// DefaultRegistryURL points to the public release manifest.
+	DefaultRegistryURL = "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/modules.json"
 )
 
 // FetcherOptions configures the ModuleFetcher.
@@ -234,7 +234,6 @@ func (f *ModuleFetcher) downloadModule(key string, info ModuleInfo) error {
 	defer os.Remove(tmpFile.Name())
 
 	var reader io.Reader = resp.Body
-	// Check if URL or Content-Type is gzipped
 	if strings.HasSuffix(info.URL, ".gz") {
 		gzReader, err := gzip.NewReader(resp.Body)
 		if err != nil {
