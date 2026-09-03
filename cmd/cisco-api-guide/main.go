@@ -71,6 +71,10 @@ func main() {
 				Name:  "list-modules",
 				Usage: "List locally installed (cached) module databases and exit",
 			},
+			&cli.BoolFlag{
+				Name:  "update-modules",
+				Usage: "Check for module updates, logging progress to the CLI, then exit (unlike --auto-update, which updates silently)",
+			},
 		},
 		Action: run,
 	}
@@ -104,6 +108,13 @@ func run(c *cli.Context) error {
 				requested = append(requested, m)
 			}
 		}
+	}
+
+	if c.Bool("update-modules") {
+		_, err := fetcher.EnsureModulesWithLogger(requested, true, func(format string, args ...any) {
+			fmt.Printf(format+"\n", args...)
+		})
+		return err
 	}
 
 	paths, err := fetcher.EnsureModules(requested, c.Bool("auto-update"))

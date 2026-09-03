@@ -117,11 +117,29 @@ func (f *ModuleFetcher) FetchManifest() (*Manifest, error) {
 // EnsureModules ensures the requested module keys are present locally and verified.
 // If requested is empty or contains "all", all modules in the manifest are downloaded.
 func (f *ModuleFetcher) EnsureModules(requested []string, autoUpdate bool) ([]string, error) {
+	return f.EnsureModulesWithLogger(requested, autoUpdate, nil)
+}
+
+// EnsureModulesWithLogger behaves like EnsureModules but reports progress
+// through logf as it works (fetching the manifest, per-module up-to-date /
+// download decisions, download completion). logf may be nil, in which case
+// no progress is reported — used by --auto-update so stdout stays silent and
+// does not corrupt the stdio MCP transport framing. --update-modules passes
+// a real logf since it runs as a standalone command, not alongside an active
+// stdio session.
+func (f *ModuleFetcher) EnsureModulesWithLogger(requested []string, autoUpdate bool, logf func(format string, args ...any)) ([]string, error) {
+	if logf == nil {
+		logf = func(string, ...any) {}
+	}
+
+	logf("Fetching module manifest from %s", f.registryURL)
 	manifest, err := f.FetchManifest()
 	if err != nil {
+		logf("Failed to fetch manifest: %v", err)
 		// If remote manifest fails, check what's already locally available
 		localFiles, findErr := f.ListLocalModules()
 		if findErr == nil && len(localFiles) > 0 {
+			logf("Falling back to %d locally cached module(s)", len(localFiles))
 			return localFiles, nil
 		}
 		return nil, fmt.Errorf("could not fetch manifest and no local modules found: %w", err)
@@ -156,6 +174,8 @@ func (f *ModuleFetcher) EnsureModules(requested []string, autoUpdate bool) ([]st
 	if len(targets) == 0 {
 		return nil, fmt.Errorf("no matching modules found in manifest for %v", requested)
 	}
+	sort.Strings(targets)
+	logf("Checking %d module(s): %s", len(targets), strings.Join(targets, ", "))
 
 	var loadedPaths []string
 	for _, key := range targets {
@@ -167,24 +187,33 @@ func (f *ModuleFetcher) EnsureModules(requested []string, autoUpdate bool) ([]st
 		needsDownload := false
 
 		if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+			logf("[%s] not cached locally, will download", key)
 			needsDownload = true
 		} else if autoUpdate && info.SHA256 != "" {
 			// Verify hash
 			hash, err := fileSHA256(dbPath)
 			if err != nil || hash != info.SHA256 {
+				logf("[%s] local copy out of date, will update", key)
 				needsDownload = true
+			} else {
+				logf("[%s] up to date", key)
 			}
+		} else {
+			logf("[%s] already cached", key)
 		}
 
 		if needsDownload {
+			logf("[%s] downloading from %s", key, info.URL)
 			if err := f.downloadModule(key, info); err != nil {
 				return nil, fmt.Errorf("download module %q: %w", key, err)
 			}
+			logf("[%s] download complete", key)
 		}
 
 		loadedPaths = append(loadedPaths, dbPath)
 	}
 
+	logf("Done. %d module(s) ready.", len(loadedPaths))
 	return loadedPaths, nil
 }
 

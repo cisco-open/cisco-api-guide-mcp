@@ -17,9 +17,18 @@ on:
         description: 'Custom version tag (e.g. v5.2, or leave empty to use current version)'
         required: false
         type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'assets/**'
 
 permissions:
   contents: write
+
+concurrency:
+  group: publish-module
+  cancel-in-progress: false
 
 jobs:
   build-and-publish:
