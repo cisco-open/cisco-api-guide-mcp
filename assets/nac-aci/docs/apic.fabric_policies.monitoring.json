@@ -1,0 +1,6 @@
+{
+  "object_name": "Monitoring Policy",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Policies` » `Monitoring` » `Common Policy`",
+  "description": "This object will attach the `Syslog` and `SNMP Trap` policies to the `common` monitoring policy.",
+  "examples": null
+}

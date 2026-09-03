@@ -1,0 +1,6 @@
+{
+  "object_name": "Atomic Counter",
+  "gui_location": "",
+  "description": "**Location in GUI:**\n`Operations` » `Visualization` » `Atomic Counter`\n\n{{ doc_gen }}\n\n### Examples\n\n```yaml\napic:\n  fabric_policies:\n    atomic_counter:\n      mode: trail\n      admin_state: true\n```",
+  "examples": null
+}

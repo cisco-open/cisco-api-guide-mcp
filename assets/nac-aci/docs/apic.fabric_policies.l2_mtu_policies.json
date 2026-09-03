@@ -1,0 +1,6 @@
+{
+  "object_name": "L2 MTU",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Global` » `Fabric L2 MTU` » `default`",
+  "description": "",
+  "examples": null
+}

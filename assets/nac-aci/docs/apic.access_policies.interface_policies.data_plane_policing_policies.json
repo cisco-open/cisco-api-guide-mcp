@@ -1,0 +1,6 @@
+{
+  "object_name": "Data Plane Policing Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Data Plane Policing`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,6 @@
+{
+  "object_name": "SR MPLS L3out",
+  "gui_location": "- `Tenants` » `XXX` » `Networking` » `SR MPLS VRF L3Outs`",
+  "description": "The following table maps the subnet flags of external endpoint groups to the corresponding GUI terminology:\n\n|Subnet Flag|GUI Terminology|\n|---|---|\n|`import_security`|`External Subnets for External EPG`|\n|`shared_security`|`Shared Security Import Subnet`|\n|`import_route_control`|`Import Route Control Subnet`|\n|`export_route_control`|`Export Route Control Subnet`|\n|`shared_route_control`|`Shared Route Control Subnet`|\n|`aggregate_import_route_control`|`Aggregate Export`|\n|`aggregate_export_route_control`|`Aggregate Import`|\n|`aggregate_shared_route_control`|`Aggregate Shared Routes`|",
+  "examples": null
+}

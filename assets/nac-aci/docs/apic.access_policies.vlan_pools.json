@@ -1,0 +1,17 @@
+{
+  "object_name": "VLAN Pool",
+  "gui_location": "`Fabric` » `Access Policies` » `Pools` » `VLAN`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    vlan_pools:\n      - name: STATIC1\n        description: \"Static VLAN Pool\"\n        allocation: static\n        ranges:\n          - from: 4000\n            to: 4002\n            role: external\n            description: \"Range #1\"",
+      "explanation": "This configuration defines a static VLAN pool named `STATIC1` for external use. The pool allocates VLANs statically within the range `4000–4002`, with the role set to `external`. This is typically used for assigning specific VLANs to external connectivity or services, ensuring that the VLAN IDs are reserved and not dynamically assigned elsewhere in the fabric."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    vlan_pools:\n      - name: DYNAMIC_INTERNAL\n        description: \"Dynamic VLAN Pool for Internal Networks\"\n        allocation: dynamic\n        ranges:\n          - from: 100\n            to: 150\n            role: internal\n            description: \"General Internal VLANs\"\n          - from: 200\n            to: 210\n            role: internal\n            description: \"Project VLANs\"",
+      "explanation": "This example creates a dynamic VLAN pool named `DYNAMIC_INTERNAL`, intended for internal VLAN allocation. The pool includes two ranges: one for general internal VLANs and another for a special project. The allocation is set to `dynamic`, and the role is `internal`."
+    }
+  ]
+}

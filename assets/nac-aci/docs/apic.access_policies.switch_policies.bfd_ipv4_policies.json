@@ -1,0 +1,6 @@
+{
+  "object_name": "BFD Switch Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Switch` » `BFD`",
+  "description": "",
+  "examples": null
+}

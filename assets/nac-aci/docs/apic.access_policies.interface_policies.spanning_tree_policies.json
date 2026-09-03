@@ -1,0 +1,17 @@
+{
+  "object_name": "Spanning Tree Interface Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Spanning Tree Interface`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      spanning_tree_policies:\n        - name: BPDU-FILTER\n          bpdu_filter: true",
+      "explanation": "this STP policy named `BPDU_FILTER` is configured to enable the BPDU filter feature, given that the bdpu_filter attribute is set to `true`. BPDU Filter will silently drop any BPDUs received from the associated interfaces without any further actions. While it is not disruptive, it essentially equates to disabling STP on the interface and should be used with care to ensure no loops occur."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      spanning_tree_policies:\n        - name: BPDU-FILTER\n          bpdu_guard: true",
+      "explanation": "this STP policy named `BPDU_GUARD` is configured to enable the BPDU guard feature, given that the bpdu_guard attribute is set to `true`. BPDU Guard will error-disable any interfaces from which BPDUs are received for a set time. While it may introduce downtime for the duraiton of the error-disablement, it can ensure the overall stability of the network by guaranteeing that no rogue BPDUs or switches affect the stability of the STP topology."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "object_name": "VMware VMM Domain",
+  "gui_location": "`Virtual Networking` » `VMware`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    vmware_vmm_domains:\n      - name: VMM_DOM\n        vlan_pool: VMM_VLP\n        credential_policies:\n          - name: VCENTER_CREDS\n            username: admin\n            password: password\n        vcenters:\n          - name: PROD_VCENTER\n            hostname_ip: 10.10.10.10\n            datacenter: DC1\n            credential_policy: VCENTER_CREDS",
+      "explanation": "this is a simple VMM domain named `VMM_DOM` with the most basic required data. The VMM domain is associated with a dynamic VLAN pool `VMM_VLP`, and is configured with the integration credentials under the `VCENTER_CREDS` credentials policy, specifying the vSphere username and password. These credentials are used to authenticate against the vCenters defined under the vcenters list, named `PROD_VCENTER`, which defines the vCenter hostname/IP of `10.10.10.10`, datacenter name on the vSphere side (`DC1` in this example), and the associated credentials policy. A new VDS with the name of the VMM domain will be created on the vCenter upon successful integration."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  fabric_policies:\n    vmware_vmm_domains:\n      - name: VMM_DOM\n        vlan_pool: VMM_VLP\n        credential_policies:\n          - name: VCENTER_CREDS\n            username: admin\n            password: password\n        vcenters:\n          - name: PROD_VCENTER\n            hostname_ip: 10.10.10.10\n            datacenter: DC1\n            credential_policy: VCENTER_CREDS\n        vswitch:\n          cdp_policy: system_cdp_pol_enabled\n          lldp_policy: system_lldp_pol_disabled\n          port_channel_policy: system_mac_pinning\n        uplinks:\n          - id: 1\n            name: UPLINK_1\n          - id: 2\n            name: UPLINK_2",
+      "explanation": "this VMM domain `VMM_DOM` defines specific configuration for the vSwitch policies, such as the CDP, LLDP and port-channel policies for the VDS. If left unspecified, the APIC will create custom CDP and LLDP policies for the VDS, so the system policies are used to achieve the required intent. CDP is enabled as it is used by default on the VDS using the ACI system policy of `system-cdp-enabled`, and LLDP is disabled using the equivalent `system-lldp-disabled` policy. The port-channel policy is set to `system-mac-pinning` to enable load sharing across the uplinks without using LACP, following the recommendation from VMware. This VMM domain defines the uplinks as well to be used by the ESXi hosts to be attached to the VDS, in this case defining `UPLINK1` and `UPLINK2` with their respective IDs of `1` and `2`. This should only be defined when the uplink count is well-known and uniform across all hosts attached to the VDS, otherwise it should be left undefined for the VMware admin to define as needed."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  fabric_policies:\n    vmware_vmm_domains:\n      - name: VMM1\n        access_mode: read-write\n        delimiter: '|'\n        tag_collection: true\n        vlan_pool: VMM1\n        allocation: dynamic\n        vswitch:\n          cdp_policy: CDP-ENABLED\n          lldp_policy: LLDP-ENABLED\n          port_channel_policy: LACP-ACTIVE\n          netflow_exporter_policy: VMM-EXPORTER1\n          enhanced_lags:\n            - name: ELAGCUSTOM\n              mode: active\n              lb_mode: src-dst-l4port\n              num_links: 3\n        credential_policies:\n          - name: CRED1\n            username: Administrator\n            password: C1sco123\n        vcenters:\n          - name: VC\n            hostname_ip: 10.10.10.10\n            datacenter: DC1\n            dvs_version: unmanaged\n            statistics: true\n            credential_policy: CRED1\n        uplinks:\n          - id: 1\n            name: UPLINK1\n          - id: 2\n            name: UPLINK2\n        trunk_port_groups:\n          - name: trunk_port_group_1\n            promiscuous_mode: true\n            immediacy: immediate\n            mac_change: true\n            forged_transmit: true\n            enhanced_lag_policy: ELAGCUSTOM\n            vlan_ranges:\n              - from: 12\n                to: 20\n              - from: 21\n                to: 30",
+      "explanation": "full example- of VMM domain with all properties configured"
+    }
+  ]
+}

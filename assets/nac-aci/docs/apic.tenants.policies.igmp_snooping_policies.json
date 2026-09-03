@@ -1,0 +1,17 @@
+{
+  "object_name": "IGMP Snooping Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `IGMP Snoop`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        igmp_snooping_policies:\n          - name: IGMP-SNOOP1\n            fast_leave: true\n            querier: true",
+      "explanation": "This is a single example of an IGMP Sooping Policy where the IGMP Sooping Policy `IGMP-SNOOP1` is configured under tenant `ABC`. This sample illustrates a configuration where IGMP Fast Leave and Querier are `enabled`."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        igmp_snooping_policies:\n          - name: IGMP_Snooping_Disabled\n            admin_state: false",
+      "explanation": "This is a single example of an IGMP Sooping Policy where the IGMP Sooping Policy IGMP_Snooping_Disabled is configured under tenant `ABC`. This sample illustrates a configuration where IGMP Snooping is `disabled`."
+    }
+  ]
+}

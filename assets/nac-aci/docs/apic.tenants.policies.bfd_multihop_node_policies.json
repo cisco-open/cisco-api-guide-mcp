@@ -1,0 +1,6 @@
+{
+  "object_name": "BFD Multihop Node Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `BFD Multihop` » `Node Policies`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,12 @@
+{
+  "object_name": "Redirect Health Group",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `L4-L7 Redirect Health Groups`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PBR_ServGraph\n      services:\n        redirect_health_groups:\n          - name: L4L7RedirectHealthGroup\n            description: Group for PBR destinations",
+      "explanation": "This data model creates one L4-L7 Redirect Health Group named `L4L7RedirectHealthGroup`. These health groups are typically referenced by Redirect Policies and Redirect Backup Policies to provide health tracking of service nodes. It is highly recommended to review the examples in those modules for better understanding. The health group aggregates the status of ingress and egress redirect destination nodes to prevent traffic black-holing by marking nodes as down if they become unreachable. This mechanism enables full failover and traffic redirection capabilities within Cisco ACI Policy-Based Redirect (PBR)."
+    }
+  ]
+}

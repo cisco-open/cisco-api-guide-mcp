@@ -1,0 +1,6 @@
+{
+  "object_name": "LDAP",
+  "gui_location": "`Admin` » `AAA` » `Authentication` » `LDAP`",
+  "description": "",
+  "examples": null
+}

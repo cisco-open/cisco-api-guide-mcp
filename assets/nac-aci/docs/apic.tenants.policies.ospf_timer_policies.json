@@ -1,0 +1,6 @@
+{
+  "object_name": "OSPF Timer Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `OSPF` » `OSPF Timer Policy`",
+  "description": "",
+  "examples": null
+}

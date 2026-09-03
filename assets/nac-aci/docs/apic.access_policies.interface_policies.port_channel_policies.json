@@ -1,0 +1,6 @@
+{
+  "object_name": "Port Channel Interface Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Port Channel`",
+  "description": "",
+  "examples": null
+}

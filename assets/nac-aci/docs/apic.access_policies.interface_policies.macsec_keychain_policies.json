@@ -1,0 +1,6 @@
+{
+  "object_name": "MACsec Keychain Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `MACsec` » `MACsec KeyChain Policies`",
+  "description": "",
+  "examples": null
+}

@@ -6,8 +6,8 @@
       "product_id": "aci",
       "version": "5.2",
       "description": "REST API for Cisco Application Centric Infrastructure (ACI).",
-      "size_bytes": 802816,
-      "sha256": "b640c1df9a03398ff3490a7502384a647a1f4be1dfd5d221f5b8cfb83571c357",
+      "size_bytes": 811008,
+      "sha256": "a3362f066d5981b73b4bafccaf46ec344803384f3a0fe81f28fb54682928658f",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/aci.db.gz",
       "aliases": ["apic", "application centric infrastructure"]
     },
@@ -16,8 +16,8 @@
       "product_id": "ndfc",
       "version": "4.1.1",
       "description": "REST API for Cisco NDFC (formerly DCNM).",
-      "size_bytes": 1925120,
-      "sha256": "b945d9800599cfffe5fdd6570b0125ead0bd7f20f7156c744b472c0776fe10ff",
+      "size_bytes": 1892352,
+      "sha256": "6f8bedfb005686d9f862cef349f8d1bc2c79372e3a29e6452302a8ffb5530a8b",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/ndfc.db.gz",
       "aliases": ["dcnm", "nexus dashboard fabric controller"]
     },
@@ -26,8 +26,8 @@
       "product_id": "intersight",
       "version": "1.0.11",
       "description": "REST API for Cisco Intersight SaaS platform.",
-      "size_bytes": 8761344,
-      "sha256": "b6463f39372e3fe6bd39d374e4cc0bee2b0cfb2fd4928b6c35b9c07d1e0e46f2",
+      "size_bytes": 8765440,
+      "sha256": "b3c806b54d2ae6104c0fe051da66bee3ce92ee9dcf3a7d18cc29ed0df51e2dfe",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/intersight.db.gz",
       "aliases": ["ucs"]
     },
@@ -36,8 +36,8 @@
       "product_id": "nac-aci",
       "version": "2.0.0",
       "description": "Network-as-Code (NaC) YAML configuration model for Cisco ACI.",
-      "size_bytes": 90112,
-      "sha256": "f102466ca57905ee757e353e11551b0fce0f774432be4efb06c397142e9b9015",
+      "size_bytes": 4534272,
+      "sha256": "90318acf9fc08ca9a482fe7bbeaf9a26a4a6400cb6c1dbe07a17efdc6c75ad58",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/nac-aci.db.gz",
       "aliases": ["nac-apic"]
     },
@@ -46,8 +46,8 @@
       "product_id": "nac-vxlan",
       "version": "2.0.0",
       "description": "Network-as-Code (NaC) YAML configuration model for Cisco NDFC VXLAN/EVPN fabrics.",
-      "size_bytes": 90112,
-      "sha256": "3c977e6a08a9fe8da27ef466b9c94333662e686fbb2061fd2b418587bba9e787",
+      "size_bytes": 1925120,
+      "sha256": "49aecad1f16415c83165a39d255715a1c0bf49c29053da9c17d62ea07f84d332",
       "url": "https://github.com/cisco-open/cisco-api-guide-mcp/releases/download/data-modules-latest/nac-vxlan.db.gz",
       "aliases": ["nac-ndfc"]
     }

@@ -1,0 +1,6 @@
+{
+  "object_name": "MST Switch Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Switch` » `Spanning Tree`",
+  "description": "",
+  "examples": null
+}

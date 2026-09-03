@@ -1,0 +1,6 @@
+{
+  "object_name": "Remote VXLAN Fabric",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `VXLAN Gateway` » `Remote VXLAN Fabrics`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,12 @@
+{
+  "object_name": "Endpoint Security Group",
+  "gui_location": "`Tenants` » `XXX` » `Application Profiles` » `XXX` » `Endpoint Security Groups`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PROD\n      application_profiles:\n        - name: PROD_AP\n          endpoint_security_groups: # ESGs\n            - name: PROD_Low_ESG\n              vrf: PROD\n              contracts:\n                consumers:\n                  - PROD_EW_PBR_CT\n                providers:\n                  - PROD_EW_PBR_CT\n              ip_subnet_selectors:\n                - value: 192.168.153.0/24\n                  description: IP Subnet Selector for the PROD_Low_BD subnet",
+      "explanation": "The configuration below demonstrates how to configure an endpoint security group `PROD_Low_ESG` under the `PROD_AP` application profile in tenant `PROD`. The ESG ledverages ip_subnet_selectors to logically group Endpoints based on their IP subnets (`192.168.153.0/24`). The example would not be complete without highlighting the use of different provide/consume contracts (`PROD_EW_PBR_CT`) for this ESG, enabling precise control of communication."
+    }
+  ]
+}

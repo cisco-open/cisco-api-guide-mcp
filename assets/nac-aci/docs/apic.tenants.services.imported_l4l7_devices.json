@@ -1,0 +1,12 @@
+{
+  "object_name": "Imported L4L7 Device",
+  "gui_location": "`Tenants` » `XXX` » `Services` » `L4-L7` » `Imported Devices`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      services:\n        imported_l4l7_devices:\n          - name: FW\n            tenant: PBR_ServGraph",
+      "explanation": "This data model imports the device `FW` which was created in the tenant `PBR_ServGraph` and makes it available for use in the tenant `ABC`. This enables the sharing and reuse of the L4-L7 device across multiple tenants without the need to redefine the device multiple times. In other words, it allows service graph templates and policies in tenant `ABC` to reference the `FW` device.\n\nThe data model can be applied as is, regardless of whether the referenced devices exist."
+    }
+  ]
+}

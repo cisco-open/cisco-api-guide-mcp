@@ -1,0 +1,6 @@
+{
+  "object_name": "MPLS Custom QoS Policy",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `Protocol` » `MPLS Custom QoS Policy`",
+  "description": "",
+  "examples": null
+}

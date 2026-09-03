@@ -1,0 +1,27 @@
+{
+  "object_name": "Contract",
+  "gui_location": "`Tenants` » `XXX` » `Contracts` » `Standard`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      contracts:\n        - name: CON1\n          subjects:\n            - name: SUB1\n              filters:\n                - filter: HTTP",
+      "explanation": "This is a simple contract `CON1` defined with just a single subject named `SUB1`, associated with a single filter for web traffic, aptly named `HTTP`. There is no service graph associated, meaning this contract permits traffic directly."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      contracts:\n        - name: CON1\n          subjects:\n            - name: SUB1\n              service_graph: DC_FW_SG\n              filters:\n                - filter: IP_ANY\n                  action: permit",
+      "explanation": "This is a simple contract `CON1` with a single subject `SUB1`, which redirect all traffic matching the `IP_ANY` filter to the service graph named `DC_FW_SG`. Such a contract is typically used to redirect all traffic within a given ACI VRF to the DC FW using PBR, and having this contract provided and consumed by vzAny. The contract typically references a filter matching the IP ethertype only."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      contracts:\n        - name: MS_AD_TO_BKP_SRV\n          description: Contract between MS AD and backup servers\n          subjects:\n            - name: LDAP\n              description: Redirect LDAP to DC FW\n              service_graphs: DC_FW_SG\n              filters:\n                - filter: LDAP\n            - name: BKP\n              description: Permit backup traffic directly\n              filters:\n                - filter: BKP\n      filters:\n        - name: LDAP\n          entries:\n            - name: TCP_389\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 389\n              destination_to_port: 389\n            - name: UDP_389\n              ethertype: ip\n              protocol: udp\n              destination_from_port: 389\n              destination_to_port: 389\n        - name: BKP\n          entries:\n            - name: TCP_2049\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 2049\n              destination_to_port: 2049",
+      "explanation": "This contract `MS_AD_TO_BKP_SRV` is configured with two subjects: `LDAP` and `BKP`. The `LDAP` subject redirects traffic matching the `LDAP` filter to the `DC_FW_SG` service graph, whereas the `BKP` subject permits traffic matching the `BKP` filter directly through ACI (since there is no service graph attached to the subject). This is typically configured with EPGs containing backup solutions, since some traffic may require service graph redirection (such as LDAP in this case to log into the backup solution), whereas redirecting the backup traffic to a service node is not required since it would unnecessarily overload it. Different contract subjects are able to match on different filters and apply separate actions for each as needed, typically combining subjects with and without a service graph for redirection."
+    },
+    {
+      "title": "Example-4",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      contracts:\n        - name: WEB_TO_DB\n          description: Unidirectional contract between web and DB EPGs\n          subjects:\n            - name: SUB1\n              reverse_filter_ports: false\n              consumer_to_provider:\n                qos_class: level1\n                target_dscp: AF11\n                service_graph: DC_FW_SG\n                filters:\n                - filter: TCP_5432\n                  action: permit\n              provider_to_consumer:\n                qos_class: level3\n                target_dscp: AF13\n                service_graph: DC_FW_SG\n                filters:\n                - filter: TCP_443\n                  action: permit",
+      "explanation": "This contract applies a uni-directionally between the web (consumer) and DB (provider) EPGs. It is uni-directional due to the fact that reverse_filter_ports is set to `false`, and each of the consumer and provider sides can have separate configuration in this case. The consumer to provider side matches on the DB port filter, sets a high-priority QoS level of 1 and a DSCP of AF11 to ensure writes to the DB are treated preferentially, and rediects to the DC FW service graph. The provider to consumer side sets a lower QoS level of 3 and a DSCP of AF13, matches on the HTTPS port, and redirects to the DC FW service graph."
+    }
+  ]
+}

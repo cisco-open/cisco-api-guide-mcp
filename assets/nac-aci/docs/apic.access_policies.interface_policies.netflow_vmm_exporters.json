@@ -1,0 +1,6 @@
+{
+  "object_name": "NetFlow VMM Exporters",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `NetFlow` » `NetFlow Exporters for VM Networking`",
+  "description": "",
+  "examples": null
+}

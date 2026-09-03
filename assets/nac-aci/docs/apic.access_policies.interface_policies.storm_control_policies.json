@@ -1,0 +1,22 @@
+{
+  "object_name": "Storm Control Interface Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Storm Control`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      storm_control_policies:\n        - name: 20P\n          alias: 20P\n          burst_pps: unspecified\n          rate_pps: unspecified\n          burst_rate: 20\n          rate: 20",
+      "explanation": "This configuration creates a storm control policy named `20P` with a burst rate and rate of burst_pps (packet-per-second) and rate_pps are left unspecified, meaning they are not set. This policy applies the same rate limits to all traffic types (broadcast, multicast, unknown unicast) as per the default behavior."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      storm_control_policies:\n        - name: 10P\n          alias: 10P\n          broadcast_burst_pps: unspecified\n          broadcast_pps: unspecified\n          broadcast_burst_rate: 10\n          broadcast_rate: 10\n          multicast_burst_pps: unspecified\n          multicast_pps: unspecified\n          multicast_burst_rate: 10\n          multicast_rate: 10\n          unknown_unicast_burst_pps: unspecified\n          unknown_unicast_pps: unspecified\n          unknown_unicast_burst_rate: 10\n          unknown_unicast_rate: 10\n          action: drop",
+      "explanation": "This example defines a storm control policy named `10P` that sets specific rate and burst rate limits to `10` for broadcast, multicast, and unknown unicast traffic. The action is set to drop, meaning traffic exceeding these limits will be dropped. All `*_pps` fields (packet-per-second) are unspecified, so only rate-based limits are enforced."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      storm_control_policies:\n        - name: SEPARATE_LIMITS\n          alias: SEPLIM\n          description: \"Separate storm control for each traffic type\"\n          burst_pps: 5000\n          rate_pps: 1000\n          broadcast_burst_pps: 2000\n          broadcast_pps: 500\n          multicast_burst_pps: 1500\n          multicast_pps: 300\n          unknown_unicast_burst_pps: 1000\n          unknown_unicast_pps: 200\n          action: shutdown",
+      "explanation": "This configuration defines a storm control policy named `SEPARATE_LIMITS` with the alias `SEPLIM`. It sets individual pps (packet-per-second) limits for all, broadcast, multicast, and unknown unicast traffic types. If any of the specified thresholds are exceeded, the action taken is to administratively shut down the affected interface. This allows for granular protection against network storms on a per-traffic-type basis."
+    }
+  ]
+}

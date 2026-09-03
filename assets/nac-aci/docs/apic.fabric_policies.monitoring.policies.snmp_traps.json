@@ -1,0 +1,6 @@
+{
+  "object_name": "SNMP Trap",
+  "gui_location": "`Admin` » `External Data Collectors` » `Monitoring Destinations` » `SNMP`",
+  "description": "",
+  "examples": null
+}

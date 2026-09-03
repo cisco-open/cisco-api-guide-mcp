@@ -1,0 +1,6 @@
+{
+  "object_name": "MACsec Interfaces Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `MACsec` » `Interfaces`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,6 @@
+{
+  "object_name": "TACACS Provider",
+  "gui_location": "`Admin` » `AAA` » `Authentication` » `TACACS`",
+  "description": "",
+  "examples": null
+}

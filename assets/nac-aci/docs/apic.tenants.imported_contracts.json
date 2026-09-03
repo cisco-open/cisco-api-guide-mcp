@@ -1,0 +1,12 @@
+{
+  "object_name": "Imported Contract",
+  "gui_location": "`Tenants` » `XXX` » `Contracts` » `Imported`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      imported_contracts:\n        - name: IMPORT-CON1\n          tenant: DEF\n          contract: CON1",
+      "explanation": "This data model imports contract `CON1` defined in Tenant `DEF` to enable tenant `ABC` to consume it.  This mechanism allows for controlled sharing of policies and communication rules across tenant boundaries while maintaining tenant isolation. The consumer tenant's Endpoint Groups (EPGs) can then consume the imported contract by adding it as a consumed contract interface."
+    }
+  ]
+}

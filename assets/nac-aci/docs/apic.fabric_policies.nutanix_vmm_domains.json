@@ -1,0 +1,12 @@
+{
+  "object_name": "Nutanix VMM Domain",
+  "gui_location": "`Virtual Networking` » `Nutanix`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    nutanix_vmm_domains:\n      - name: ntnx_1\n      - name: ntnx_2\n        vlan_pool: VPOOL2\n        access_mode: read-only\n        custom_vswitch_name: open_vswitch\n        security_domains:\n          - ntnx_2_SD1\n          - ntnx_2_SD2\n          - ntnx_2_SD3\n        credential_policies:\n          - name: credentials_central\n            username: admin\n            password: C1sco123\n          - name: credentials_element\n            username: root\n            password: 1234QWer!\n        controller_profile:\n          name: ntnx_prism_central\n          hostname_ip: 10.10.10.10\n          datacenter: DC1\n          aos_version: 6.5\n          credentials: credentials_central\n          statistics: true\n        cluster_controller:\n          name: ntnx_prism_element\n          hostname_ip: 192.168.1.1\n          cluster_name: cluster_1\n          credentials: credentials_element\n          port: 9441",
+      "explanation": "The following example defines two Nutanix VMM Domains, `ntnx_1` with default values and `ntnx_2` with custom values. It also associates both VMM domains with an AAEP and an EPG. Keep in mind that it is not recommended to store credentials in plain text within configuration files; consider using environment variables or Vault tools for enhanced security."
+    }
+  ]
+}

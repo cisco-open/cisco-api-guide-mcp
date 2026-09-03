@@ -1,0 +1,12 @@
+{
+  "object_name": "Pod Policy Group",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Pods` » `Policy Groups`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    pod_policy_groups:\n      - name: POD1\n        description: POD1 Description\n        snmp_policy: POD1_SNMP\n        date_time_policy: POD1_NTP\n        management_access_policy: POD1_MGMT\n        bgp_route_reflector_policy: default",
+      "explanation": "this pod policy group named `POD1` with description \"POD1 Description\" defines pod-wide configurations, such as the snmp_policy `POD1_SNMP` containing the SNMP configuration, the date_time_policy `POD1_NTP` containing the NTP server information, and the management_access_policy `POD1_MGMT` containing the ACI management access settings and ciphers. This policy is put into effect by associating it to the relevant pod profile."
+    }
+  ]
+}

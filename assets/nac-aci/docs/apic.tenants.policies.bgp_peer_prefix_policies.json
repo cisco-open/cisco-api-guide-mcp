@@ -1,0 +1,6 @@
+{
+  "object_name": "BGP Peer Prefix Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `BGP` » `BGP Peer Prefix`",
+  "description": "",
+  "examples": null
+}

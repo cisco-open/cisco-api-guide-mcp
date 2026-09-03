@@ -1,0 +1,6 @@
+{
+  "object_name": "Fabric Leaf Interface Profile",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Interfaces` » `Leaf Interfaces` » `Profiles`",
+  "description": "Leaf Interface Profiles can either be auto-generated (one per leaf) by providing a naming convention, or can be system-generated (one per leaf), or can be defined explicitly. In case of auto-generated profiles the following placeholders can be used when defining the naming convention:\n\n* `\\\\g\u003cid\u003e`: gets replaced by the respective leaf node ID\n* `\\\\g\u003cname\u003e`: gets replaced by the respective leaf hostname",
+  "examples": null
+}

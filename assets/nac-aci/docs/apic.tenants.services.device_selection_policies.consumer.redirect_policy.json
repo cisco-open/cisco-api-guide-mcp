@@ -1,0 +1,12 @@
+{
+  "object_name": "Redirect Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `L4-L7 Policy-Based Redirect`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PBR_ServGraph\n      services:\n        redirect_policies:\n          - name: L4L7_PBR\n            description: L4-L7 PBR with SG\n            type: L3\n            ip_sla_policy: PingEach20sec\n            l3_destinations:\n              - name: FW_Virtual_Interface\n                description: FW virtual interface\n                ip: 10.0.0.5\n                mac: AA:AA:BB:BB:CC:CC\n                redirect_health_group: L4L7RedirectHealthGroup",
+      "explanation": "This data model creates an L3-type Redirect Policy named `L4L7_PBR`, which redirects traffic to the PBR destinations specified under `l3_destinations`. The L3 PBR node interface is expected to reside within an L3Out (specified in the Device Selection Policies).\n\nTo monitor destination health and prevent traffic black-holing, the IP SLA Policy `PingEach20sec` and Redirect Health Group `L4L7RedirectHealthGroup` are utilized. These monitoring policies are defined in the following modules:\n\n- apic.tenants.policies.ip_sla_policies\n- apic.tenants.services.redirect_health_groups\n\nIf IP SLA Policy is not existing in configured Tenant's Data Model and it exists in `common` Tenant Data Model, then relation for ip_sla_policy will reflect IP SLA Policy in `common` Tenant."
+    }
+  ]
+}

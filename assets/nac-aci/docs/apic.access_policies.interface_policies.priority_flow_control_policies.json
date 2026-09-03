@@ -1,0 +1,27 @@
+{
+  "object_name": "Priority Flow Control Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Priority Flow Control`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      priority_flow_control_policies:\n        - name: PFC-ON\n          description: Priority Flow Control Enabled\n          admin_state: true\n          auto_state: false",
+      "explanation": "This configuration creates a priority flow control policy named `PFC-ON` with PFC explicitly enabled. The `auto_state` is set to false to disable auto-negotiation, and `admin_state` is set to true to enable PFC."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      priority_flow_control_policies:\n        - name: PFC-OFF\n          description: Priority Flow Control Disabled\n          admin_state: false\n          auto_state: false",
+      "explanation": "This example defines a priority flow control policy named `PFC-OFF` with PFC explicitly disabled. The `auto_state` is set to false and `admin_state` is set to false to disable PFC."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      priority_flow_control_policies:\n        - name: PFC-AUTO\n          description: Priority Flow Control Auto\n          auto_state: true",
+      "explanation": "This configuration creates a priority flow control policy named `PFC-AUTO` with auto-negotiation enabled. When `auto_state` is true, the PFC state is automatically negotiated with the peer."
+    },
+    {
+      "title": "Example-4",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      priority_flow_control_policies:\n        - name: PFC-MIN",
+      "explanation": "This configuration creates a minimal PFC policy named `PFC-MIN` using all default values. By default, `auto_state` is true and `admin_state` is true."
+    }
+  ]
+}

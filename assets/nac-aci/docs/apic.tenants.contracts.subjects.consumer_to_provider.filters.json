@@ -1,0 +1,32 @@
+{
+  "object_name": "Filter",
+  "gui_location": "`Tenants` » `XXX` » `Contracts` » `Filters`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      filters:\n        - name: FILTER1\n          entries:\n            - name: HTTP\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 80\n              destination_to_port: 80",
+      "explanation": "This configures a basic filter `FILTER1` with a single `HTTP` entry, which matches traffic with the ethertype of `ip`, protocol of `tcp`, and a destination port of `80` for HTTP. The destination port can be a range between destination_from_port and destination_to_port, and they are both set to the same value to only match a single port and not a range."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      filters:\n        - name: WEB\n          description: Matches HTTP and HTTPS traffic\n          entries:\n            - name: HTTP\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 80\n              destination_to_port: 80\n            - name: HTTPS\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 443\n              destination_to_port: 443",
+      "explanation": "This configures a filter `WEB` with multiple entries to match related traffic, such as entry 1 being for `HTTP` and the second named `HTTPS`. The `HTTP` entry matches traffic with the ethertype of `ip`, protocol of `tcp`, and a destination port of `80` for HTTP. The `HTTPS` entry matches traffic with the ethertype of `ip`, protocol of `tcp`, and a destination port of `443` for HTTP. This allows for the logical grouping of related types of traffic into a single filter for flexibility where a number of different ports are related to a given service. Another similar example could be backup traffic."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      filters:\n        - name: WEB\n          description: Matches K8S ports\n          entries:\n            - name: HTTP\n              ethertype: ip\n              protocol: tcp\n              destination_from_port: 10250\n              destination_to_port: 10259",
+      "explanation": "This configures a filter `K8S` which demonstrates the use of a range of ports. This example allows TCP ports between destination_from_port `10250` to destination_to_port `10259` for Kubernetes as an example."
+    },
+    {
+      "title": "Example-4",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      filters:\n        - name: WEB\n          description: Matches HTTP traffic as the source port\n          entries:\n            - name: HTTP\n              ethertype: ip\n              protocol: tcp\n              source_from_port: 80\n              source_to_port: 80",
+      "explanation": "This configures a `WEB` filter with source_from_port and source_to_port set to `80` with the ethertype being `ip` and the protocol `tcp`. While it is not common to define the source ports, this can be useful when used with uni-directional contracts to selectively match differen types of traffic in a given direction (provider or consumer). Such a filter may be used with the web EPG being the consumer, where it initiates a request from the web server."
+    },
+    {
+      "title": "Example-5",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      filters:\n        - name: FILTER1\n          entries:\n            - name: TCP_FRAGMENTS\n              ethertype: ip\n              protocol: tcp\n              match_only_fragments: true",
+      "explanation": "This configures a `FILTER1` filter with an entry named `TCP_FRAGMENTS` that matches TCP fragments only. When an entry has `match_only_fragments` enabled, the rest of the options (e.g. `source_from_port`, `destination_from_port`, `source_to_port`, `destination_to_port` and `stateful`) are not available for configuration."
+    }
+  ]
+}

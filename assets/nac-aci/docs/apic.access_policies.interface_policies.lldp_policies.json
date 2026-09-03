@@ -1,0 +1,17 @@
+{
+  "object_name": "LLDP Interface Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `LLDP Interface`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      lldp_policies:\n        - name: LLDP-ENABLED\n          admin_rx_state: true\n          admin_tx_state: true",
+      "explanation": "This data model creates an LLDP Interface Policy named `LLDP-ENABLED` with LLDP transmission and reception enabled."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      lldp_policies:\n        - name: LLDP-ENABLED\n          admin_rx_state: true\n          admin_tx_state: true\n          dcbxp_version: IEEE",
+      "explanation": "Starting with ACI release 6.0(3)+, LLDP supports the IEEE DCBX extension. DCBX enables devices to discover each other's Data Center Bridging (DCB) capabilities, such as Priority Flow Control (PFC) and Enhanced Transmission Selection (ETS), and to negotiate a consistent configuration. DCBX is a critical component in establishing a lossless Ethernet environment.\n\nPlease note that if the `dcbxp_version` option is included in data models for earlier releases, the deployment will fail."
+    }
+  ]
+}

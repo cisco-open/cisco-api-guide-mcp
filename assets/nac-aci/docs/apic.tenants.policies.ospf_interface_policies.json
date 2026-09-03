@@ -1,0 +1,6 @@
+{
+  "object_name": "OSPF Interface Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `OSPF` » `OSPF Interface`",
+  "description": "",
+  "examples": null
+}

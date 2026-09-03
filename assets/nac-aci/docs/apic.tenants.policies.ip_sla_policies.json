@@ -1,0 +1,12 @@
+{
+  "object_name": "IP SLA Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `IP SLA` » `IP SLA Monitoring Policies`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PBR_ServGraph\n      policies:\n        ip_sla_policies:\n          - name: 'L2PingEach30sec'\n            description: Send L2 ping each 30 seconds\n            frequency: 30\n            multiplier: 2\n            sla_type: l2ping\n          - name: 'PingEach20sec'\n            description: Send ping each 20 seconds\n            frequency: 20\n            multiplier: 4",
+      "explanation": "This data model creates two IP SLA Policies named `L2PingEach30sec` and `PingEach20sec`. They are usually referenced by Redirect Policies as a method for active traffic monitoring that measures network performance by generating traffic probes such as ICMP, TCP, or L2Ping (specified in `sla_type`). It will provide reachability and performance data, but it will not automatically influence PBR traffic redirection decisions. If you select `tcp` as `sla_type`, you must define a `port` value as well."
+    }
+  ]
+}

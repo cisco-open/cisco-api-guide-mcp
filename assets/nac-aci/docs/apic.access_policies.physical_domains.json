@@ -1,0 +1,17 @@
+{
+  "object_name": "Physical Domain",
+  "gui_location": "`Fabric` » `Access Policies` » `Physical and External Domains` » `Physical Domains`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    vlan_pools:\n      - name: PROD_VLANS\n        allocation: dynamic\n    physical_domains:\n      - name: PROD_PHY\n        vlan_pool: PROD_VLANS\n        security_domains:\n          - PROD_SEC\n          - AUDIT_SEC",
+      "explanation": "This example creates a physical domain named `PROD_PHY` that is associated with a VLAN pool called `PROD_VLANS` using dynamic allocation. The physical domain is also linked to two security domains: `PROD_SEC` and `AUDIT_SEC`. This configuration ensures that the physical domain is properly segmented and secured according to organizational requirements."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    vlan_pools:\n      - name: LAB_VLANS\n        allocation: static\n    physical_domains:\n      - name: LAB_PHY\n        vlan_pool: LAB_VLANS\n        security_domains:\n          - LAB_SEC",
+      "explanation": "This example defines a physical domain named `LAB_PHY` using the VLAN pool `LAB_VLANS` with static allocation. It is associated with the security domain `LAB_SEC`, suitable for lab or test environments."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "object_name": "Port Security Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `Port Security`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      port_security_policies:\n        - name: PS-FULL\n          description: Port Security Full Config\n          maximum_endpoints: 100\n          timeout: 120",
+      "explanation": "This configuration creates a port security policy named `PS-FULL` with a maximum of 100 endpoints allowed and a timeout of 120 seconds. When the maximum endpoints limit is reached, new MAC addresses will not be learned until existing entries age out."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      port_security_policies:\n        - name: PS-STRICT\n          description: Strict port security\n          maximum_endpoints: 10\n          timeout: 3600",
+      "explanation": "This example defines a port security policy named `PS-STRICT` with strict endpoint limiting. Only 10 endpoints are allowed, and the timeout is set to one hour (3600 seconds). This is useful for high-security environments where the number of devices connecting to a port must be tightly controlled."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  access_policies:\n    interface_policies:\n      port_security_policies:\n        - name: PS-MIN",
+      "explanation": "This configuration creates a minimal port security policy named `PS-MIN` using all default values. The maximum_endpoints defaults to 0 (unlimited) and timeout defaults to 60 seconds."
+    }
+  ]
+}

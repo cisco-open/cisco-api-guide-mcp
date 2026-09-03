@@ -1,0 +1,17 @@
+{
+  "object_name": "Access Leaf Switch Profile",
+  "gui_location": "`Fabric` » `Access Policies` » `Switches` » `Leaf Switches` » `Profiles`",
+  "description": "Leaf Switch Profiles can either be auto-generated (one per leaf) by providing a naming convention, or can be system-generated (one per leaf), or can be defined explicitly. In case of auto-generated profiles the following placeholders can be used when defining the naming convention:\n\n* `\\\\g\u003cid\u003e`: gets replaced by the respective leaf node ID\n* `\\\\g\u003cname\u003e`: gets replaced by the respective leaf hostname",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    leaf_switch_profiles:\n      - name: LEAF101\n        selectors:\n          - name: SEL1\n            policy: ALL_LEAFS\n            node_blocks:\n              - name: BLOCK1\n                from: 101\n        interface_profiles:\n          - LEAF101",
+      "explanation": "This configuration creates a leaf switch profile named `LEAF101` that applies the `ALL_LEAFS` policy to node `101` and associates it with the `LEAF101` interface profile for port configuration. This is used to control which switches get which policies and interface settings."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    leaf_switch_profiles:\n      - name: LEAF_PROFILE_101_102\n        selectors:\n          - name: LEAFS_101_102\n            policy: ALL_LEAFS_POLICY\n            node_blocks:\n              - name: BLOCK_101_102\n                from: 101\n                to: 102\n        interface_profiles:\n          - LEAF101_INTF_PROFILE\n          - LEAF102_INTF_PROFILE",
+      "explanation": "This configuration creates a leaf switch profile that applies the `ALL_LEAFS_POLICY` to both leaf switches `101` and `102`, and associates each with its respective interface profile for port configuration. This allows you to manage policies and interface settings for multiple switches as a group."
+    }
+  ]
+}

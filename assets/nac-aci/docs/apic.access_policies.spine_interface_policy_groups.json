@@ -1,0 +1,17 @@
+{
+  "object_name": "Access Spine Interface Policy Group",
+  "gui_location": "`Fabric` » `Access Policies` » `Interfaces` » `Spine Interfaces` » `Policy Groups`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    spine_interface_policy_groups:\n      - name: IPN1\n        link_level_policy: 10G\n        cdp_policy: CDP-ENABLED\n        aaep: AAEP1",
+      "explanation": "This configuration defines a spine interface policy group named `IPN1`, it sets the interface speed to `10G`, enables CDP, and associates the group with the AAEP profile `AAEP1` for consistent policy application on spine switch interfaces."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    spine_interface_policy_groups:\n    - name: IPN1\n      link_level_policy: \"10G\"\n      cdp_policy: \"CDP-ENABLED\"\n      aaep: \"AAEP1\"\n      lldp_policy: \"LLDP-ENABLED\"\n      description: \"Spine interface group for IPN connectivity\"\n\n    - name: SPINE-INT-GRP-01\n      link_level_policy: \"25G\"\n      cdp_policy: \"CDP-DISABLED\"\n      aaep: \"AAEP-SPINE\"\n      lldp_policy: \"LLDP-ENABLED\"\n      description: \"Standard 25G spine interface group\"",
+      "explanation": "This configuration defines two Access Spine Interface Policy Groups. This group allows you to associate interface-level policies such as link level, CDP, LLDP, and attachable access entity profiles AAEP to spine interfaces.\n\nThe first group, named `IPN1`, assigns the following policies to spine interfaces:\n\n- link_level_policy: `10G`: Sets the interface speed to 10 Gigabit.\n- cdp_policy: `CDP-ENABLED`: Enables Cisco Discovery Protocol on the interface.\n- aaep: `AAEP1`: Associates the interface with the Attachable Access Entity Profile named AAEP1.\n- lldp_policy: `LLDP-ENABLED`: Enables Link Layer Discovery Protocol.\n- description: Provides a human-readable description for the group.\n\nThe second group, `SPINE-INT-GRP-01`, is similar but uses a `25G` link level policy, disables CDP, and uses a different AAEP.\n\nThese groups standardize interface settings for spine switches, making it easier to apply consistent policies across multiple interfaces."
+    }
+  ]
+}

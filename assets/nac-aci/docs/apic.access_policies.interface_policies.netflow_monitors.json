@@ -1,0 +1,6 @@
+{
+  "object_name": "NetFlow Monitors",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `NetFlow` » `NetFlow Monitors`",
+  "description": "",
+  "examples": null
+}

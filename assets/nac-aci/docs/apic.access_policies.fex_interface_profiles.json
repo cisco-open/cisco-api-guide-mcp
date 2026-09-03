@@ -1,0 +1,17 @@
+{
+  "object_name": "Access FEX Interface Profile",
+  "gui_location": "`Fabric` » `Access Policies` » `Interfaces` » `Leaf Interfaces` » `Profiles`",
+  "description": "FEX Interface Profiles can either be auto-generated (one per FEX) by providing a naming convention, or can be system-generated (one per FEX), or can be defined explicitly. In case of auto-generated profiles the following placeholders can be used when defining the naming convention:\n\n* `\\\\g\u003cid\u003e`: gets replaced by the respective leaf node ID\n* `\\\\g\u003cname\u003e`: gets replaced by the respective leaf hostname\n* `\\\\g\u003cfex\u003e`: gets replaced by the respective FEX ID",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  access_policies:\n    fex_interface_profiles:\n      - name: LEAF101-FEX101\n        selectors:\n          - name: SEL1\n            policy_group: 10G-SERVER\n            port_blocks:\n              - name: BLOCK1\n                description: Server ABC\n                from_port: 1",
+      "explanation": "This configuration explicitly creates a FEX interface profile named `LEAF101-FEX101`, with a selector `SEL1` that applies the `10G-SERVER` policy group to a port block `BLOCK1` starting at port `1`."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  access_policies:\n    fex_interface_profiles:\n      - name: LEAF102-FEX201\n        selectors:\n          - name: FEX201-SEL\n            policy_group: 20G-APP-SERVERS\n            port_blocks:\n              - name: APP-BLOCK\n                description: Application Servers Block\n                from_port: 1\n                to_port: 8",
+      "explanation": "This is another example for a FEX Interface Profile, along with a clear description of each value.\n- fex_interface_profiles: List of FEX interface profiles to define explicitly.\n- selectors: List of selectors for this profile.\n- policy_group: The policy group to associate with this selector (e.g., `20G-APP-SERVERS`).\n- port_blocks: List of port blocks under this selector.\n- from_port and to_port: Starting port number in the block (e.g., `1`) and ending port number in the block (e.g., `8`)."
+    }
+  ]
+}

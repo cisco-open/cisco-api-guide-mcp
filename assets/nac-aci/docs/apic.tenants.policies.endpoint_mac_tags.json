@@ -1,0 +1,12 @@
+{
+  "object_name": "Endpoint MAC Tag",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Endpoint Tags` » `Endpoint MAC`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        endpoint_mac_tags:\n            - mac: 00:01:02:03:04:AA\n              bridge_domain: BD1\n              vrf: VRF1\n              tags:\n                - key: Environment\n                  value: Test\n            - mac: 00:01:02:03:04:BB\n              vrf: VRF1\n              tags:\n                - key: Environment\n                  value: Prod",
+      "explanation": "This data model associates Endpoint Tag based on source MAC addresses. This tagging mechanism enables the classification of endpoints into Endpoint Security Groups (ESGs) through tag selectors, thereby facilitating the application and management of security policies. Endpoint Tag objects represent the MAC address of an endpoint independently of its learning state. These tags serve as metadata or descriptors for the MAC address within a specific BD and can be created and maintained even before the fabric learns the MAC address.\n\nThe scope of a MAC Endpoint Tag is typically the bridge domain (e.g. MAC `00:01:02:03:04:AA`), but if the MAC address is unique across bridge domains, the scope can be set to any bridge domain with a VRF as the scope (e.g. MAC `00:01:02:03:04:BB`).\n\nMAC Tags are useful in environments without read-write VMM integration, where VM MAC addresses can be tagged manually."
+    }
+  ]
+}

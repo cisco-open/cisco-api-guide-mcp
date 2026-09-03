@@ -1,0 +1,12 @@
+{
+  "object_name": "EP Loop Protection",
+  "gui_location": "`System` » `System Settings` » `Endpoint Controls`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    ep_loop_protection:\n      admin_state: true\n      detection_interval: 180\n      detection_multiplier: 10\n      port_disable: true\n      bd_learn_disable: false",
+      "explanation": "This example demonstrates how to enable EP Loop Protection, which detects a loop by observing an endpoint being learned on the same set of two interfaces back and forth. By default, EP Loop Protection is disabled. To enable it, set admin_state to `true` and optionally override the defaults for detection_interval (default 60 seconds), detection_multiplier (default 4), port_disable (default true), and bd_learn_disable (default `false`). In this example, EP Loop Protection is enabled with detection_interval set to `180` seconds and detection_multiplier set to `10`. Because port_disable is set to `True`, when a loop is detected, the fabric shuts down one of the interfaces between which the endpoint was moving; Because bd_learn_disable is set to `false`, the fabric does not disable endpoint learning in the affected bridge domain."
+    }
+  ]
+}

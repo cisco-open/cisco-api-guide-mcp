@@ -1,0 +1,12 @@
+{
+  "object_name": "Track Member",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `IP SLA` » `Track Members`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        track_members:\n          - name: FW_1_Track_Mem\n            destination_ip: 10.0.0.1\n            scope_type: l3out\n            scope: Firewall_L3\n            ip_sla_policy: L2PingEach30sec\n          - name: FW_2_Track_Mem\n            destination_ip: 10.0.0.2\n            scope_type: l3out\n            scope: Firewall_L3\n            ip_sla_policy: L2PingEach30sec",
+      "explanation": "This data model specifies two IP addresses (`10.0.0.1` and `10.0.0.2`) located in the `Firewall_L3` L3Out to be monitored using the `L2PingEach30sec` IP SLA monitoring policy.\n\nTrack Members are the fundamental units of IP SLA monitoring. They represent endpoints or next-hop IP addresses whose reachability is continuously verified. The monitoring results dynamically influence network behavior, such as static route tracking, which can be associated with either an L3Out or a Bridge Domain (BD) and referenced by a Track List.\n\nIf IP SLA Policy is not existing in configured Tenant's Data Model and it exists in `common` Tenant Data Model, then relation for ip_sla_policy attribute will reflect IP SLA Policy in `common` Tenant."
+    }
+  ]
+}

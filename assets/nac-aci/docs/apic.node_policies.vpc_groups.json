@@ -1,0 +1,6 @@
+{
+  "object_name": "VPC Groups",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Switch` » `Virtual Port Channel default`",
+  "description": "vPC groups can be named according to a naming convention defined once, without having to specify a name for every group. The following placeholders can be used when defining the naming convention:\n\n* `\\\\g\u003cswitch1_id\u003e`: gets replaced by the respective node ID of the first leaf\n* `\\\\g\u003cswitch2_id\u003e`: gets replaced by the respective node ID of the second leaf",
+  "examples": null
+}

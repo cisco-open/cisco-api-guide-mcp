@@ -1,0 +1,6 @@
+{
+  "object_name": "VXLAN L3out",
+  "gui_location": "- `Tenants` » `infra` » `Networking` » `VXLAN Infra L3Outs`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,12 @@
+{
+  "object_name": "Redirect Backup Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `L4-L7 Policy-Based Redirect Backup`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PBR_ServGraph\n      services:\n        redirect_backup_policies:\n          - name: L4L7_PBR_BKP\n            l3_destinations:\n              - name: FW_bkp_Virtual_Interface\n                description: FW bkp virtual interface\n                ip: 10.0.0.5\n                mac: 00:00:00:11:22:33\n                redirect_health_group: L4L7RedirectHealthGroup",
+      "explanation": "This data model creates an L3-type Redirect Backup Policy named `L4L7_PBR_BKP`, which enhances high availability and resilience for Redirect Policies within the same Redirect Health Group, `L4L7RedirectHealthGroup`.\n\nThe Redirect Backup Policy is usually implemented when Resilient Hashing option (`resilient_hashing`) is enabled in a Redirect Policy. In this case, if a PBR destination specified under `apic.tenants.policies.redirect_policy.l3_destinations` fails, the traffic is rerouted to a PBR destination (`l3_destinations`) defined in the Redirect Backup Policy (`FW_bkp_Virtual_Interface` in this example).\n\nNote that Redirect Backup Policies are not eligible to IP SLA Policies monitoring."
+    }
+  ]
+}

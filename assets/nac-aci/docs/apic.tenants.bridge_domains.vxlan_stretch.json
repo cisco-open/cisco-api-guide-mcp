@@ -1,0 +1,17 @@
+{
+  "object_name": "VXLAN Stretch",
+  "gui_location": "`Tenants` » `xxx` » `Networking` » `VXLAN Stretch`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: infra\n      vrfs:\n        - name: VRF3\n          vxlan_stretch:\n            border_gateway_set_policy: BorderGatewaySet\n            normalized_vni: 1003\n            import_route_map: import-rm\n            export_route_map: export-rm",
+      "explanation": "This example shows how to configure a VXLAN VRF stretch with border gateway set policy, normalized VNI, import route map, and export route map:"
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: infra\n      bridge_domains:\n        - name: BD6\n          vxlan_stretch:\n            border_gateway_set_policy: BorderGatewaySet\n            normalized_vni: 1002",
+      "explanation": "This example shows how to configure a VXLAN Bridge Domain stretch with border gateway set policy and normalized VNI:"
+    }
+  ]
+}

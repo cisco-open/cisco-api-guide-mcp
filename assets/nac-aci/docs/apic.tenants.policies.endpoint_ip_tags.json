@@ -1,0 +1,12 @@
+{
+  "object_name": "Endpoint IP Tag",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Endpoint Tags` » `Endpoint IP`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        endpoint_ip_tags:\n            - ip: 1.1.1.1\n              vrf: VRF1\n              tags:\n                - key: Environment\n                  value: Prod\n            - ip: 2001::1\n              vrf: VRF1\n              tags:\n                - key: Environment\n                  value: Prod\n                - key: Protocol\n                  value: IPv6",
+      "explanation": "This data model associates Endpoint Tags based on source IP addresses, supporting both IPv4 and IPv6 formats. This tagging mechanism enables the classification of endpoints into Endpoint Security Groups (ESGs) through tag selectors, thereby facilitating the application and management of security policies. Endpoint Tag objects represent the IP address of an endpoint independently of its learning state. These tags serve as metadata or descriptors for the IP address within a specific VRF and can be created and maintained even before the fabric learns the IP address.\n\nIP Tags are more suitable when IP addresses are stable and VMM integration or routing is in place."
+    }
+  ]
+}

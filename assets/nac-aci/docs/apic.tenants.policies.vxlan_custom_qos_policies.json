@@ -1,0 +1,6 @@
+{
+  "object_name": "VXLAN Custom QoS Policy",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `Protocol` » `VXLAN Custom QoS Policy`",
+  "description": "",
+  "examples": null
+}

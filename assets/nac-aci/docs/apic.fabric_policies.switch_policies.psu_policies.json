@@ -1,0 +1,6 @@
+{
+  "object_name": "PSU Switch Policy",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Policies` » `Switch` » `Power Supply Redundancy`",
+  "description": "",
+  "examples": null
+}

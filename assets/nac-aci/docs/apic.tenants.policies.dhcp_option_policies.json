@@ -1,0 +1,12 @@
+{
+  "object_name": "DHCP Option Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `DHCP` » `Option Policies`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        dhcp_option_policies:\n          - name: DHCP-OPTIONS42-43\n            description: \"My Description\"\n            options:\n              - name: NTP\n                id: 42\n                data: 192.168.1.10\n              - name: Controller\n                id: 43\n                data: 192.168.1.254",
+      "explanation": "This data model defines DHCP Option `42`, specifying the Network Time Protocol (NTP) server IP address as `192.168.1.10`, and DHCP Option `43`, specifying the Vendor Specific Information IP address as `192.168.1.254`. These options are appended to the messages exchanged between DHCP servers and clients, providing additional configuration information during the DHCP relay process. DHCP Option Policies are referenced within a Bridge Domain alongside a DHCP Relay Policy."
+    }
+  ]
+}

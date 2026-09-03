@@ -1,0 +1,6 @@
+{
+  "object_name": "BGP Address Family Context Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `BGP` » `BGP Address Family Context`",
+  "description": "",
+  "examples": null
+}

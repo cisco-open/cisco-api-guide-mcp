@@ -1,0 +1,6 @@
+{
+  "object_name": "Border Gateway Set",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `VXLAN Gateway` » `Border Gateway Sets`",
+  "description": "",
+  "examples": null
+}

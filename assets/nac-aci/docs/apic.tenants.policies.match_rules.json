@@ -1,0 +1,27 @@
+{
+  "object_name": "Match Rule",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `Match Rules`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        match_rules:\n          - name: HQ_DC_SUBNETS\n            description: Match HQ DC prefixes for route advertisement\n            prefixes:\n              - ip: 10.0.0.0/16\n                description: HQ DC specific subnets\n                aggregate: true\n                from_length: 24\n                to_length: 32",
+      "explanation": "This match rule matches any subnets within the `10.0.0.0/16` prefix if the subnet mask is between `/24` and `/32`. It can be used in an outbound route-map to control advertisement of subnets configured within ACI. The aggregate option is set to `true` to allow for the matching of more specific subnets within the defined range using the from_length and to_length parameters. In ACI multi-site deployments, the to_length parameter can be set to `31` in the HQ site and `32` in the DR site to reduce the number of routes advertised to the external world while maintaining the optimal paths N/S traffic."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        match_rules:\n          - name: HQ_DC_SUBNETS\n            description: Match HQ DC aggregate prefix for route advertisement\n            prefixes:\n              - ip: 10.0.0.0/16\n                description: HQ DC aggregate subnet\n                aggregate: false",
+      "explanation": "This match rule matches the `10.0.0.0/16` prefix literally, regardless of the existence of more specific routes. Such a match rule is typically configured in cases where route summarization is in use, to match just the summary route. The aggregate option is set to `false` for the literal matching, which naturally disables the ability to use the from_length and to_length parameters."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        match_rules:\n          - name: HQ_DC_SUBNETS\n            description: Match subnets tagged with BGP community assigned for HQ prefixes\n            community_terms:\n              - name: HQ_DC_COMMUNITY\n                description: HQ DC prefixes community\n                factors:\n                  - community: regular:as2-nn2:65000:100\n                    scope: transitive",
+      "explanation": "This match rule matches any prefixes tagged with the BGP community value of `65000:100` -- using regular BGP communities with a two-byte ASN of `65000` and a two-byte network number of `100`. This allows for the flexible application of BGP routing policy based on the assigned community regardless of the IP prefix. The community scope is set to `transitive` to allow for its propagation in BGP advertisements. Such a match rule is used to match a specific community, or set of communities, as is.\n\nThis match rule can be used in two directions:\n\n- Outbound, when paired with an appropriately configured set rule, to identify ACI subnets to the exteral world\n- Inbound, to only accept the needed subnets, e.g. in ACI multi-site deployments to prevent a given site from receiving the remote sites' prefixes via L3Out since they should be only reachable via the ISN."
+    },
+    {
+      "title": "Example-4",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        match_rules:\n          - name: HQ_DC_SUBNETS\n            description: Match subnets tagged with BGP community assigned for HQ prefixes\n            regex_community_terms:\n              - name: HQ_DC_COMMUNITIES\n                description: Match any community between 65000:100 and 65000:199\n                regex: *65000:1[0-1][0-9]*\n                type: regular",
+      "explanation": "This match rule matches any prefixes whose BGP communities include an ASN of `65000` and a network number in the range of `100` to `199`. This match rule allows for more flexible matching than the standard community terms matching due to its use of regular expressions, which allow for advanced pattern matching. This can be useful in mutli-tenant environments where each tenant is assigned a unique community value to control the advertised or received BGP prefixes."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "object_name": "Infra DSCP Translation Policy",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `Protocol` » `DSCP class-CoS translation policy for L3 traffic`",
+  "description": "",
+  "examples": null
+}

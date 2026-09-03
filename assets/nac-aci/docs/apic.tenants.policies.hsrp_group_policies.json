@@ -1,0 +1,6 @@
+{
+  "object_name": "HSRP Group Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `HSRP` » `HSRP Group Policies`",
+  "description": "",
+  "examples": null
+}

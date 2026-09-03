@@ -1,0 +1,22 @@
+{
+  "object_name": "Node Registration",
+  "gui_location": "`Fabric` » `Inventory` » `Fabric Membership`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  node_policies:\n    nodes:\n      - id: 101\n        pod: 1\n        role: leaf\n        serial_number: ABC1234567\n        name: LEAF101\n      - id: 1001\n        pod: 1\n        role: spine\n        set_role: true  # For dual-role switches\n        serial_number: ABC1234569\n        name: SPINE1001",
+      "explanation": "In the example below we create a node registration for a leaf and a spine switch. The spine switch uses the `set_role` option to define that it is a spine if hardware is a dual-role."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n    nodes:\n\n      - id: 3101\n        pod: 1\n        role: leaf\n        type: remote-leaf-wan\n        serial_number: ABC1234568\n        name: RLEAF3101",
+      "explanation": "In the example below we create a node registration for a remote leaf switch."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n    nodes:\n      - id: 401\n        pod: 1\n        role: leaf\n        type: border-gateway\n        serial_number: TEP-1-401\n        name: leaf-401",
+      "explanation": "In the example below we create a node registration for a leaf that is supposed to work as a border gateway switch."
+    }
+  ]
+}

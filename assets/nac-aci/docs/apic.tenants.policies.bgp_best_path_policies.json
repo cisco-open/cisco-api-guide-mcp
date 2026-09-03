@@ -1,0 +1,6 @@
+{
+  "object_name": "BGP Best Path Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `BGP` » `BGP Best Path Policy`",
+  "description": "",
+  "examples": null
+}

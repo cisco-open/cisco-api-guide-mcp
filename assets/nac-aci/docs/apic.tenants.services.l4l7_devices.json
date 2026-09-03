@@ -1,0 +1,12 @@
+{
+  "object_name": "L4L7 Device",
+  "gui_location": "`Tenants` » `XXX` » `Services` » `L4-L7` » `Devices`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: PBR_ServGraph\n      services:\n        l4l7_devices:\n          - name: FW\n            physical_domain: PHYSICAL_DOMAIN\n            concrete_devices:\n              - name: Customer_Firewall_1\n                interfaces:\n                  - name: FW1_IF_2\n                    node_id: 102\n                    port: 10\n                  - name: FW1_IF_1\n                    node_id: 101\n                    port: 10\n              - name: Customer_Firewall_2\n                interfaces:\n                  - name: FW2_IF_2\n                    node_id: 102\n                    port: 11\n                  - name: FW2_IF_1\n                    node_id: 101\n                    port: 11\n            logical_interfaces:\n              - name: Cluster_IF\n                vlan: 20\n                concrete_interfaces:\n                  - device: Customer_Firewall_1\n                    interface_name: FW1_IF_2\n                  - device: Customer_Firewall_1\n                    interface_name: FW1_IF_1\n                  - device: Customer_Firewall_2\n                    interface_name: FW2_IF_2\n                  - device: Customer_Firewall_2\n                    interface_name: FW2_IF_1",
+      "explanation": "The following data model defines a `FW` L4-L7 Device composed of two physical firewalls (`Customer_Firewall_1` and `Customer_Firewall_2`). Each firewall is connected to the fabric through two distinct physical connections to leaf switches `101` and `102` using ports `10` and `11`. The `FW` L4-L7 Device aggregates these four physical interfaces into a single logical interface named `Cluster_IF` using VLAN `20`. This VLAN ID must be included in on VLAN Pool contained in the physical domain `PHYSICAL_DOMAIN`.\n\nThis data model can be applied as is; however, if the referenced Access Policies are not configured, the deployment will not function correctly."
+    }
+  ]
+}

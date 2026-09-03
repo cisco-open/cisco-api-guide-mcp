@@ -1,0 +1,6 @@
+{
+  "object_name": "Access FEX Interface Selector",
+  "gui_location": "`Fabric` » `Access Policies` » `Interfaces` » `Leaf Interfaces` » `Profiles` » `XXX`",
+  "description": "FEX Interface Selectors can be auto-generated (one per interface) by providing a naming convention. The following placeholders can be used when defining the naming convention:\n\n* `\\\\g\u003cmod\u003e`: gets replaced by the respective interface module ID\n* `\\\\g\u003cport\u003e`: gets replaced by the respective interface port ID",
+  "examples": null
+}

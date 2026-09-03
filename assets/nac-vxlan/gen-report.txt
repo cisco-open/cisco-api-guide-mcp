@@ -1,0 +1,277 @@
+matched: 11, unmatched docs: 1, unmatched candidates: 225, collided docs: 31
+
+-- matched --
+1.00  docs/templates/vxlan/fabric/fabric.md  ->  vxlan.fabric
+1.00  docs/templates/vxlan/global/external.md  ->  vxlan.global.external
+0.76  docs/templates/vxlan/global/vxlan_evpn_ebgp.md  ->  vxlan.global.ibgp.spanning_tree.vlan_range
+1.00  docs/templates/vxlan/multisite/multisite.md  ->  vxlan.multisite
+0.93  docs/templates/vxlan/overlay/overlay_vrf.md  ->  vxlan.overlay
+0.93  docs/templates/vxlan/overlay_extensions/overlay_extension_vrf_lite.md  ->  vxlan.overlay_extensions
+0.95  docs/templates/vxlan/overlay_extensions/route_control/pfx.md  ->  vxlan.overlay_extensions.route_control
+1.00  docs/templates/vxlan/policy/policy.md  ->  vxlan.policy
+0.88  docs/templates/vxlan/topology/interface/breakout_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.91  docs/templates/vxlan/topology/topology_switch.md  ->  vxlan.topology
+0.93  docs/templates/vxlan/underlay/underlay_bfd.md  ->  vxlan.underlay
+
+-- collided docs (lost to a higher-scoring doc for the same candidate) --
+0.76  docs/templates/vxlan/global/vxlan_evpn_ibgp.md  ->  vxlan.global.ibgp.spanning_tree.vlan_range
+0.89  docs/templates/vxlan/overlay/overlay_network.md  ->  vxlan.overlay
+0.85  docs/templates/vxlan/overlay/overlay_network_dhcp_server.md  ->  vxlan.overlay
+0.87  docs/templates/vxlan/overlay_extensions/route_control/extended_community_lists.md  ->  vxlan.overlay_extensions.route_control
+0.93  docs/templates/vxlan/overlay_extensions/route_control/ip_acl.md  ->  vxlan.overlay_extensions.route_control
+0.87  docs/templates/vxlan/overlay_extensions/route_control/ip_as_path_access_lists.md  ->  vxlan.overlay_extensions.route_control
+0.92  docs/templates/vxlan/overlay_extensions/route_control/mac_lists.md  ->  vxlan.overlay_extensions.route_control
+0.90  docs/templates/vxlan/overlay_extensions/route_control/object_groups.md  ->  vxlan.overlay_extensions.route_control
+0.88  docs/templates/vxlan/overlay_extensions/route_control/route_control_top.md  ->  vxlan.overlay_extensions.route_control
+0.91  docs/templates/vxlan/overlay_extensions/route_control/route_map.md  ->  vxlan.overlay_extensions.route_control
+0.87  docs/templates/vxlan/overlay_extensions/route_control/standard_community_lists.md  ->  vxlan.overlay_extensions.route_control
+0.91  docs/templates/vxlan/overlay_extensions/route_control/time_range.md  ->  vxlan.overlay_extensions.route_control
+0.83  docs/templates/vxlan/topology/interface/access_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.83  docs/templates/vxlan/topology/interface/access_po_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.88  docs/templates/vxlan/topology/interface/loopback_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.86  docs/templates/vxlan/topology/interface/routed_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.85  docs/templates/vxlan/topology/interface/routed_po_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.86  docs/templates/vxlan/topology/interface/routed_sub_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.87  docs/templates/vxlan/topology/interface/trunk_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.88  docs/templates/vxlan/topology/interface/trunk_po_interface.md  ->  vxlan.topology.switches.interface_breakouts
+0.87  docs/templates/vxlan/topology/topology_edge_connection.md  ->  vxlan.topology
+0.88  docs/templates/vxlan/topology/topology_fabric_link.md  ->  vxlan.topology
+0.89  docs/templates/vxlan/topology/topology_tor_peer.md  ->  vxlan.topology
+0.89  docs/templates/vxlan/topology/topology_vpc_peer.md  ->  vxlan.topology
+0.93  docs/templates/vxlan/underlay/underlay_bgp.md  ->  vxlan.underlay
+0.90  docs/templates/vxlan/underlay/underlay_general.md  ->  vxlan.underlay
+0.92  docs/templates/vxlan/underlay/underlay_ipv4.md  ->  vxlan.underlay
+0.92  docs/templates/vxlan/underlay/underlay_ipv6.md  ->  vxlan.underlay
+0.93  docs/templates/vxlan/underlay/underlay_isis.md  ->  vxlan.underlay
+0.89  docs/templates/vxlan/underlay/underlay_multicast.md  ->  vxlan.underlay
+0.92  docs/templates/vxlan/underlay/underlay_ospf.md  ->  vxlan.underlay
+
+-- unmatched docs (no schema candidate found) --
+docs/templates/vxlan/topology/interface/dot1q_tunnel_interface.md
+
+-- unmatched schema candidates (no doc found) --
+vxlan.global
+vxlan.global.ebgp
+vxlan.global.ebgp.bootstrap
+vxlan.global.ebgp.bootstrap.dhcp_v4
+vxlan.global.ebgp.bootstrap.dhcp_v6
+vxlan.global.ebgp.dns_servers
+vxlan.global.ebgp.layer2_vlan_range
+vxlan.global.ebgp.layer2_vni_range
+vxlan.global.ebgp.layer3_vlan_range
+vxlan.global.ebgp.layer3_vni_range
+vxlan.global.ebgp.netflow
+vxlan.global.ebgp.netflow.exporter
+vxlan.global.ebgp.netflow.monitor
+vxlan.global.ebgp.netflow.record
+vxlan.global.ebgp.ntp_servers
+vxlan.global.ebgp.ptp
+vxlan.global.ebgp.syslog_servers
+vxlan.global.ebgp.vpc
+vxlan.global.external.bootstrap
+vxlan.global.external.bootstrap.dhcp_v4
+vxlan.global.external.bootstrap.dhcp_v6
+vxlan.global.external.netflow
+vxlan.global.external.netflow.exporter
+vxlan.global.external.netflow.monitor
+vxlan.global.external.netflow.record
+vxlan.global.external.ptp
+vxlan.global.ibgp
+vxlan.global.ibgp.bootstrap
+vxlan.global.ibgp.bootstrap.dhcp_v4
+vxlan.global.ibgp.bootstrap.dhcp_v6
+vxlan.global.ibgp.dns_servers
+vxlan.global.ibgp.layer2_vlan_range
+vxlan.global.ibgp.layer2_vni_range
+vxlan.global.ibgp.layer3_vlan_range
+vxlan.global.ibgp.layer3_vni_range
+vxlan.global.ibgp.mpls_handoff
+vxlan.global.ibgp.netflow
+vxlan.global.ibgp.netflow.exporter
+vxlan.global.ibgp.netflow.monitor
+vxlan.global.ibgp.netflow.record
+vxlan.global.ibgp.ntp_servers
+vxlan.global.ibgp.ptp
+vxlan.global.ibgp.spanning_tree
+vxlan.global.ibgp.spanning_tree.mst_instance_range
+vxlan.global.ibgp.syslog_servers
+vxlan.global.ibgp.vpc
+vxlan.multisite.child_fabrics
+vxlan.multisite.isn
+vxlan.multisite.isn.bootstrap
+vxlan.multisite.isn.bootstrap.dhcp_v4
+vxlan.multisite.isn.bootstrap.dhcp_v6
+vxlan.multisite.isn.netflow
+vxlan.multisite.isn.netflow.exporter
+vxlan.multisite.isn.netflow.monitor
+vxlan.multisite.isn.netflow.record
+vxlan.multisite.isn.ptp
+vxlan.multisite.layer2_vni_range
+vxlan.multisite.layer3_vni_range
+vxlan.multisite.overlay
+vxlan.multisite.overlay.network_attach_groups
+vxlan.multisite.overlay.network_attach_groups.switches
+vxlan.multisite.overlay.networks
+vxlan.multisite.overlay.networks.child_fabrics
+vxlan.multisite.overlay.networks.child_fabrics.dhcp_servers
+vxlan.multisite.overlay.networks.secondary_ip_addresses
+vxlan.multisite.overlay.networks.switch_attach_overrides
+vxlan.multisite.overlay.vrf_attach_groups
+vxlan.multisite.overlay.vrf_attach_groups.switches
+vxlan.multisite.overlay.vrfs
+vxlan.multisite.overlay.vrfs.child_fabrics
+vxlan.multisite.overlay_dci
+vxlan.multisite.overlay_dci.route_server
+vxlan.multisite.overlay_dci.route_server.peers
+vxlan.overlay.network_attach_groups
+vxlan.overlay.network_attach_groups.switches
+vxlan.overlay.networks
+vxlan.overlay.networks.dhcp_servers
+vxlan.overlay.networks.secondary_ip_addresses
+vxlan.overlay.networks.switch_attach_overrides
+vxlan.overlay.vrf_attach_groups
+vxlan.overlay.vrf_attach_groups.switches
+vxlan.overlay.vrfs
+vxlan.overlay_extensions.route_control.extended_community_lists
+vxlan.overlay_extensions.route_control.extended_community_lists.entries
+vxlan.overlay_extensions.route_control.extended_community_lists.entries.communities
+vxlan.overlay_extensions.route_control.extended_community_lists.entries.communities.4byteas_generic
+vxlan.overlay_extensions.route_control.groups
+vxlan.overlay_extensions.route_control.groups.extended_community_lists
+vxlan.overlay_extensions.route_control.groups.ip_as_path_access_lists
+vxlan.overlay_extensions.route_control.groups.ipv4_access_lists
+vxlan.overlay_extensions.route_control.groups.ipv4_object_groups
+vxlan.overlay_extensions.route_control.groups.ipv4_prefix_lists
+vxlan.overlay_extensions.route_control.groups.ipv6_access_lists
+vxlan.overlay_extensions.route_control.groups.ipv6_object_groups
+vxlan.overlay_extensions.route_control.groups.ipv6_prefix_lists
+vxlan.overlay_extensions.route_control.groups.mac_list
+vxlan.overlay_extensions.route_control.groups.route_maps
+vxlan.overlay_extensions.route_control.groups.standard_community_lists
+vxlan.overlay_extensions.route_control.groups.time_range
+vxlan.overlay_extensions.route_control.ip_as_path_access_lists
+vxlan.overlay_extensions.route_control.ip_as_path_access_lists.entries
+vxlan.overlay_extensions.route_control.ipv4_access_lists
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.destination
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.destination.port_number
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.filtering_options
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.filtering_options.flags
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.filtering_options.packet_length
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.filtering_options.udf
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.source
+vxlan.overlay_extensions.route_control.ipv4_access_lists.entries.source.port_number
+vxlan.overlay_extensions.route_control.ipv4_object_groups
+vxlan.overlay_extensions.route_control.ipv4_object_groups.entries
+vxlan.overlay_extensions.route_control.ipv4_prefix_lists
+vxlan.overlay_extensions.route_control.ipv4_prefix_lists.entries
+vxlan.overlay_extensions.route_control.ipv6_access_lists
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.destination
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.destination.port_number
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.filtering_options
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.filtering_options.flags
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.filtering_options.packet_length
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.filtering_options.udf
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.source
+vxlan.overlay_extensions.route_control.ipv6_access_lists.entries.source.port_number
+vxlan.overlay_extensions.route_control.ipv6_object_groups
+vxlan.overlay_extensions.route_control.ipv6_object_groups.entries
+vxlan.overlay_extensions.route_control.ipv6_prefix_lists
+vxlan.overlay_extensions.route_control.ipv6_prefix_lists.entries
+vxlan.overlay_extensions.route_control.mac_list
+vxlan.overlay_extensions.route_control.mac_list.entries
+vxlan.overlay_extensions.route_control.route_maps
+vxlan.overlay_extensions.route_control.route_maps.entries
+vxlan.overlay_extensions.route_control.route_maps.entries.match
+vxlan.overlay_extensions.route_control.route_maps.entries.match.as_number
+vxlan.overlay_extensions.route_control.route_maps.entries.match.community_list
+vxlan.overlay_extensions.route_control.route_maps.entries.match.extended_community_list
+vxlan.overlay_extensions.route_control.route_maps.entries.match.ipv4
+vxlan.overlay_extensions.route_control.route_maps.entries.match.ipv6
+vxlan.overlay_extensions.route_control.route_maps.entries.match.metric
+vxlan.overlay_extensions.route_control.route_maps.entries.set
+vxlan.overlay_extensions.route_control.route_maps.entries.set.as_path
+vxlan.overlay_extensions.route_control.route_maps.entries.set.as_path.replace
+vxlan.overlay_extensions.route_control.route_maps.entries.set.dampening
+vxlan.overlay_extensions.route_control.route_maps.entries.set.distance
+vxlan.overlay_extensions.route_control.route_maps.entries.set.evpn
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community.4byteas_generic
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community.4byteas_generic.transitivity
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community.color
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community.cost
+vxlan.overlay_extensions.route_control.route_maps.entries.set.extended_community.rt
+vxlan.overlay_extensions.route_control.route_maps.entries.set.ipv4
+vxlan.overlay_extensions.route_control.route_maps.entries.set.ipv4.next_hop
+vxlan.overlay_extensions.route_control.route_maps.entries.set.ipv6
+vxlan.overlay_extensions.route_control.route_maps.entries.set.ipv6.next_hop
+vxlan.overlay_extensions.route_control.route_maps.entries.set.metric
+vxlan.overlay_extensions.route_control.standard_community_lists
+vxlan.overlay_extensions.route_control.standard_community_lists.entries
+vxlan.overlay_extensions.route_control.switches
+vxlan.overlay_extensions.route_control.time_range
+vxlan.overlay_extensions.route_control.time_range.entries
+vxlan.overlay_extensions.route_control.time_range.entries.absolute
+vxlan.overlay_extensions.route_control.time_range.entries.periodic
+vxlan.overlay_extensions.vrf_lites
+vxlan.overlay_extensions.vrf_lites.bgp
+vxlan.overlay_extensions.vrf_lites.bgp.address_family_ipv4_unicast
+vxlan.overlay_extensions.vrf_lites.bgp.address_family_ipv6_unicast
+vxlan.overlay_extensions.vrf_lites.ospf
+vxlan.overlay_extensions.vrf_lites.ospf.areas
+vxlan.overlay_extensions.vrf_lites.ospf.areas.default_information_originate
+vxlan.overlay_extensions.vrf_lites.ospf.areas.nssa
+vxlan.overlay_extensions.vrf_lites.ospf.areas.nssa.translate
+vxlan.overlay_extensions.vrf_lites.ospf.bfd
+vxlan.overlay_extensions.vrf_lites.redistribution
+vxlan.overlay_extensions.vrf_lites.switches
+vxlan.overlay_extensions.vrf_lites.switches.bgp
+vxlan.overlay_extensions.vrf_lites.switches.bgp.address_family_ipv4_unicast
+vxlan.overlay_extensions.vrf_lites.switches.bgp.address_family_ipv6_unicast
+vxlan.overlay_extensions.vrf_lites.switches.bgp_peers
+vxlan.overlay_extensions.vrf_lites.switches.bgp_peers.address_family_ipv4_unicast
+vxlan.overlay_extensions.vrf_lites.switches.bgp_peers.address_family_ipv6_unicast
+vxlan.overlay_extensions.vrf_lites.switches.bgp_peers.bfd
+vxlan.overlay_extensions.vrf_lites.switches.interfaces
+vxlan.overlay_extensions.vrf_lites.switches.interfaces.ospf
+vxlan.overlay_extensions.vrf_lites.switches.interfaces.ospf.bfd
+vxlan.overlay_extensions.vrf_lites.switches.ospf
+vxlan.overlay_extensions.vrf_lites.switches.ospf.areas
+vxlan.overlay_extensions.vrf_lites.switches.ospf.areas.default_information_originate
+vxlan.overlay_extensions.vrf_lites.switches.ospf.areas.nssa
+vxlan.overlay_extensions.vrf_lites.switches.ospf.areas.nssa.translate
+vxlan.overlay_extensions.vrf_lites.switches.ospf.bfd
+vxlan.overlay_extensions.vrf_lites.switches.redistribution
+vxlan.overlay_extensions.vrf_lites.switches.static_routes
+vxlan.overlay_extensions.vrf_lites.switches.static_routes.static_ipv4
+vxlan.overlay_extensions.vrf_lites.switches.static_routes.static_ipv4.next_hops
+vxlan.overlay_extensions.vrf_lites.switches.static_routes.static_ipv6
+vxlan.overlay_extensions.vrf_lites.switches.static_routes.static_ipv6.next_hops
+vxlan.policy.groups
+vxlan.policy.groups.policies
+vxlan.policy.policies
+vxlan.policy.switches
+vxlan.topology.edge_connections
+vxlan.topology.edge_connections.bgp_section
+vxlan.topology.fabric_links
+vxlan.topology.fabric_links.ipv4
+vxlan.topology.switches
+vxlan.topology.switches.management
+vxlan.topology.switches.poap
+vxlan.topology.switches.poap.preprovision
+vxlan.topology.tor_peers
+vxlan.topology.vpc_peers
+vxlan.topology.vpc_peers.peer1_peerlink_interfaces
+vxlan.topology.vpc_peers.peer2_peerlink_interfaces
+vxlan.underlay.bfd
+vxlan.underlay.bgp
+vxlan.underlay.general
+vxlan.underlay.ipv4
+vxlan.underlay.ipv6
+vxlan.underlay.isis
+vxlan.underlay.multicast
+vxlan.underlay.multicast.ipv4
+vxlan.underlay.multicast.ipv6
+vxlan.underlay.multicast.mvpn_vri_id_range
+vxlan.underlay.ospf

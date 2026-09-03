@@ -1,0 +1,6 @@
+{
+  "object_name": "External Connectivity Policy",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `Protocol` » `Fabric Ext Connection Policies`",
+  "description": "",
+  "examples": null
+}

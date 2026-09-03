@@ -1,0 +1,6 @@
+{
+  "object_name": "SNMP Pod Policy",
+  "gui_location": "`Fabric Policies` » `Policies` » `Pod` » `SNMP`",
+  "description": "",
+  "examples": null
+}

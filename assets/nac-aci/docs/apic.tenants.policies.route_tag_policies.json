@@ -1,0 +1,12 @@
+{
+  "object_name": "Route Tag Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `Route Tag`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        route_tag_policies:\n          - name: Context1\n            description: \"My Tag\"\n            tag: 112233",
+      "explanation": "This data model creates the `Context1` tag and assigns it a value of `112233`. When applied to a specific VRF, it attaches a 32-bit tag to routes during redistribution into supported protocols. This tag serves as an identifier to prevent routing loops. Additionally, Route Tag Policies allow customization of the tag value on a per-VRF basis, which is essential in multi-VRF environments where transit routes are learned from multiple VRFs."
+    }
+  ]
+}

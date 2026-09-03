@@ -1,0 +1,17 @@
+{
+  "object_name": "Fabric Wide Settings",
+  "gui_location": "`System` » `System Settings` » `Fabric-Wide Settings`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    global_settings:\n      opflex_authentication: true",
+      "explanation": "This example demonstrates how to configure Fabric-Wide Settings under System Settings. In this example, opflex_authentication is enabled to override the default, while all other settings remain at their defaults. By default, domain_validation, enforce_subnet_check, overlapping_vlan_validation, and remote_leaf_direct are enabled, and disable_remote_endpoint_learn and reallocate_gipo are disabled, which is considered a general best practice unless there is a valid requirement to override them."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  fabric_policies:\n    global_settings:\n      domain_validation: true\n      enforce_subnet_check: true\n      opflex_authentication: true\n      disable_remote_endpoint_learn: false\n      overlapping_vlan_validation: true\n      remote_leaf_direct: true\n      reallocate_gipo: false",
+      "explanation": "This example demonstrates how to configure Fabric-Wide Settings under System Settings. The configured settings are the same as Example-1, but all default settings are specified explicitly in the configuration for clarity."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "object_name": "Node Control Switch Policy",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Policies` » `Monitoring` » `Fabric Node Controls`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    switch_policies:\n      node_control_policies:\n        - name: NODE_CTRL_POL\n          dom: true\n          telemetry: telemetry",
+      "explanation": "this node contro policy named `NODE_CTRL_POL`, which enables digital optics monitoring by setting the dom property to `true`. It also defines the telemetry property to `telemetry`, which is required for Cisco NDI integration. This property can alternatively be set to `analytics` when integrating the ACI fabric with Cisco Secure Workload (previously known as Tetration), or set to `netflow` for standard NetFlow integration."
+    }
+  ]
+}

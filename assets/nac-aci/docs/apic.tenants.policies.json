@@ -1,0 +1,6 @@
+{
+  "object_name": "QoS Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `Custom QoS`",
+  "description": "",
+  "examples": null
+}

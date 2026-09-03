@@ -1,0 +1,6 @@
+{
+  "object_name": "EIGRP Interface Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `EIGRP` » `EIGRP Interface`",
+  "description": "",
+  "examples": null
+}

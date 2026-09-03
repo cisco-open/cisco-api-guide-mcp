@@ -1,0 +1,6 @@
+{
+  "object_name": "SR MPLS Global Configuration",
+  "gui_location": "`Tenants` » `infra` » `Policies` » `Protocol` » `MPLS Global Configuration` » `default`",
+  "description": "",
+  "examples": null
+}

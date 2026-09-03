@@ -1,0 +1,22 @@
+{
+  "object_name": "Bridge Domain",
+  "gui_location": "`Tenants` » `XXX` » `Networking` » `Bridge Domains`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      bridge_domains:\n        - name: BD1\n          vrf: VRF1\n          subnets:\n            - ip: 1.1.1.1/24",
+      "explanation": "This is a single example of a layer-3 bridge-domain where the bridge-domain `BD1` is configured under tenant `ABC` and associated with vrf `VRF1`. As this is a layer-3 bridge-domain is it configured with IP subnet `1.1.1.1/24`. The rest of the bridge-domain settings uses default values."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      bridge_domains:\n        - name: BD1\n          vrf: VRF1\n          unknown_unicast: flood\n          arp_flooding: true\n          unicast_routing: false",
+      "explanation": "This is a single example of a layer-2 bridge-domain where the bridge-domain `BD1` is configured under tenant `ABC` and associated with vrf `VRF1`. Unlike a layer-3 bridge-domain, no IP subnet is configured. Instead,, L2 unknown unicast is set to `flooding`, unicast routing is `disabled`, and ARP flooding is `enabled`. The rest of the settings use default values."
+    },
+    {
+      "title": "Example-3",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      bridge_domains:\n        - name: BD1\n          alias: ABC_BD1\n          mac: 00:22:BD:F8:19:FE\n          virtual_mac: 00:23:BD:F8:19:12\n          ep_move_detection: true\n          arp_flooding: false\n          ip_dataplane_learning: false\n          limit_ip_learn_to_subnets: false\n          multi_destination_flooding: encap-flood\n          unknown_unicast: proxy\n          unknown_ipv4_multicast: flood\n          unknown_ipv6_multicast: flood\n          unicast_routing: true\n          clear_remote_mac_entries: true\n          advertise_host_routes: true\n          l3_multicast: false\n          l3_multicast_ipv6: false\n          multicast_arp_drop: false\n          vrf: VRF1\n          nd_interface_policy: \"ND_INTF_POL1\"\n          endpoint_retention_policy: ERP1\n          netflow_monitor_policies:\n            - name: MONITOR1\n            - ip_filter_type: ipv4\n          subnets:\n            - ip: 1.1.1.1/24\n              description: My Desc\n              primary_ip: true\n              public: true\n              shared: true\n              virtual: false\n              igmp_querier: true\n              nd_ra_prefix: true\n              no_default_gateway: false\n            - ip: fd00:0:abcd:1::1/64\n              description: My IPv6 Desc\n              primary_ip: true\n              public: true\n              shared: false\n              virtual: false\n              igmp_querier: true\n              nd_ra_prefix: true\n              no_default_gateway: false\n              nd_ra_prefix_policy: ND-RA-PREFIX1\n              ip_dataplane_learning: false\n          l3outs:\n            - L3OUT1\n          dhcp_labels:\n            - dhcp_relay_policy: DHCP-RELAY1\n              dhcp_option_policy: DHCP-OPTION1",
+      "explanation": "This example demonstrates a configuration where all parameters are explicitly specified. Note that the `bridge_domains.ip_dataplane_learning` parameter enables or disables IP data-plane learning for the PBR nodes, whereas the `subnets.ip_dataplane_learning` parameter controls IP data-plane learning for the specific subnet, such as when integrating with Active/Standby High Availability devices."
+    }
+  ]
+}

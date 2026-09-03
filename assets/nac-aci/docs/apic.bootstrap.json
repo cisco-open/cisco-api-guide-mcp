@@ -1,0 +1,6 @@
+{
+  "object_name": "Bootstrap",
+  "gui_location": "",
+  "description": "Bootstrap is only used with Ansible and uses the initial admin credentials to provision a set of local users. Optionally a list of objects to be deleted can be provided.\n\n{{ doc_gen }}\n\n### Examples\n\n```yaml\napic:\n  bootstrap:\n    admin_username: admin\n    admin_password: cisco\n```",
+  "examples": null
+}

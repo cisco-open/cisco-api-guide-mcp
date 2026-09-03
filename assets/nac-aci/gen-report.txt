@@ -1,0 +1,614 @@
+matched: 173, unmatched docs: 10, unmatched candidates: 405, collided docs: 17
+
+-- matched --
+1.00  docs/templates/apic/access_policies/aaep.md  ->  apic.access_policies.aaeps
+1.00  docs/templates/apic/access_policies/ap_fex_interface_profile.md  ->  apic.access_policies.fex_interface_profiles
+1.00  docs/templates/apic/access_policies/ap_leaf_interface_policy_group.md  ->  apic.access_policies.leaf_interface_policy_groups
+1.00  docs/templates/apic/access_policies/ap_leaf_interface_profile.md  ->  apic.access_policies.leaf_interface_profiles
+1.00  docs/templates/apic/access_policies/ap_leaf_switch_policy_group.md  ->  apic.access_policies.leaf_switch_policy_groups
+1.00  docs/templates/apic/access_policies/ap_leaf_switch_profile.md  ->  apic.access_policies.leaf_switch_profiles
+0.92  docs/templates/apic/access_policies/ap_monitoring_policy.md  ->  apic.access_policies.monitoring
+0.85  docs/templates/apic/access_policies/ap_span_source_group.md  ->  apic.access_policies.span
+1.00  docs/templates/apic/access_policies/ap_spine_interface_policy_group.md  ->  apic.access_policies.spine_interface_policy_groups
+1.00  docs/templates/apic/access_policies/ap_spine_interface_profile.md  ->  apic.access_policies.spine_interface_profiles
+1.00  docs/templates/apic/access_policies/ap_spine_switch_policy_group.md  ->  apic.access_policies.spine_switch_policy_groups
+1.00  docs/templates/apic/access_policies/ap_spine_switch_profile.md  ->  apic.access_policies.spine_switch_profiles
+0.89  docs/templates/apic/access_policies/bfd_policy.md  ->  apic.access_policies.switch_policies.bfd_ipv4_policies
+1.00  docs/templates/apic/access_policies/cdp_policy.md  ->  apic.access_policies.interface_policies.cdp_policies
+1.00  docs/templates/apic/access_policies/data_plane_policing_policy.md  ->  apic.access_policies.interface_policies.data_plane_policing_policies
+1.00  docs/templates/apic/access_policies/forwarding_scale_policy.md  ->  apic.access_policies.switch_policies.forwarding_scale_policies
+0.82  docs/templates/apic/access_policies/infra_dhcp_relay_policy.md  ->  apic.access_policies.dhcp_relay_policies
+1.00  docs/templates/apic/access_policies/l2_policy.md  ->  apic.access_policies.interface_policies.l2_policies
+1.00  docs/templates/apic/access_policies/link_level_policy.md  ->  apic.access_policies.interface_policies.link_level_policies
+1.00  docs/templates/apic/access_policies/lldp_policy.md  ->  apic.access_policies.interface_policies.lldp_policies
+1.00  docs/templates/apic/access_policies/macsec_interfaces_policy.md  ->  apic.access_policies.interface_policies.macsec_interfaces_policies
+1.00  docs/templates/apic/access_policies/macsec_keychain_policy.md  ->  apic.access_policies.interface_policies.macsec_keychain_policies
+1.00  docs/templates/apic/access_policies/macsec_parameters_policy.md  ->  apic.access_policies.interface_policies.macsec_parameters_policies
+1.00  docs/templates/apic/access_policies/mcp.md  ->  apic.access_policies.mcp
+1.00  docs/templates/apic/access_policies/mcp_policy.md  ->  apic.access_policies.interface_policies.mcp_policies
+1.00  docs/templates/apic/access_policies/mst_policy.md  ->  apic.access_policies.switch_policies.mst_policies
+1.00  docs/templates/apic/access_policies/netflow_exporter.md  ->  apic.access_policies.interface_policies.netflow_exporters
+1.00  docs/templates/apic/access_policies/netflow_monitor.md  ->  apic.access_policies.interface_policies.netflow_monitors
+1.00  docs/templates/apic/access_policies/netflow_record.md  ->  apic.access_policies.interface_policies.netflow_records
+1.00  docs/templates/apic/access_policies/netflow_vmm_exporter.md  ->  apic.access_policies.interface_policies.netflow_vmm_exporters
+1.00  docs/templates/apic/access_policies/physical_domain.md  ->  apic.access_policies.physical_domains
+1.00  docs/templates/apic/access_policies/port_channel_member_policy.md  ->  apic.access_policies.interface_policies.port_channel_member_policies
+1.00  docs/templates/apic/access_policies/port_channel_policy.md  ->  apic.access_policies.interface_policies.port_channel_policies
+1.00  docs/templates/apic/access_policies/port_security_policy.md  ->  apic.access_policies.interface_policies.port_security_policies
+1.00  docs/templates/apic/access_policies/priority_flow_control_policy.md  ->  apic.access_policies.interface_policies.priority_flow_control_policies
+1.00  docs/templates/apic/access_policies/ptp_profile.md  ->  apic.access_policies.ptp_profiles
+1.00  docs/templates/apic/access_policies/qos.md  ->  apic.access_policies.qos
+1.00  docs/templates/apic/access_policies/routed_domain.md  ->  apic.access_policies.routed_domains
+1.00  docs/templates/apic/access_policies/spanning_tree_policy.md  ->  apic.access_policies.interface_policies.spanning_tree_policies
+1.00  docs/templates/apic/access_policies/storm_control_policy.md  ->  apic.access_policies.interface_policies.storm_control_policies
+1.00  docs/templates/apic/access_policies/vlan_pool.md  ->  apic.access_policies.vlan_pools
+1.00  docs/templates/apic/access_policies/vpc_policy.md  ->  apic.access_policies.switch_policies.vpc_policies
+0.88  docs/templates/apic/access_policies/vspan_session.md  ->  apic.access_policies.vspan
+1.00  docs/templates/apic/bootstrap/bootstrap.md  ->  apic.bootstrap
+1.00  docs/templates/apic/fabric_policies/aaa.md  ->  apic.fabric_policies.aaa
+1.00  docs/templates/apic/fabric_policies/atomic_counter.md  ->  apic.fabric_policies.atomic_counter
+1.00  docs/templates/apic/fabric_policies/banner.md  ->  apic.fabric_policies.banners
+0.87  docs/templates/apic/fabric_policies/bgp_policy.md  ->  apic.fabric_policies.monitoring.policies
+0.90  docs/templates/apic/fabric_policies/ca_cert.md  ->  apic.fabric_policies.aaa.ca_certificates
+1.00  docs/templates/apic/fabric_policies/config_export.md  ->  apic.fabric_policies.config_exports
+1.00  docs/templates/apic/fabric_policies/control_plane_mtu.md  ->  apic.fabric_policies.control_plane_mtu
+0.83  docs/templates/apic/fabric_policies/coop_policy.md  ->  apic.fabric_policies.pod_policies
+1.00  docs/templates/apic/fabric_policies/date_time_format.md  ->  apic.fabric_policies.date_time_format
+1.00  docs/templates/apic/fabric_policies/date_time_policy.md  ->  apic.fabric_policies.pod_policies.date_time_policies
+1.00  docs/templates/apic/fabric_policies/dns_policy.md  ->  apic.fabric_policies.dns_policies
+1.00  docs/templates/apic/fabric_policies/ep_loop_protection.md  ->  apic.fabric_policies.ep_loop_protection
+1.00  docs/templates/apic/fabric_policies/err_disabled_recovery.md  ->  apic.fabric_policies.err_disabled_recovery
+0.80  docs/templates/apic/fabric_policies/ext_conn_policy.md  ->  apic.fabric_policies.external_connectivity_policy
+0.84  docs/templates/apic/fabric_policies/fabric_isis_bfd.md  ->  apic.fabric_policies
+0.83  docs/templates/apic/fabric_policies/fabric_wide_settings.md  ->  apic.fabric_policies.span.source_groups.sources.fabric_paths
+1.00  docs/templates/apic/fabric_policies/fp_leaf_interface_policy_group.md  ->  apic.fabric_policies.leaf_interface_policy_groups
+1.00  docs/templates/apic/fabric_policies/fp_leaf_interface_profile.md  ->  apic.fabric_policies.leaf_interface_profiles
+1.00  docs/templates/apic/fabric_policies/fp_leaf_switch_policy_group.md  ->  apic.fabric_policies.leaf_switch_policy_groups
+1.00  docs/templates/apic/fabric_policies/fp_leaf_switch_profile.md  ->  apic.fabric_policies.leaf_switch_profiles
+0.85  docs/templates/apic/fabric_policies/fp_span_source_group.md  ->  apic.fabric_policies.span
+1.00  docs/templates/apic/fabric_policies/fp_spine_interface_policy_group.md  ->  apic.fabric_policies.spine_interface_policy_groups
+1.00  docs/templates/apic/fabric_policies/fp_spine_interface_profile.md  ->  apic.fabric_policies.spine_interface_profiles
+1.00  docs/templates/apic/fabric_policies/fp_spine_switch_policy_group.md  ->  apic.fabric_policies.spine_switch_policy_groups
+1.00  docs/templates/apic/fabric_policies/fp_spine_switch_profile.md  ->  apic.fabric_policies.spine_switch_profiles
+1.00  docs/templates/apic/fabric_policies/geolocation.md  ->  apic.fabric_policies.geolocation
+1.00  docs/templates/apic/fabric_policies/infra_dscp_translation_policy.md  ->  apic.fabric_policies.infra_dscp_translation_policy
+0.90  docs/templates/apic/fabric_policies/interface_type.md  ->  apic.fabric_policies.interface_policies
+0.97  docs/templates/apic/fabric_policies/keyring.md  ->  apic.fabric_policies.aaa.key_rings
+0.89  docs/templates/apic/fabric_policies/l2_mtu.md  ->  apic.fabric_policies.l2_mtu_policies
+1.00  docs/templates/apic/fabric_policies/ldap.md  ->  apic.fabric_policies.aaa.ldap
+1.00  docs/templates/apic/fabric_policies/link_level_policy.md  ->  apic.fabric_policies.interface_policies.link_level_policies
+1.00  docs/templates/apic/fabric_policies/login_domain.md  ->  apic.fabric_policies.aaa.login_domains
+1.00  docs/templates/apic/fabric_policies/macsec_interfaces_policy.md  ->  apic.fabric_policies.macsec_interfaces_policies
+1.00  docs/templates/apic/fabric_policies/macsec_keychain_policy.md  ->  apic.fabric_policies.macsec_keychain_policies
+1.00  docs/templates/apic/fabric_policies/macsec_parameters_policy.md  ->  apic.fabric_policies.macsec_parameters_policies
+1.00  docs/templates/apic/fabric_policies/management_access_policy.md  ->  apic.fabric_policies.pod_policies.management_access_policies
+0.92  docs/templates/apic/fabric_policies/monitoring_policy.md  ->  apic.fabric_policies.monitoring
+1.00  docs/templates/apic/fabric_policies/node_control_policy.md  ->  apic.fabric_policies.switch_policies.node_control_policies
+0.85  docs/templates/apic/fabric_policies/ntnx_vmm_domain.md  ->  apic.fabric_policies.nutanix_vmm_domains
+1.00  docs/templates/apic/fabric_policies/pod_policy_group.md  ->  apic.fabric_policies.pod_policy_groups
+1.00  docs/templates/apic/fabric_policies/pod_profile.md  ->  apic.fabric_policies.pod_profiles
+1.00  docs/templates/apic/fabric_policies/port_tracking.md  ->  apic.fabric_policies.port_tracking
+1.00  docs/templates/apic/fabric_policies/proxy_policy.md  ->  apic.fabric_policies.proxy_policy
+1.00  docs/templates/apic/fabric_policies/psu_policy.md  ->  apic.fabric_policies.switch_policies.psu_policies
+1.00  docs/templates/apic/fabric_policies/ptp.md  ->  apic.fabric_policies.ptp
+0.87  docs/templates/apic/fabric_policies/radius.md  ->  apic.fabric_policies.aaa.login_domains.radius_providers
+1.00  docs/templates/apic/fabric_policies/remote_leaf_pod_redundancy_policy.md  ->  apic.fabric_policies.remote_leaf_pod_redundancy_policy
+1.00  docs/templates/apic/fabric_policies/remote_location.md  ->  apic.fabric_policies.remote_locations
+1.00  docs/templates/apic/fabric_policies/rogue_ep_control.md  ->  apic.fabric_policies.rogue_ep_control
+1.00  docs/templates/apic/fabric_policies/scheduler.md  ->  apic.fabric_policies.schedulers
+1.00  docs/templates/apic/fabric_policies/smart_licensing.md  ->  apic.fabric_policies.smart_licensing
+1.00  docs/templates/apic/fabric_policies/snmp_policy.md  ->  apic.fabric_policies.pod_policies.snmp_policies
+1.00  docs/templates/apic/fabric_policies/snmp_trap.md  ->  apic.fabric_policies.monitoring.policies.snmp_traps
+1.00  docs/templates/apic/fabric_policies/sr_mpls_global_configuration.md  ->  apic.fabric_policies.sr_mpls_global_configuration
+1.00  docs/templates/apic/fabric_policies/syslog.md  ->  apic.fabric_policies.monitoring.policies.syslogs
+1.00  docs/templates/apic/fabric_policies/system_performance.md  ->  apic.fabric_policies.system_performance
+1.00  docs/templates/apic/fabric_policies/tacacs.md  ->  apic.fabric_policies.monitoring.policies.tacacs
+1.00  docs/templates/apic/fabric_policies/user.md  ->  apic.fabric_policies.aaa.users
+0.96  docs/templates/apic/fabric_policies/vmw_vmm_domain.md  ->  apic.fabric_policies.vmware_vmm_domains
+0.81  docs/templates/apic/interface_policies/fex_interface_selector.md  ->  apic.interface_policies.nodes.fexes
+0.76  docs/templates/apic/node_policies/maintenance_group.md  ->  apic.node_policies.update_groups
+0.85  docs/templates/apic/node_policies/node_registration.md  ->  apic.node_policies.nodes
+1.00  docs/templates/apic/node_policies/vpc_group.md  ->  apic.node_policies.vpc_groups
+0.84  docs/templates/apic/pod_policies/pod_setup.md  ->  apic.pod_policies.pods
+1.00  docs/templates/apic/tenants/application_profile.md  ->  apic.tenants.application_profiles
+1.00  docs/templates/apic/tenants/bfd_interface_policy.md  ->  apic.tenants.policies.bfd_interface_policies
+1.00  docs/templates/apic/tenants/bfd_multihop_node_policy.md  ->  apic.tenants.policies.bfd_multihop_node_policies
+1.00  docs/templates/apic/tenants/bgp_address_family_context_policy.md  ->  apic.tenants.policies.bgp_address_family_context_policies
+1.00  docs/templates/apic/tenants/bgp_best_path_policy.md  ->  apic.tenants.policies.bgp_best_path_policies
+1.00  docs/templates/apic/tenants/bgp_peer_prefix_policy.md  ->  apic.tenants.policies.bgp_peer_prefix_policies
+1.00  docs/templates/apic/tenants/bgp_route_summarization_policy.md  ->  apic.tenants.policies.bgp_route_summarization_policies
+1.00  docs/templates/apic/tenants/bgp_timer_policy.md  ->  apic.tenants.policies.bgp_timer_policies
+1.00  docs/templates/apic/tenants/border_gateway_set_policy.md  ->  apic.tenants.policies.border_gateway_set_policy
+1.00  docs/templates/apic/tenants/bridge_domain.md  ->  apic.tenants.bridge_domains
+1.00  docs/templates/apic/tenants/contract.md  ->  apic.tenants.application_profiles.endpoint_groups.contracts
+1.00  docs/templates/apic/tenants/data_plane_policing_policy.md  ->  apic.tenants.policies.data_plane_policing_policies
+1.00  docs/templates/apic/tenants/device_selection_policy.md  ->  apic.tenants.services.device_selection_policies
+1.00  docs/templates/apic/tenants/dhcp_option_policy.md  ->  apic.tenants.policies.dhcp_option_policies
+1.00  docs/templates/apic/tenants/dhcp_relay_policy.md  ->  apic.tenants.policies.dhcp_relay_policies
+1.00  docs/templates/apic/tenants/eigrp_interface_policy.md  ->  apic.tenants.policies.eigrp_interface_policies
+1.00  docs/templates/apic/tenants/endpoint_group.md  ->  apic.tenants.application_profiles.endpoint_groups
+1.00  docs/templates/apic/tenants/endpoint_ip_tag.md  ->  apic.tenants.policies.endpoint_ip_tags
+1.00  docs/templates/apic/tenants/endpoint_mac_tag.md  ->  apic.tenants.policies.endpoint_mac_tags
+1.00  docs/templates/apic/tenants/endpoint_retention_policy.md  ->  apic.tenants.policies.endpoint_retention_policies
+1.00  docs/templates/apic/tenants/endpoint_security_group.md  ->  apic.tenants.application_profiles.endpoint_security_groups
+1.00  docs/templates/apic/tenants/filter.md  ->  apic.tenants.contracts.subjects.consumer_to_provider.filters
+1.00  docs/templates/apic/tenants/hsrp_group_policy.md  ->  apic.tenants.policies.hsrp_group_policies
+1.00  docs/templates/apic/tenants/hsrp_interface_policy.md  ->  apic.tenants.policies.hsrp_interface_policies
+1.00  docs/templates/apic/tenants/igmp_interface_policy.md  ->  apic.tenants.policies.igmp_interface_policies
+1.00  docs/templates/apic/tenants/igmp_snooping_policy.md  ->  apic.tenants.policies.igmp_snooping_policies
+1.00  docs/templates/apic/tenants/imported_contract.md  ->  apic.tenants.imported_contracts
+1.00  docs/templates/apic/tenants/imported_l4l7_device.md  ->  apic.tenants.services.imported_l4l7_devices
+1.00  docs/templates/apic/tenants/inb_endpoint_group.md  ->  apic.tenants.inb_endpoint_groups
+1.00  docs/templates/apic/tenants/ip_sla_policy.md  ->  apic.tenants.policies.ip_sla_policies
+1.00  docs/templates/apic/tenants/l3out.md  ->  apic.tenants.l3outs
+1.00  docs/templates/apic/tenants/l4l7_device.md  ->  apic.tenants.services.l4l7_devices
+1.00  docs/templates/apic/tenants/match_rule.md  ->  apic.tenants.policies.match_rules
+1.00  docs/templates/apic/tenants/mpls_custom_qos_policy.md  ->  apic.tenants.policies.mpls_custom_qos_policies
+1.00  docs/templates/apic/tenants/multicast_route_map.md  ->  apic.tenants.policies.multicast_route_maps
+1.00  docs/templates/apic/tenants/nd_interface_policy.md  ->  apic.tenants.policies.nd_interface_policies
+1.00  docs/templates/apic/tenants/nd_ra_prefix_policy.md  ->  apic.tenants.policies.nd_ra_prefix_policies
+1.00  docs/templates/apic/tenants/oob_contract.md  ->  apic.tenants.ext_mgmt_instances.oob_contracts
+1.00  docs/templates/apic/tenants/oob_endpoint_group.md  ->  apic.tenants.oob_endpoint_groups
+0.86  docs/templates/apic/tenants/oob_ext_mgmt_instance.md  ->  apic.tenants.ext_mgmt_instances
+1.00  docs/templates/apic/tenants/ospf_interface_policy.md  ->  apic.tenants.policies.ospf_interface_policies
+1.00  docs/templates/apic/tenants/ospf_route_summarization_policy.md  ->  apic.tenants.policies.ospf_route_summarization_policies
+1.00  docs/templates/apic/tenants/ospf_timer_policy.md  ->  apic.tenants.policies.ospf_timer_policies
+1.00  docs/templates/apic/tenants/pim_policy.md  ->  apic.tenants.policies.pim_policies
+0.83  docs/templates/apic/tenants/qos_policy.md  ->  apic.tenants.policies
+1.00  docs/templates/apic/tenants/redirect_backup_policy.md  ->  apic.tenants.services.redirect_backup_policies
+1.00  docs/templates/apic/tenants/redirect_health_group.md  ->  apic.tenants.services.redirect_health_groups
+1.00  docs/templates/apic/tenants/redirect_policy.md  ->  apic.tenants.services.device_selection_policies.consumer.redirect_policy
+1.00  docs/templates/apic/tenants/remote_vxlan_fabric.md  ->  apic.tenants.policies.remote_vxlan_fabrics
+1.00  docs/templates/apic/tenants/route_control_route_map.md  ->  apic.tenants.policies.route_control_route_maps
+1.00  docs/templates/apic/tenants/route_tag_policy.md  ->  apic.tenants.policies.route_tag_policies
+1.00  docs/templates/apic/tenants/service_epg_policy.md  ->  apic.tenants.services.service_epg_policies
+1.00  docs/templates/apic/tenants/service_graph_template.md  ->  apic.tenants.services.service_graph_templates
+1.00  docs/templates/apic/tenants/set_rule.md  ->  apic.tenants.policies.set_rules
+1.00  docs/templates/apic/tenants/sr_mpls_l3out.md  ->  apic.tenants.sr_mpls_l3outs
+1.00  docs/templates/apic/tenants/tenant.md  ->  apic.tenants
+1.00  docs/templates/apic/tenants/track_list.md  ->  apic.tenants.policies.track_lists
+1.00  docs/templates/apic/tenants/track_member.md  ->  apic.tenants.policies.track_members
+1.00  docs/templates/apic/tenants/trust_control_policy.md  ->  apic.tenants.policies.trust_control_policies
+1.00  docs/templates/apic/tenants/useg_endpoint_group.md  ->  apic.tenants.application_profiles.useg_endpoint_groups
+1.00  docs/templates/apic/tenants/vrf.md  ->  apic.tenants.vrfs
+1.00  docs/templates/apic/tenants/vxlan_custom_qos_policy.md  ->  apic.tenants.policies.vxlan_custom_qos_policies
+1.00  docs/templates/apic/tenants/vxlan_l3out.md  ->  apic.tenants.vxlan_l3outs
+0.94  docs/templates/apic/tenants/vxlan_vrf_stretch.md  ->  apic.tenants.bridge_domains.vxlan_stretch
+
+-- collided docs (lost to a higher-scoring doc for the same candidate) --
+0.84  docs/templates/apic/access_policies/ap_span_destination_group.md  ->  apic.access_policies.interface_policies.spanning_tree_policies
+0.86  docs/templates/apic/access_policies/ap_span_filter_group.md  ->  apic.access_policies.interface_policies.spanning_tree_policies
+0.84  docs/templates/apic/access_policies/vspan_destination_group.md  ->  apic.access_policies.vspan
+0.84  docs/templates/apic/fabric_policies/config_passphrase.md  ->  apic.fabric_policies.config_exports
+0.84  docs/templates/apic/fabric_policies/fp_span_destination_group.md  ->  apic.fabric_policies.span
+0.86  docs/templates/apic/fabric_policies/interface_shutdown.md  ->  apic.fabric_policies.interface_policies
+0.87  docs/templates/apic/fabric_policies/isis_policy.md  ->  apic.fabric_policies.dns_policies
+0.81  docs/templates/apic/fabric_policies/system_global_gipo.md  ->  apic.fabric_policies.monitoring.policies.syslogs
+0.84  docs/templates/apic/fabric_policies/tacacs_monitoring_destination.md  ->  apic.fabric_policies.monitoring.policies.tacacs
+0.75  docs/templates/apic/node_policies/inb_node_address.md  ->  apic.node_policies.nodes
+0.76  docs/templates/apic/node_policies/rbac_node_rule.md  ->  apic.node_policies.nodes
+0.85  docs/templates/apic/tenants/tenant_monitoring_policy.md  ->  apic.tenants
+0.85  docs/templates/apic/tenants/tenant_netflow_exporter.md  ->  apic.tenants
+0.85  docs/templates/apic/tenants/tenant_netflow_monitor.md  ->  apic.tenants
+0.86  docs/templates/apic/tenants/tenant_netflow_record.md  ->  apic.tenants
+0.84  docs/templates/apic/tenants/tenant_span_destination_group.md  ->  apic.tenants
+0.85  docs/templates/apic/tenants/tenant_span_source_group.md  ->  apic.tenants
+
+-- unmatched docs (no schema candidate found) --
+docs/templates/apic/fabric_policies/apic_connectivity_pref.md
+docs/templates/apic/fabric_policies/health_score_evaluation.md
+docs/templates/apic/fabric_policies/ip_aging.md
+docs/templates/apic/interface_policies/fabric_leaf_interface_selector.md
+docs/templates/apic/interface_policies/fabric_spine_interface_selector.md
+docs/templates/apic/interface_policies/leaf_interface_selector.md
+docs/templates/apic/interface_policies/new_interface_config.md
+docs/templates/apic/interface_policies/spine_interface_selector.md
+docs/templates/apic/node_policies/firmware_group.md
+docs/templates/apic/node_policies/oob_node_address.md
+
+-- unmatched schema candidates (no doc found) --
+apic.access_policies
+apic.access_policies.aaeps.endpoint_groups
+apic.access_policies.aaeps.expected_state
+apic.access_policies.dhcp_relay_policies.providers
+apic.access_policies.fex_interface_profiles.expected_state
+apic.access_policies.fex_interface_profiles.selectors
+apic.access_policies.fex_interface_profiles.selectors.port_blocks
+apic.access_policies.interface_policies
+apic.access_policies.interface_policies.macsec_keychain_policies.key_policies
+apic.access_policies.leaf_interface_policy_groups.netflow_monitor_policies
+apic.access_policies.leaf_interface_profiles.expected_state
+apic.access_policies.leaf_interface_profiles.selectors
+apic.access_policies.leaf_interface_profiles.selectors.port_blocks
+apic.access_policies.leaf_interface_profiles.selectors.sub_port_blocks
+apic.access_policies.leaf_switch_profiles.expected_state
+apic.access_policies.leaf_switch_profiles.selectors
+apic.access_policies.leaf_switch_profiles.selectors.node_blocks
+apic.access_policies.monitoring.policies
+apic.access_policies.monitoring.policies.fault_severity_policies
+apic.access_policies.monitoring.policies.fault_severity_policies.faults
+apic.access_policies.monitoring.policies.snmp_traps
+apic.access_policies.monitoring.policies.syslogs
+apic.access_policies.physical_domains.expected_state
+apic.access_policies.qos.qos_classes
+apic.access_policies.routed_domains.expected_state
+apic.access_policies.span.destination_groups
+apic.access_policies.span.destination_groups.expected_state
+apic.access_policies.span.filter_groups
+apic.access_policies.span.filter_groups.entries
+apic.access_policies.span.source_groups
+apic.access_policies.span.source_groups.destination
+apic.access_policies.span.source_groups.expected_state
+apic.access_policies.span.source_groups.sources
+apic.access_policies.span.source_groups.sources.access_paths
+apic.access_policies.spine_interface_profiles.expected_state
+apic.access_policies.spine_interface_profiles.selectors
+apic.access_policies.spine_interface_profiles.selectors.port_blocks
+apic.access_policies.spine_switch_profiles.expected_state
+apic.access_policies.spine_switch_profiles.selectors
+apic.access_policies.spine_switch_profiles.selectors.node_blocks
+apic.access_policies.switch_policies
+apic.access_policies.switch_policies.bfd_ipv6_policies
+apic.access_policies.switch_policies.mst_policies.instances
+apic.access_policies.switch_policies.mst_policies.instances.vlan_ranges
+apic.access_policies.vlan_pools.ranges
+apic.access_policies.vspan.destination_groups
+apic.access_policies.vspan.destination_groups.destinations
+apic.access_policies.vspan.destination_groups.expected_state
+apic.access_policies.vspan.sessions
+apic.access_policies.vspan.sessions.destination
+apic.access_policies.vspan.sessions.expected_state
+apic.access_policies.vspan.sessions.sources
+apic.access_policies.vspan.sessions.sources.access_paths
+apic.bootstrap.objects_to_delete
+apic.fabric_policies.aaa.ldap.group_map_rules
+apic.fabric_policies.aaa.ldap.group_map_rules.security_domains
+apic.fabric_policies.aaa.ldap.group_map_rules.security_domains.roles
+apic.fabric_policies.aaa.ldap.group_maps
+apic.fabric_policies.aaa.ldap.group_maps.rules
+apic.fabric_policies.aaa.ldap.providers
+apic.fabric_policies.aaa.ldap.providers.expected_state
+apic.fabric_policies.aaa.login_domains.ldap_providers
+apic.fabric_policies.aaa.login_domains.tacacs_providers
+apic.fabric_policies.aaa.management_settings
+apic.fabric_policies.aaa.management_settings.password_strength_profile
+apic.fabric_policies.aaa.radius_providers
+apic.fabric_policies.aaa.radius_providers.expected_state
+apic.fabric_policies.aaa.security_domains
+apic.fabric_policies.aaa.tacacs_providers
+apic.fabric_policies.aaa.tacacs_providers.expected_state
+apic.fabric_policies.aaa.users.certificates
+apic.fabric_policies.aaa.users.domains
+apic.fabric_policies.aaa.users.domains.roles
+apic.fabric_policies.aaa.users.ssh_keys
+apic.fabric_policies.config_exports.expected_state
+apic.fabric_policies.dns_policies.domains
+apic.fabric_policies.dns_policies.providers
+apic.fabric_policies.external_connectivity_policy.expected_state
+apic.fabric_policies.external_connectivity_policy.routing_profiles
+apic.fabric_policies.geolocation.sites
+apic.fabric_policies.geolocation.sites.buildings
+apic.fabric_policies.geolocation.sites.buildings.floors
+apic.fabric_policies.geolocation.sites.buildings.floors.rooms
+apic.fabric_policies.geolocation.sites.buildings.floors.rooms.rows
+apic.fabric_policies.geolocation.sites.buildings.floors.rooms.rows.racks
+apic.fabric_policies.global_settings
+apic.fabric_policies.leaf_interface_profiles.expected_state
+apic.fabric_policies.leaf_interface_profiles.selectors
+apic.fabric_policies.leaf_interface_profiles.selectors.port_blocks
+apic.fabric_policies.leaf_interface_profiles.selectors.sub_port_blocks
+apic.fabric_policies.leaf_switch_profiles.expected_state
+apic.fabric_policies.leaf_switch_profiles.selectors
+apic.fabric_policies.leaf_switch_profiles.selectors.node_blocks
+apic.fabric_policies.macsec_keychain_policies.key_policies
+apic.fabric_policies.monitoring.policies.fault_severity_policies
+apic.fabric_policies.monitoring.policies.fault_severity_policies.faults
+apic.fabric_policies.monitoring.snmp_traps
+apic.fabric_policies.monitoring.snmp_traps.destinations
+apic.fabric_policies.monitoring.syslogs
+apic.fabric_policies.monitoring.syslogs.destinations
+apic.fabric_policies.monitoring.tacacs
+apic.fabric_policies.monitoring.tacacs.destinations
+apic.fabric_policies.nutanix_vmm_domains.controller_profile
+apic.fabric_policies.nutanix_vmm_domains.controller_profile.cluster_controller
+apic.fabric_policies.nutanix_vmm_domains.credential_policies
+apic.fabric_policies.pod_policies.date_time_policies.expected_state
+apic.fabric_policies.pod_policies.date_time_policies.ntp_keys
+apic.fabric_policies.pod_policies.date_time_policies.ntp_servers
+apic.fabric_policies.pod_policies.management_access_policies.http
+apic.fabric_policies.pod_policies.management_access_policies.https
+apic.fabric_policies.pod_policies.management_access_policies.ssh
+apic.fabric_policies.pod_policies.management_access_policies.telnet
+apic.fabric_policies.pod_policies.snmp_policies.clients
+apic.fabric_policies.pod_policies.snmp_policies.clients.entries
+apic.fabric_policies.pod_policies.snmp_policies.trap_forwarders
+apic.fabric_policies.pod_policies.snmp_policies.users
+apic.fabric_policies.pod_profiles.expected_state
+apic.fabric_policies.pod_profiles.selectors
+apic.fabric_policies.pod_profiles.selectors.pod_blocks
+apic.fabric_policies.proxy_policy.http
+apic.fabric_policies.proxy_policy.https
+apic.fabric_policies.remote_locations.expected_state
+apic.fabric_policies.schedulers.recurring_windows
+apic.fabric_policies.smart_licensing.proxy
+apic.fabric_policies.span.destination_groups
+apic.fabric_policies.span.destination_groups.expected_state
+apic.fabric_policies.span.source_groups
+apic.fabric_policies.span.source_groups.destination
+apic.fabric_policies.span.source_groups.expected_state
+apic.fabric_policies.span.source_groups.sources
+apic.fabric_policies.spine_interface_profiles.expected_state
+apic.fabric_policies.spine_interface_profiles.selectors
+apic.fabric_policies.spine_interface_profiles.selectors.port_blocks
+apic.fabric_policies.spine_interface_profiles.selectors.sub_port_blocks
+apic.fabric_policies.spine_switch_profiles.expected_state
+apic.fabric_policies.spine_switch_profiles.selectors
+apic.fabric_policies.spine_switch_profiles.selectors.node_blocks
+apic.fabric_policies.switch_policies
+apic.fabric_policies.vmware_vmm_domains.credential_policies
+apic.fabric_policies.vmware_vmm_domains.expected_state
+apic.fabric_policies.vmware_vmm_domains.trunk_port_groups
+apic.fabric_policies.vmware_vmm_domains.trunk_port_groups.vlan_ranges
+apic.fabric_policies.vmware_vmm_domains.uplinks
+apic.fabric_policies.vmware_vmm_domains.vcenters
+apic.fabric_policies.vmware_vmm_domains.vswitch
+apic.fabric_policies.vmware_vmm_domains.vswitch.enhanced_lags
+apic.interface_policies
+apic.interface_policies.nodes
+apic.interface_policies.nodes.fexes.interfaces
+apic.interface_policies.nodes.fexes.interfaces.expected_state
+apic.interface_policies.nodes.interfaces
+apic.interface_policies.nodes.interfaces.expected_state
+apic.interface_policies.nodes.interfaces.sub_ports
+apic.interface_policies.nodes.interfaces.sub_ports.expected_state
+apic.node_policies
+apic.node_policies.expected_state
+apic.node_policies.nodes.expected_state
+apic.node_policies.vpc_groups.groups
+apic.pod_policies
+apic.pod_policies.pods.expected_state
+apic.pod_policies.pods.external_tep_pools
+apic.pod_policies.pods.remote_pools
+apic.pod_policies.pods.resiliency_groups
+apic.tenants.application_profiles.endpoint_groups.contracts.masters
+apic.tenants.application_profiles.endpoint_groups.expected_state
+apic.tenants.application_profiles.endpoint_groups.l4l7_address_pools
+apic.tenants.application_profiles.endpoint_groups.l4l7_virtual_ips
+apic.tenants.application_profiles.endpoint_groups.nutanix_vmm_domains
+apic.tenants.application_profiles.endpoint_groups.nutanix_vmm_domains.ipam
+apic.tenants.application_profiles.endpoint_groups.static_aaeps
+apic.tenants.application_profiles.endpoint_groups.static_endpoints
+apic.tenants.application_profiles.endpoint_groups.static_leafs
+apic.tenants.application_profiles.endpoint_groups.static_ports
+apic.tenants.application_profiles.endpoint_groups.static_ports.ptp
+apic.tenants.application_profiles.endpoint_groups.subnets
+apic.tenants.application_profiles.endpoint_groups.subnets.ip_pools
+apic.tenants.application_profiles.endpoint_groups.tag_annotations
+apic.tenants.application_profiles.endpoint_groups.vmware_vmm_domains
+apic.tenants.application_profiles.endpoint_security_groups.contracts
+apic.tenants.application_profiles.endpoint_security_groups.contracts.masters
+apic.tenants.application_profiles.endpoint_security_groups.epg_selectors
+apic.tenants.application_profiles.endpoint_security_groups.expected_state
+apic.tenants.application_profiles.endpoint_security_groups.ip_external_subnet_selectors
+apic.tenants.application_profiles.endpoint_security_groups.ip_subnet_selectors
+apic.tenants.application_profiles.endpoint_security_groups.tag_selectors
+apic.tenants.application_profiles.expected_state
+apic.tenants.application_profiles.useg_endpoint_groups.contracts
+apic.tenants.application_profiles.useg_endpoint_groups.contracts.masters
+apic.tenants.application_profiles.useg_endpoint_groups.expected_state
+apic.tenants.application_profiles.useg_endpoint_groups.l4l7_address_pools
+apic.tenants.application_profiles.useg_endpoint_groups.static_leafs
+apic.tenants.application_profiles.useg_endpoint_groups.subnets
+apic.tenants.application_profiles.useg_endpoint_groups.subnets.ip_pools
+apic.tenants.application_profiles.useg_endpoint_groups.tag_annotations
+apic.tenants.application_profiles.useg_endpoint_groups.useg_attributes
+apic.tenants.application_profiles.useg_endpoint_groups.useg_attributes.ip_statements
+apic.tenants.application_profiles.useg_endpoint_groups.useg_attributes.mac_statements
+apic.tenants.application_profiles.useg_endpoint_groups.useg_attributes.vm_statements
+apic.tenants.application_profiles.useg_endpoint_groups.vmware_vmm_domains
+apic.tenants.bridge_domains.dhcp_labels
+apic.tenants.bridge_domains.expected_state
+apic.tenants.bridge_domains.netflow_monitor_policies
+apic.tenants.bridge_domains.subnets
+apic.tenants.contracts
+apic.tenants.contracts.expected_state
+apic.tenants.contracts.subjects
+apic.tenants.contracts.subjects.consumer_to_provider
+apic.tenants.contracts.subjects.filters
+apic.tenants.contracts.subjects.provider_to_consumer
+apic.tenants.contracts.subjects.provider_to_consumer.filters
+apic.tenants.expected_state
+apic.tenants.ext_mgmt_instances.expected_state
+apic.tenants.filters
+apic.tenants.filters.entries
+apic.tenants.inb_endpoint_groups.contracts
+apic.tenants.inb_endpoint_groups.expected_state
+apic.tenants.inb_endpoint_groups.subnets
+apic.tenants.l3outs.bfd_multihop_auth
+apic.tenants.l3outs.bgp
+apic.tenants.l3outs.bgp_infra_peers
+apic.tenants.l3outs.bgp_peers
+apic.tenants.l3outs.default_route_leak_policy
+apic.tenants.l3outs.dhcp_labels
+apic.tenants.l3outs.eigrp
+apic.tenants.l3outs.expected_state
+apic.tenants.l3outs.expected_state.learned_prefixes
+apic.tenants.l3outs.export_route_map
+apic.tenants.l3outs.export_route_map.contexts
+apic.tenants.l3outs.external_endpoint_groups
+apic.tenants.l3outs.external_endpoint_groups.contracts
+apic.tenants.l3outs.external_endpoint_groups.contracts.masters
+apic.tenants.l3outs.external_endpoint_groups.expected_state
+apic.tenants.l3outs.external_endpoint_groups.route_control_profiles
+apic.tenants.l3outs.external_endpoint_groups.subnets
+apic.tenants.l3outs.external_endpoint_groups.subnets.route_control_profiles
+apic.tenants.l3outs.external_endpoint_groups.tag_annotations
+apic.tenants.l3outs.import_route_map
+apic.tenants.l3outs.import_route_map.contexts
+apic.tenants.l3outs.netflow_monitor_policies
+apic.tenants.l3outs.node_profiles
+apic.tenants.l3outs.node_profiles.bfd_multihop_auth
+apic.tenants.l3outs.node_profiles.bgp
+apic.tenants.l3outs.node_profiles.bgp_infra_peers
+apic.tenants.l3outs.node_profiles.bgp_peers
+apic.tenants.l3outs.node_profiles.interface_profiles
+apic.tenants.l3outs.node_profiles.interface_profiles.dhcp_labels
+apic.tenants.l3outs.node_profiles.interface_profiles.eigrp
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.bgp_peers
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.expected_state
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.expected_state.bfd_neighbors
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.expected_state.ospf_neighbors
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.micro_bfd
+apic.tenants.l3outs.node_profiles.interface_profiles.interfaces.paths
+apic.tenants.l3outs.node_profiles.interface_profiles.netflow_monitor_policies
+apic.tenants.l3outs.node_profiles.interface_profiles.ospf
+apic.tenants.l3outs.node_profiles.nodes
+apic.tenants.l3outs.node_profiles.nodes.static_routes
+apic.tenants.l3outs.node_profiles.nodes.static_routes.next_hops
+apic.tenants.l3outs.nodes
+apic.tenants.l3outs.nodes.interfaces
+apic.tenants.l3outs.nodes.interfaces.bgp_peers
+apic.tenants.l3outs.nodes.interfaces.expected_state
+apic.tenants.l3outs.nodes.interfaces.expected_state.bfd_neighbors
+apic.tenants.l3outs.nodes.interfaces.expected_state.ospf_neighbors
+apic.tenants.l3outs.nodes.interfaces.micro_bfd
+apic.tenants.l3outs.nodes.interfaces.paths
+apic.tenants.l3outs.nodes.static_routes
+apic.tenants.l3outs.nodes.static_routes.next_hops
+apic.tenants.l3outs.ospf
+apic.tenants.l3outs.redistribution_route_maps
+apic.tenants.l3outs.route_maps
+apic.tenants.l3outs.route_maps.contexts
+apic.tenants.oob_contracts
+apic.tenants.oob_contracts.expected_state
+apic.tenants.oob_contracts.subjects
+apic.tenants.oob_contracts.subjects.filters
+apic.tenants.oob_endpoint_groups.expected_state
+apic.tenants.oob_endpoint_groups.oob_contracts
+apic.tenants.policies.border_gateway_set_policy.external_data_plane_ips
+apic.tenants.policies.dhcp_option_policies.options
+apic.tenants.policies.dhcp_relay_policies.providers
+apic.tenants.policies.endpoint_ip_tags.tags
+apic.tenants.policies.endpoint_mac_tags.tags
+apic.tenants.policies.igmp_interface_policies.expected_state
+apic.tenants.policies.igmp_snooping_policies.expected_state
+apic.tenants.policies.ip_sla_policies.expected_state
+apic.tenants.policies.match_rules.community_terms
+apic.tenants.policies.match_rules.community_terms.factors
+apic.tenants.policies.match_rules.prefixes
+apic.tenants.policies.match_rules.regex_community_terms
+apic.tenants.policies.monitoring
+apic.tenants.policies.monitoring.policies
+apic.tenants.policies.monitoring.policies.fault_severity_policies
+apic.tenants.policies.monitoring.policies.fault_severity_policies.faults
+apic.tenants.policies.monitoring.policies.snmp_traps
+apic.tenants.policies.monitoring.policies.syslogs
+apic.tenants.policies.mpls_custom_qos_policies.egress_rules
+apic.tenants.policies.mpls_custom_qos_policies.ingress_rules
+apic.tenants.policies.multicast_route_maps.entries
+apic.tenants.policies.multicast_route_maps.expected_state
+apic.tenants.policies.nd_ra_prefix_policies.expected_state
+apic.tenants.policies.netflow_exporters
+apic.tenants.policies.netflow_monitors
+apic.tenants.policies.netflow_records
+apic.tenants.policies.qos
+apic.tenants.policies.qos.dot1p_classifiers
+apic.tenants.policies.qos.dscp_priority_maps
+apic.tenants.policies.remote_vxlan_fabrics.remote_evpn_peers
+apic.tenants.policies.route_control_route_maps.contexts
+apic.tenants.policies.set_rules.additional_communities
+apic.tenants.policies.set_rules.dampening
+apic.tenants.policies.set_rules.external_endpoint_group
+apic.tenants.policies.set_rules.set_as_paths
+apic.tenants.policies.set_rules.set_as_paths.asns
+apic.tenants.policies.span
+apic.tenants.policies.span.destination_groups
+apic.tenants.policies.span.destination_groups.expected_state
+apic.tenants.policies.span.source_groups
+apic.tenants.policies.span.source_groups.expected_state
+apic.tenants.policies.span.source_groups.sources
+apic.tenants.policies.vxlan_custom_qos_policies.egress_rules
+apic.tenants.policies.vxlan_custom_qos_policies.ingress_rules
+apic.tenants.services
+apic.tenants.services.device_selection_policies.consumer
+apic.tenants.services.device_selection_policies.consumer.bridge_domain
+apic.tenants.services.device_selection_policies.consumer.external_endpoint_group
+apic.tenants.services.device_selection_policies.consumer.external_endpoint_group.redistribute
+apic.tenants.services.device_selection_policies.copy_service
+apic.tenants.services.device_selection_policies.devices
+apic.tenants.services.device_selection_policies.devices.consumer
+apic.tenants.services.device_selection_policies.devices.consumer.bridge_domain
+apic.tenants.services.device_selection_policies.devices.consumer.external_endpoint_group
+apic.tenants.services.device_selection_policies.devices.consumer.external_endpoint_group.redistribute
+apic.tenants.services.device_selection_policies.devices.consumer.redirect_policy
+apic.tenants.services.device_selection_policies.devices.copy_service
+apic.tenants.services.device_selection_policies.devices.provider
+apic.tenants.services.device_selection_policies.devices.provider.bridge_domain
+apic.tenants.services.device_selection_policies.devices.provider.external_endpoint_group
+apic.tenants.services.device_selection_policies.devices.provider.external_endpoint_group.redistribute
+apic.tenants.services.device_selection_policies.devices.provider.redirect_policy
+apic.tenants.services.device_selection_policies.expected_state
+apic.tenants.services.device_selection_policies.provider
+apic.tenants.services.device_selection_policies.provider.bridge_domain
+apic.tenants.services.device_selection_policies.provider.external_endpoint_group
+apic.tenants.services.device_selection_policies.provider.external_endpoint_group.redistribute
+apic.tenants.services.device_selection_policies.provider.redirect_policy
+apic.tenants.services.l4l7_devices.concrete_devices
+apic.tenants.services.l4l7_devices.concrete_devices.interfaces
+apic.tenants.services.l4l7_devices.expected_state
+apic.tenants.services.l4l7_devices.logical_interfaces
+apic.tenants.services.l4l7_devices.logical_interfaces.concrete_interfaces
+apic.tenants.services.redirect_backup_policies.expected_state
+apic.tenants.services.redirect_backup_policies.l3_destinations
+apic.tenants.services.redirect_health_groups.expected_state
+apic.tenants.services.redirect_policies
+apic.tenants.services.redirect_policies.expected_state
+apic.tenants.services.redirect_policies.l1l2_destinations
+apic.tenants.services.redirect_policies.l1l2_destinations.concrete_interface
+apic.tenants.services.redirect_policies.l3_destinations
+apic.tenants.services.service_graph_templates.connections
+apic.tenants.services.service_graph_templates.consumer
+apic.tenants.services.service_graph_templates.device
+apic.tenants.services.service_graph_templates.devices
+apic.tenants.services.service_graph_templates.expected_state
+apic.tenants.services.service_graph_templates.provider
+apic.tenants.sr_mpls_l3outs.external_endpoint_groups
+apic.tenants.sr_mpls_l3outs.external_endpoint_groups.contracts
+apic.tenants.sr_mpls_l3outs.external_endpoint_groups.subnets
+apic.tenants.sr_mpls_l3outs.node_profiles
+apic.tenants.sr_mpls_l3outs.node_profiles.evpn_connectivity
+apic.tenants.sr_mpls_l3outs.node_profiles.interface_profiles
+apic.tenants.sr_mpls_l3outs.node_profiles.interface_profiles.interfaces
+apic.tenants.sr_mpls_l3outs.node_profiles.interface_profiles.interfaces.bgp_peers
+apic.tenants.sr_mpls_l3outs.node_profiles.nodes
+apic.tenants.sr_mpls_l3outs.sr_mpls_infra_l3outs
+apic.tenants.vrfs.bgp
+apic.tenants.vrfs.contracts
+apic.tenants.vrfs.expected_state
+apic.tenants.vrfs.leaked_external_prefixes
+apic.tenants.vrfs.leaked_external_prefixes.destinations
+apic.tenants.vrfs.leaked_internal_prefixes
+apic.tenants.vrfs.leaked_internal_prefixes.destinations
+apic.tenants.vrfs.leaked_internal_subnets
+apic.tenants.vrfs.leaked_internal_subnets.destinations
+apic.tenants.vrfs.ospf
+apic.tenants.vrfs.pim
+apic.tenants.vrfs.pim.config_stripe_winner_policies
+apic.tenants.vrfs.pim.fabric_rps
+apic.tenants.vrfs.pim.igmp_context_ssm_translate_policies
+apic.tenants.vrfs.pim.inter_vrf_policies
+apic.tenants.vrfs.pim.static_rps
+apic.tenants.vrfs.pimv6
+apic.tenants.vrfs.pimv6.static_rps
+apic.tenants.vrfs.route_summarization_policies
+apic.tenants.vrfs.route_summarization_policies.nodes
+apic.tenants.vrfs.route_summarization_policies.subnets
+apic.tenants.vrfs.snmp_context
+apic.tenants.vrfs.snmp_context.community_profiles
+apic.tenants.vrfs.vxlan_stretch
+apic.tenants.vxlan_l3outs.node_profiles
+apic.tenants.vxlan_l3outs.node_profiles.interface_profiles
+apic.tenants.vxlan_l3outs.node_profiles.interface_profiles.interfaces
+apic.tenants.vxlan_l3outs.node_profiles.interface_profiles.interfaces.bgp_peers
+apic.tenants.vxlan_l3outs.node_profiles.nodes

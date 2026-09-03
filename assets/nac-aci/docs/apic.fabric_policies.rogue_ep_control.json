@@ -1,0 +1,12 @@
+{
+  "object_name": "Rogue EP Control",
+  "gui_location": "`System` » `System Settings` » `Endpoint Controls` » `Rogue EP Control`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    rogue_ep_control:\n      admin_state: true\n      detection_interval: 180\n      detection_multiplier: 10\n      hold_interval: 1800",
+      "explanation": "This example demonstrates how to configure Rogue Endpoint Control, which identifies an endpoint (MAC/IP address) as rogue when the same endpoint is learned on different interfaces multiple times within the configured interval. By default, Rogue Endpoint Control is enabled, which is a general best practice. In this example, Rogue Endpoint Control is enabled with detection_interval set to `180` seconds (default 30), detection_multiplier  set to `10` (default 10) and hold_interval set to `1800` seconds (defult 1800 seconds)."
+    }
+  ]
+}

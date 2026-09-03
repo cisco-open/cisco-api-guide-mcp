@@ -1,0 +1,6 @@
+{
+  "object_name": "Infra DHCP Relay Policy",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Global` » `DHCP` » `Relay Policies`",
+  "description": "",
+  "examples": null
+}

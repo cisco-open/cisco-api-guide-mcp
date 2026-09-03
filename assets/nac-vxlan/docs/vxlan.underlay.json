@@ -1,0 +1,6 @@
+{
+  "object_name": "BFD",
+  "gui_location": "",
+  "description": "{{ doc_gen }}\n\n## Examples\n\n```yaml\nvxlan:\n  underlay:\n    bfd:\n      enable: true\n      ibgp: true\n      ospf: true\n      isis: false\n      pim: true\n      authentication_enable: true\n      authentication_key_id: 113\n      authentication_key: 071b245f5a58485744\n\n```",
+  "examples": null
+}

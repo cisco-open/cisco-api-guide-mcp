@@ -1,0 +1,6 @@
+{
+  "object_name": "NetFlow Exporters",
+  "gui_location": "`Fabric` » `Access Policies` » `Policies` » `Interface` » `NetFlow` » `NetFlow Exporters`",
+  "description": "",
+  "examples": null
+}

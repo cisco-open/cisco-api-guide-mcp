@@ -1,0 +1,6 @@
+{
+  "object_name": "Trust Control Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `First Hop Security` » `Trust Control Policies`",
+  "description": "",
+  "examples": null
+}

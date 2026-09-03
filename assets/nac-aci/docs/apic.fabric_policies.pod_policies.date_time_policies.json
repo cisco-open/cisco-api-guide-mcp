@@ -1,0 +1,17 @@
+{
+  "object_name": "Date and Time Policy",
+  "gui_location": "`Fabric` » `Fabric Policies` » `Fabric Policies` » `Policies` » `Pod` » `Date and Time`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  fabric_policies:\n    pod_policies:\n      date_time_policies:\n        - name: ntp_policy_simple\n          ntp_servers:\n            - hostname_ip: 10.0.0.100\n              preferred: true\n            - hostname_ip: 20.0.0.200\n              preferred: false",
+      "explanation": "This data model creates a Data and Time policy named `ntp_policy_simple`. This creates a simple policy with two NTP servers defined.  This configuration sets one of the NTP servers as the preferred time server (`preferred: true`)."
+    },
+    {
+      "title": "Example-2",
+      "yaml": "apic:\n  fabric_policies:\n    pod_policies:\n      date_time_policies:\n        - name: ntp_policy_with_auth\n          ntp_auth_state: true\n          ntp_servers:\n            - hostname_ip: 10.0.0.100\n              auth_key_id: 1\n              preferred: true\n              mgmt_epg: oob\n            - hostname_ip: 20.0.0.200\n              auth_key_id: 1\n              mgmt_epg: oob\n              preferred: false\n          ntp_keys:\n            - id: 1\n              key: 'My$ecretKey'\n              auth_type: md5\n              trusted: false",
+      "explanation": "This data model creates a Data and Time policy named `ntp_policy_with_auth`. This creates a policy with two NTP servers defined where NTP Authentication is used.  This configuration sets one of the NTP servers as the preferred time server (`preferred: true`) and uses the out-of-band management network for the NTP traffic (`mgmt_epg: oob`). The NTP servers use the value for the `auth_key_id` key to associate it the NTP server with the `id` of the NTP key listed in the `ntp_keys` section. If the key includes special characters it is recommended to enclose the key in single quotes `''`."
+    }
+  ]
+}

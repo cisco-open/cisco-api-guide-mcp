@@ -1,0 +1,6 @@
+{
+  "object_name": "BGP Policy",
+  "gui_location": "`System` » `System Settings` » `BGP Route Reflector`",
+  "description": "",
+  "examples": null
+}

@@ -1,0 +1,6 @@
+{
+  "object_name": "Data Plane Policing Policy",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `Data Plane Policing`",
+  "description": "",
+  "examples": null
+}

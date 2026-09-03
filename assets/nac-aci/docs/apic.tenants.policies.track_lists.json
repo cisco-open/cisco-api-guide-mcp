@@ -1,0 +1,12 @@
+{
+  "object_name": "Track List",
+  "gui_location": "`Tenants` » `XXX` » `Policies` » `Protocol` » `IP SLA` » `Track Lists`",
+  "description": "",
+  "examples": [
+    {
+      "title": "Example-1",
+      "yaml": "apic:\n  tenants:\n    - name: ABC\n      policies:\n        track_lists:\n          - name: TRACK_LIST\n            type: percentage\n            percentage_up: 10\n            percentage_down: 2\n            track_members:\n              - FW_1_Track_Mem\n              - FW_2_Track_Mem",
+      "explanation": "This data model groups two IP addresses (track members `FW_1_Track_Mem` and `FW_2_Track_Mem`) to evaluate the validity of a static route or its next-hop within an L3Out or Bridge Domain. The track members are monitored using a specified IP SLA monitoring policy (e.g., ICMP or TCP probes). Based on a configured threshold-expressed as a percentage or weight-the track list determines whether the route or next-hop is considered up or down. If marked down, the static route or next-hop is removed from the routing table; if marked up, it is reinstated. Static routes reference these track lists to dynamically manage route availability."
+    }
+  ]
+}
